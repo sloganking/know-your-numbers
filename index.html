@@ -252,15 +252,15 @@
                     <div class="legend-col">
                         <h4>If Untreated</h4>
                         <ul>
-                            <li>Ranges from <strong>mild inconvenience</strong> to <strong>life-threatening</strong></li>
-                            <li>This is the "worst case" if you ignore it</li>
+                            <li>What happens if you ignore it</li>
+                            <li>Ranges from mild to <strong>life-threatening</strong></li>
                         </ul>
                     </div>
                     <div class="legend-col">
-                        <h4>With Treatment</h4>
+                        <h4>With Treatment / Prevention</h4>
                         <ul>
-                            <li>What actually happens when you get care</li>
-                            <li>Often <strong>much better</strong> than the untreated outcome</li>
+                            <li>What happens when you take action</li>
+                            <li>Usually <strong>much better</strong> than untreated</li>
                         </ul>
                     </div>
                 </div>
@@ -278,8 +278,8 @@
                             <span class="outlook-value chronic">Chronic</span>
                         </div>
                         <div class="outlook-item">
-                            <span class="outlook-label">Untreated</span>
-                            <span class="outlook-value critical">Fatal</span>
+                            <span class="outlook-label">If Untreated</span>
+                            <span class="outlook-value critical">Fatal (AIDS)</span>
                         </div>
                         <div class="outlook-item">
                             <span class="outlook-label">With Treatment</span>
@@ -363,7 +363,7 @@ const cumulativeRisk = 1 - Math.pow(1 - perActRisk, encounters);
                             <span class="outlook-value chronic">Chronic</span>
                         </div>
                         <div class="outlook-item">
-                            <span class="outlook-label">Untreated</span>
+                            <span class="outlook-label">If Untreated</span>
                             <span class="outlook-value low">Periodic outbreaks</span>
                         </div>
                         <div class="outlook-item">
@@ -445,15 +445,15 @@ const perActRisk = 1 - Math.pow(1 - annualRisk, 1/actsPerYear);
                     <div class="sti-outlook">
                         <div class="outlook-item">
                             <span class="outlook-label">Duration</span>
-                            <span class="outlook-value clears">Usually Clears</span>
+                            <span class="outlook-value clears">Usually clears on its own</span>
                         </div>
                         <div class="outlook-item">
-                            <span class="outlook-label">Untreated</span>
-                            <span class="outlook-value moderate">Cancer risk (some strains)</span>
+                            <span class="outlook-label">If Untreated</span>
+                            <span class="outlook-value moderate">Some strains cause cancer</span>
                         </div>
                         <div class="outlook-item">
-                            <span class="outlook-label">With Treatment</span>
-                            <span class="outlook-value positive">Vaccine prevents; body clears</span>
+                            <span class="outlook-label">Prevention</span>
+                            <span class="outlook-value positive">Vaccine highly effective</span>
                         </div>
                     </div>
                     <div class="sti-quick-facts">
@@ -531,7 +531,7 @@ const perActRisk = 1 - Math.pow(1 - annualRisk, 1/actsPerYear);
                             <span class="outlook-value curable">Curable</span>
                         </div>
                         <div class="outlook-item">
-                            <span class="outlook-label">Untreated</span>
+                            <span class="outlook-label">If Untreated</span>
                             <span class="outlook-value moderate">PID, infertility risk</span>
                         </div>
                         <div class="outlook-item">
@@ -613,7 +613,7 @@ const cumulativeRisk = 1 - Math.pow(1 - perActRisk, encounters);
                             <span class="outlook-value curable">Curable</span>
                         </div>
                         <div class="outlook-item">
-                            <span class="outlook-label">Untreated</span>
+                            <span class="outlook-label">If Untreated</span>
                             <span class="outlook-value moderate">Spreads, infertility risk</span>
                         </div>
                         <div class="outlook-item">
@@ -693,7 +693,7 @@ const cumulativeRisk = 1 - Math.pow(1 - perActRisk, encounters);
                             <span class="outlook-value curable">Curable</span>
                         </div>
                         <div class="outlook-item">
-                            <span class="outlook-label">Untreated</span>
+                            <span class="outlook-label">If Untreated</span>
                             <span class="outlook-value serious">Organ damage, death</span>
                         </div>
                         <div class="outlook-item">
