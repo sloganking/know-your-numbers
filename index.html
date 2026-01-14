@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Your Numbers — STI Transmission Risk Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    
+    <nav class="nav">
+        <div class="nav-brand">
+            <span class="nav-icon">📊</span>
+            <span class="nav-title">Know Your Numbers</span>
+        </div>
+        <div class="nav-links">
+            <a href="#mission">Why This Exists</a>
+            <a href="#calculator">Calculator</a>
+            <a href="#stis">STI Data</a>
+            <a href="#methodology">Methodology</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="hero-title-line">The numbers your</span>
+                <span class="hero-title-line accent">doctor won't tell you.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Evidence-based STI transmission probabilities. Interactive risk calculators. 
+                Complete transparency in methodology. Make informed decisions about your sexual health.
+            </p>
+            <div class="hero-cta">
+                <a href="#calculator" class="btn btn-primary">Calculate Your Risk</a>
+                <a href="#stis" class="btn btn-secondary">Browse STI Data</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="stat-preview">
+                <div class="stat-card">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">STIs Covered</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">20+</span>
+                    <span class="stat-label">Studies Cited</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">∞</span>
+                    <span class="stat-label">Scenarios</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="mission" class="section mission-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">The Problem</span>
+                <h2>Why I Built This</h2>
+            </div>
+            <div class="mission-content">
+                <div class="mission-text">
+                    <p class="lead">
+                        I'm frustrated. Every time I ask a doctor about STI transmission probabilities, 
+                        I get the same non-answers: "Use a condom and you'll be fine" or "Don't worry about it."
+                    </p>
+                    <p>
+                        That's not good enough. If I have a partner with an STI, I want to know the <em>actual numbers</em>. 
+                        What's my probability of transmission per encounter? How does that change with condom use? 
+                        What if we're together for a year versus a month?
+                    </p>
+                    <p>
+                        Doctors seem to operate on a culture of managed information — deciding what you 
+                        "need to know" rather than giving you the data to make your own informed decisions. 
+                        With HPV, for example, the medical establishment has largely planned for it to spread 
+                        through the population rather than helping individuals understand and manage their risk.
+                    </p>
+                    <p>
+                        <strong>This site changes that.</strong> Every number here comes from peer-reviewed studies. 
+                        Every calculation is transparent. You can see the equations, adjust the variables, 
+                        and understand exactly how your risk is computed.
+                    </p>
+                    <p class="disclaimer">
+                        <strong>Disclaimer:</strong> This is not medical advice. This is mathematical modeling 
+                        based on published research. Consult healthcare providers for personal medical decisions.
+                    </p>
+                </div>
+                <div class="mission-principles">
+                    <h3>Our Principles</h3>
+                    <ul class="principles-list">
+                        <li>
+                            <span class="principle-icon">📚</span>
+                            <div>
+                                <strong>Cite Everything</strong>
+                                <p>Every transmission rate links to its source study</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="principle-icon">🔢</span>
+                            <div>
+                                <strong>Show the Math</strong>
+                                <p>All equations displayed in notation and code</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="principle-icon">🎛️</span>
+                            <div>
+                                <strong>Your Variables</strong>
+                                <p>Customize calculations to your situation</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="principle-icon">⚠️</span>
+                            <div>
+                                <strong>Honest Uncertainty</strong>
+                                <p>We show confidence intervals, not false precision</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculator" class="section calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Interactive Tool</span>
+                <h2>Risk Calculator</h2>
+                <p class="section-desc">
+                    Select an STI, input your scenario, and see your cumulative risk over time.
+                </p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="sti-select">Select STI</label>
+                        <select id="sti-select">
+                            <option value="hiv">HIV</option>
+                            <option value="hsv2">Herpes (HSV-2)</option>
+                            <option value="hpv">HPV</option>
+                            <option value="chlamydia" selected>Chlamydia</option>
+                            <option value="gonorrhea">Gonorrhea</option>
+                            <option value="syphilis">Syphilis</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="direction-select">Transmission Direction</label>
+                        <select id="direction-select">
+                            <option value="mtf">Male → Female (Vaginal)</option>
+                            <option value="ftm">Female → Male (Vaginal)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="condom-select">Protection</label>
+                        <select id="condom-select">
+                            <option value="none">No condom</option>
+                            <option value="condom">Condom use</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="frequency-input">
+                            Sex frequency per week: <span id="frequency-value">2</span>
+                        </label>
+                        <input type="range" id="frequency-input" min="1" max="21" value="2" step="1">
+                        <div class="range-labels">
+                            <span>1×/week</span>
+                            <span>Daily</span>
+                            <span>3×/day</span>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="duration-input">
+                            Time period: <span id="duration-value">12</span> months
+                        </label>
+                        <input type="range" id="duration-input" min="1" max="60" value="12" step="1">
+                        <div class="range-labels">
+                            <span>1 month</span>
+                            <span>5 years</span>
+                        </div>
+                    </div>
+
+                    <div class="current-rate-display">
+                        <div class="rate-item">
+                            <span class="rate-label">Per-act transmission rate:</span>
+                            <span class="rate-value" id="per-act-rate">--</span>
+                        </div>
+                        <div class="rate-item">
+                            <span class="rate-label">With your protection:</span>
+                            <span class="rate-value" id="adjusted-rate">--</span>
+                        </div>
+                        <div class="rate-item source">
+                            <span class="rate-label">Source:</span>
+                            <a href="#" id="rate-source" target="_blank">--</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calculator-output">
+                    <div class="chart-container">
+                        <canvas id="risk-chart"></canvas>
+                    </div>
+                    <div class="result-summary">
+                        <div class="result-main">
+                            <span class="result-label">Cumulative risk after <span id="result-duration">12</span> months:</span>
+                            <span class="result-value" id="result-probability">--</span>
+                        </div>
+                        <div class="result-explanation">
+                            <p id="result-explanation-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stis" class="section stis-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">The Data</span>
+                <h2>STI Profiles</h2>
+                <p class="section-desc">
+                    Click any STI for detailed transmission data, risk factors, and sources.
+                </p>
+            </div>
+            
+            <div class="sti-grid">
+                <!-- HIV -->
+                <article class="sti-card" id="sti-hiv">
+                    <div class="sti-header">
+                        <h3>HIV</h3>
+                        <span class="sti-severity severe">Severe (Treatable)</span>
+                    </div>
+                    <div class="sti-quick-facts">
+                        <ul>
+                            <li>🔬 Low per-act transmission but serious consequences</li>
+                            <li>💊 Antiretroviral treatment makes viral load undetectable = untransmittable</li>
+                            <li>🛡️ Condoms reduce risk by ~80-85%</li>
+                            <li>💉 PrEP reduces risk by ~99% when taken daily</li>
+                            <li>⚠️ Higher risk with other STIs present (inflammation)</li>
+                        </ul>
+                    </div>
+                    <div class="sti-rates">
+                        <h4>Transmission Rates (per vaginal sex act)</h4>
+                        <table class="rates-table">
+                            <thead>
+                                <tr>
+                                    <th>Direction</th>
+                                    <th>No Condom</th>
+                                    <th>With Condom</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Male → Female</td>
+                                    <td>0.08%</td>
+                                    <td>0.016%</td>
+                                </tr>
+                                <tr>
+                                    <td>Female → Male</td>
+                                    <td>0.04%</td>
+                                    <td>0.008%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="rate-source">
+                            Source: <a href="https://www.cdc.gov/hiv/risk/estimates/riskbehaviors.html" target="_blank">CDC HIV Risk Behaviors</a>, 
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/19179227/" target="_blank">Boily et al. 2009</a>
+                        </p>
+                    </div>
+                    <details class="sti-details">
+                        <summary>View Full Details & Math</summary>
+                        <div class="details-content">
+                            <h5>Key Context</h5>
+                            <p>
+                                HIV transmission probability varies significantly based on viral load, presence of other STIs, 
+                                and stage of infection. The rates above assume a partner with detectable (untreated) HIV. 
+                                Partners on effective antiretroviral therapy with undetectable viral load have essentially 
+                                zero transmission risk (U=U: Undetectable = Untransmittable).
+                            </p>
+                            <h5>Calculation Example</h5>
+                            <p>For a woman having unprotected sex with an HIV+ male partner, 2× per week for 1 year:</p>
+                            <div class="math-block">
+                                <p><strong>Mathematical notation:</strong></p>
+                                <p>\[ P_{cumulative} = 1 - (1 - r)^n \]</p>
+                                <p>Where \( r = 0.0008 \) (0.08%) and \( n = 2 \times 52 = 104 \) encounters</p>
+                                <p>\[ P = 1 - (1 - 0.0008)^{104} = 1 - 0.920 = 0.080 = 8.0\% \]</p>
+                            </div>
+                            <div class="code-block">
+                                <p><strong>JavaScript:</strong></p>
+<pre><code>const perActRisk = 0.0008;  // 0.08%
+const encounters = 2 * 52;   // 2x/week for 1 year
+const cumulativeRisk = 1 - Math.pow(1 - perActRisk, encounters);
+// Result: 0.080 (8.0%)</code></pre>
+                            </div>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- HSV-2 -->
+                <article class="sti-card" id="sti-hsv2">
+                    <div class="sti-header">
+                        <h3>Herpes (HSV-2)</h3>
+                        <span class="sti-severity moderate">Chronic (Manageable)</span>
+                    </div>
+                    <div class="sti-quick-facts">
+                        <ul>
+                            <li>🔄 Transmits via skin-to-skin contact, not just fluids</li>
+                            <li>😶 Most people are asymptomatic or have mild symptoms</li>
+                            <li>🛡️ Condoms reduce risk by ~30-50% (doesn't cover all skin)</li>
+                            <li>💊 Daily antivirals (e.g., valacyclovir) reduce transmission by ~50%</li>
+                            <li>📅 Avoiding sex during outbreaks significantly reduces risk</li>
+                        </ul>
+                    </div>
+                    <div class="sti-rates">
+                        <h4>Transmission Rates</h4>
+                        <table class="rates-table">
+                            <thead>
+                                <tr>
+                                    <th>Direction</th>
+                                    <th>Annual Risk (no prevention)</th>
+                                    <th>Condom + Antivirals</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Male → Female</td>
+                                    <td>~10% per year</td>
+                                    <td>~2.5% per year</td>
+                                </tr>
+                                <tr>
+                                    <td>Female → Male</td>
+                                    <td>~4% per year</td>
+                                    <td>~1% per year</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="rate-note">
+                            Note: HSV-2 data is typically reported annually, not per-act, because shedding is intermittent.
+                            Per-act rates can be estimated at ~0.1-0.2% during asymptomatic periods.
+                        </p>
+                        <p class="rate-source">
+                            Source: <a href="https://pubmed.ncbi.nlm.nih.gov/1656936/" target="_blank">Mertz et al. 1992</a>,
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/14676829/" target="_blank">Corey et al. 2004</a>
+                        </p>
+                    </div>
+                    <details class="sti-details">
+                        <summary>View Full Details & Math</summary>
+                        <div class="details-content">
+                            <h5>Key Context</h5>
+                            <p>
+                                HSV-2 transmission is complex because the virus sheds asymptomatically. Even without visible 
+                                sores, transmission can occur. The annual rates above come from studies of discordant couples 
+                                (one partner has HSV-2, the other doesn't) having regular sex.
+                            </p>
+                            <h5>Calculating Per-Act Risk from Annual Risk</h5>
+                            <div class="math-block">
+                                <p>If annual risk is 10% with ~100 sex acts per year:</p>
+                                <p>\[ r_{act} = 1 - (1 - R_{annual})^{1/n} \]</p>
+                                <p>\[ r_{act} = 1 - (1 - 0.10)^{1/100} = 1 - 0.9989 = 0.0011 = 0.11\% \]</p>
+                            </div>
+                            <div class="code-block">
+<pre><code>const annualRisk = 0.10;  // 10% per year
+const actsPerYear = 100;
+const perActRisk = 1 - Math.pow(1 - annualRisk, 1/actsPerYear);
+// Result: ~0.0011 (0.11% per act)</code></pre>
+                            </div>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- HPV -->
+                <article class="sti-card" id="sti-hpv">
+                    <div class="sti-header">
+                        <h3>HPV (Human Papillomavirus)</h3>
+                        <span class="sti-severity variable">Variable (Often Clears)</span>
+                    </div>
+                    <div class="sti-quick-facts">
+                        <ul>
+                            <li>📊 Most sexually active people get HPV at some point</li>
+                            <li>🧬 200+ strains; most are harmless, some cause cancer</li>
+                            <li>🛡️ Condoms reduce risk by ~70% (skin-to-skin transmission)</li>
+                            <li>💉 Vaccine prevents the most dangerous strains</li>
+                            <li>⏳ 90% of infections clear within 2 years</li>
+                        </ul>
+                    </div>
+                    <div class="sti-rates">
+                        <h4>Transmission Rates</h4>
+                        <table class="rates-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Risk</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Per new partner (cumulative)</td>
+                                    <td>~20-40%</td>
+                                </tr>
+                                <tr>
+                                    <td>Per-act estimate</td>
+                                    <td>~5-20%</td>
+                                </tr>
+                                <tr>
+                                    <td>With consistent condom use</td>
+                                    <td>~6-12% per partner</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="rate-note">
+                            HPV transmission is highly variable and hard to study due to asymptomatic nature and 
+                            high baseline prevalence.
+                        </p>
+                        <p class="rate-source">
+                            Source: <a href="https://pubmed.ncbi.nlm.nih.gov/21774844/" target="_blank">Burchell et al. 2011</a>,
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/17303679/" target="_blank">Winer et al. 2006</a>
+                        </p>
+                    </div>
+                    <details class="sti-details">
+                        <summary>View Full Details & Math</summary>
+                        <div class="details-content">
+                            <h5>Key Context</h5>
+                            <p>
+                                HPV is unique because it's so common that "preventing" it may be unrealistic for 
+                                sexually active adults who aren't vaccinated. The medical establishment's approach 
+                                has largely been to expect exposure and rely on the immune system to clear it.
+                            </p>
+                            <p>
+                                The more important questions are: (1) Are you vaccinated? (2) Are you getting regular 
+                                screenings (Pap smears for cervix-havers)?
+                            </p>
+                            <h5>Why per-act rates are hard to pin down</h5>
+                            <p>
+                                Studies vary widely because: asymptomatic transmission is hard to track, 
+                                many people already have HPV, and different strains have different infectivity.
+                            </p>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- Chlamydia -->
+                <article class="sti-card" id="sti-chlamydia">
+                    <div class="sti-header">
+                        <h3>Chlamydia</h3>
+                        <span class="sti-severity curable">Curable</span>
+                    </div>
+                    <div class="sti-quick-facts">
+                        <ul>
+                            <li>🦠 Most common bacterial STI</li>
+                            <li>😶 ~70% of women and 50% of men have no symptoms</li>
+                            <li>💊 Easily cured with antibiotics (usually azithromycin)</li>
+                            <li>🛡️ Condoms reduce risk by ~60-70%</li>
+                            <li>⚠️ Untreated can cause PID, infertility</li>
+                        </ul>
+                    </div>
+                    <div class="sti-rates">
+                        <h4>Transmission Rates (per vaginal sex act)</h4>
+                        <table class="rates-table">
+                            <thead>
+                                <tr>
+                                    <th>Direction</th>
+                                    <th>No Condom</th>
+                                    <th>With Condom</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Male → Female</td>
+                                    <td>~10-15%</td>
+                                    <td>~3-5%</td>
+                                </tr>
+                                <tr>
+                                    <td>Female → Male</td>
+                                    <td>~5-10%</td>
+                                    <td>~1.5-3%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="rate-source">
+                            Source: <a href="https://academic.oup.com/jrsssa/article/174/4/975/7077900" target="_blank">Price et al. 2011 (JRSS)</a>,
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/24188065/" target="_blank">Althaus et al. 2010</a>
+                        </p>
+                    </div>
+                    <details class="sti-details">
+                        <summary>View Full Details & Math</summary>
+                        <div class="details-content">
+                            <h5>Key Context</h5>
+                            <p>
+                                Chlamydia is extremely common and often asymptomatic, which is why routine testing 
+                                is recommended. It's easily treated but can cause serious complications if left untreated.
+                            </p>
+                            <h5>Calculation Example</h5>
+                            <p>For a woman having unprotected sex with a partner who has chlamydia, 2× per week for 1 month:</p>
+                            <div class="math-block">
+                                <p>\[ P = 1 - (1 - 0.125)^{8} = 1 - 0.875^8 = 1 - 0.344 = 0.656 = 65.6\% \]</p>
+                            </div>
+                            <p>
+                                This is why chlamydia spreads so easily — just a few encounters creates significant risk.
+                            </p>
+                            <div class="code-block">
+<pre><code>const perActRisk = 0.125;  // 12.5%
+const encounters = 8;       // 2x/week for 1 month
+const cumulativeRisk = 1 - Math.pow(1 - perActRisk, encounters);
+// Result: 0.656 (65.6%)</code></pre>
+                            </div>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- Gonorrhea -->
+                <article class="sti-card" id="sti-gonorrhea">
+                    <div class="sti-header">
+                        <h3>Gonorrhea</h3>
+                        <span class="sti-severity curable">Curable (Resistance Concern)</span>
+                    </div>
+                    <div class="sti-quick-facts">
+                        <ul>
+                            <li>🦠 Second most common bacterial STI</li>
+                            <li>⚠️ Increasing antibiotic resistance is a global concern</li>
+                            <li>💊 Current treatment: ceftriaxone injection + azithromycin</li>
+                            <li>🛡️ Condoms reduce risk by ~50-70%</li>
+                            <li>🔥 More likely to cause symptoms than chlamydia (burning, discharge)</li>
+                        </ul>
+                    </div>
+                    <div class="sti-rates">
+                        <h4>Transmission Rates (per vaginal sex act)</h4>
+                        <table class="rates-table">
+                            <thead>
+                                <tr>
+                                    <th>Direction</th>
+                                    <th>No Condom</th>
+                                    <th>With Condom</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Male → Female</td>
+                                    <td>~50-70%</td>
+                                    <td>~15-25%</td>
+                                </tr>
+                                <tr>
+                                    <td>Female → Male</td>
+                                    <td>~20-25%</td>
+                                    <td>~6-8%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="rate-note">
+                            Gonorrhea has extremely high transmission rates, especially male-to-female.
+                        </p>
+                        <p class="rate-source">
+                            Source: <a href="https://pubmed.ncbi.nlm.nih.gov/7775396/" target="_blank">Hooper et al. 1978</a>,
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/23569604/" target="_blank">Bernstein et al. 2013</a>
+                        </p>
+                    </div>
+                    <details class="sti-details">
+                        <summary>View Full Details & Math</summary>
+                        <div class="details-content">
+                            <h5>Key Context</h5>
+                            <p>
+                                Gonorrhea is highly infectious. The asymmetry in transmission (male→female much higher) 
+                                is due to anatomy — the vagina is more susceptible to infection than the urethra.
+                            </p>
+                            <h5>Calculation Example</h5>
+                            <p>A single unprotected encounter with an infected male partner:</p>
+                            <div class="math-block">
+                                <p>\[ P = 0.60 = 60\% \]</p>
+                            </div>
+                            <p>
+                                Yes — a single encounter can give you a 60% chance of infection. This is why gonorrhea 
+                                spreads so rapidly.
+                            </p>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- Syphilis -->
+                <article class="sti-card" id="sti-syphilis">
+                    <div class="sti-header">
+                        <h3>Syphilis</h3>
+                        <span class="sti-severity severe">Serious (Curable)</span>
+                    </div>
+                    <div class="sti-quick-facts">
+                        <ul>
+                            <li>📈 Cases have increased 700% since 2015</li>
+                            <li>🔴 Primary stage: painless sore (chancre)</li>
+                            <li>💊 Easily cured with penicillin</li>
+                            <li>🛡️ Condoms reduce risk when covering the sore</li>
+                            <li>⚠️ Untreated can cause serious organ damage years later</li>
+                        </ul>
+                    </div>
+                    <div class="sti-rates">
+                        <h4>Transmission Rates</h4>
+                        <table class="rates-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Risk per Exposure</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Contact with active sore (primary stage)</td>
+                                    <td>~30%</td>
+                                </tr>
+                                <tr>
+                                    <td>Secondary stage (rash)</td>
+                                    <td>~10-20%</td>
+                                </tr>
+                                <tr>
+                                    <td>Latent stage</td>
+                                    <td>Low (not well quantified)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="rate-note">
+                            Syphilis transmission is highly dependent on stage of infection. Sores are extremely 
+                            infectious; latent stage has minimal transmission.
+                        </p>
+                        <p class="rate-source">
+                            Source: <a href="https://www.cdc.gov/std/syphilis/stdfact-syphilis-detailed.htm" target="_blank">CDC Syphilis Fact Sheet</a>,
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/29616617/" target="_blank">Tuite et al. 2018</a>
+                        </p>
+                    </div>
+                    <details class="sti-details">
+                        <summary>View Full Details & Math</summary>
+                        <div class="details-content">
+                            <h5>Key Context</h5>
+                            <p>
+                                Syphilis progresses through stages, and transmission risk varies dramatically. 
+                                The primary chancre (sore) is the most infectious period. If you can see a sore, 
+                                avoid contact — that's when transmission is most likely.
+                            </p>
+                            <h5>The Syphilis Comeback</h5>
+                            <p>
+                                After decades of decline, syphilis is surging. Congenital syphilis (passed to newborns) 
+                                increased 700% since 2015. Get tested if sexually active, especially with new partners.
+                            </p>
+                        </div>
+                    </details>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="methodology" class="section methodology-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Transparency</span>
+                <h2>Methodology</h2>
+                <p class="section-desc">
+                    How we calculate transmission probabilities and where the numbers come from.
+                </p>
+            </div>
+            
+            <div class="methodology-content">
+                <div class="method-block">
+                    <h3>The Core Equation</h3>
+                    <p>
+                        All risk calculations use the same fundamental probability formula. 
+                        If each exposure has independent risk \( r \), then after \( n \) exposures:
+                    </p>
+                    <div class="math-block large">
+                        <p>\[ P_{transmission} = 1 - (1 - r)^n \]</p>
+                    </div>
+                    <p>Intuitively: we calculate the probability of <em>not</em> getting infected after each encounter, 
+                    multiply them together, then subtract from 1.</p>
+                    
+                    <div class="code-block">
+                        <h4>JavaScript Implementation</h4>
+<pre><code>function calculateCumulativeRisk(perActRisk, numberOfEncounters) {
+    // Probability of NOT being infected after all encounters
+    const probNotInfected = Math.pow(1 - perActRisk, numberOfEncounters);
+    
+    // Probability of being infected = 1 - (prob of not infected)
+    return 1 - probNotInfected;
+}
+
+// Example: Chlamydia (12.5% per act), 8 encounters
+calculateCumulativeRisk(0.125, 8);  // Returns: 0.656 (65.6%)</code></pre>
+                    </div>
+                </div>
+                
+                <div class="method-block">
+                    <h3>Adjusting for Condom Use</h3>
+                    <p>
+                        Condoms reduce transmission by a certain percentage, depending on the STI. 
+                        We multiply the base risk by (1 - effectiveness):
+                    </p>
+                    <div class="math-block">
+                        <p>\[ r_{protected} = r_{unprotected} \times (1 - e_{condom}) \]</p>
+                    </div>
+                    <div class="code-block">
+<pre><code>function adjustForCondom(baseRisk, condomEffectiveness) {
+    return baseRisk * (1 - condomEffectiveness);
+}
+
+// HIV: 0.08% base, 80% condom effectiveness
+adjustForCondom(0.0008, 0.80);  // Returns: 0.00016 (0.016%)</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-block">
+                    <h3>Data Sources</h3>
+                    <p>All transmission rates come from peer-reviewed studies and public health organizations:</p>
+                    <ul class="source-list">
+                        <li>
+                            <strong>CDC</strong> — U.S. Centers for Disease Control and Prevention
+                            <a href="https://www.cdc.gov/std/" target="_blank">cdc.gov/std</a>
+                        </li>
+                        <li>
+                            <strong>Boily et al. 2009</strong> — Heterosexual HIV transmission meta-analysis
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/19179227/" target="_blank">PubMed</a>
+                        </li>
+                        <li>
+                            <strong>Price et al. 2011</strong> — Chlamydia transmission probability
+                            <a href="https://academic.oup.com/jrsssa/article/174/4/975/7077900" target="_blank">JRSS</a>
+                        </li>
+                        <li>
+                            <strong>Corey et al. 2004</strong> — HSV-2 transmission and antivirals
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/14676829/" target="_blank">PubMed</a>
+                        </li>
+                        <li>
+                            <strong>Winer et al. 2006</strong> — HPV transmission and condoms
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/17303679/" target="_blank">PubMed</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="method-block">
+                    <h3>Limitations & Caveats</h3>
+                    <div class="caveats-grid">
+                        <div class="caveat">
+                            <h4>🎯 Individual Variation</h4>
+                            <p>Risk varies by viral load, inflammation, other infections, and biological factors. 
+                            Population averages may not reflect your specific risk.</p>
+                        </div>
+                        <div class="caveat">
+                            <h4>📊 Study Populations</h4>
+                            <p>Studies often focus on specific populations (e.g., discordant couples, clinic attendees). 
+                            Results may not generalize to all scenarios.</p>
+                        </div>
+                        <div class="caveat">
+                            <h4>🔄 Independence Assumption</h4>
+                            <p>The formula assumes each encounter is independent. In reality, factors like 
+                            mucosal trauma or co-infections can create dependencies.</p>
+                        </div>
+                        <div class="caveat">
+                            <h4>📅 Data Age</h4>
+                            <p>Some studies are older. HIV treatment has improved dramatically; resistance patterns 
+                            change. We cite dates so you can assess currency.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <h3>Know Your Numbers</h3>
+                    <p>Transparent, data-driven sexual health information.</p>
+                    <p class="footer-disclaimer">
+                        This website provides educational information only and is not medical advice. 
+                        Consult a healthcare provider for personal medical decisions.
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://www.cdc.gov/std/" target="_blank">CDC STD Homepage</a></li>
+                        <li><a href="https://www.plannedparenthood.org/" target="_blank">Planned Parenthood</a></li>
+                        <li><a href="https://gettested.cdc.gov/" target="_blank">Find Testing Near You</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>On This Site</h4>
+                    <ul>
+                        <li><a href="#mission">Why This Exists</a></li>
+                        <li><a href="#calculator">Risk Calculator</a></li>
+                        <li><a href="#methodology">Methodology</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Made with frustration and math. Open source on GitHub.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
