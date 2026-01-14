@@ -710,8 +710,6 @@ input[type="range"]::-moz-range-thumb {
 
 /* Classification Legend */
 .classification-legend {
-    display: grid;
-    gap: 2rem;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
@@ -719,32 +717,46 @@ input[type="range"]::-moz-range-thumb {
     margin-bottom: 2.5rem;
 }
 
+.legend-intro {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.legend-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
 @media (min-width: 700px) {
-    .classification-legend {
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
+    .legend-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
     }
 }
 
-.legend-group h4 {
-    font-size: 0.85rem;
+.legend-col h4 {
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     font-weight: 600;
 }
 
-.legend-items {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.6rem;
-}
-
-.legend-desc {
+.legend-col ul {
+    list-style: none;
     font-size: 0.85rem;
     color: var(--text-secondary);
+}
+
+.legend-col li {
+    margin-bottom: 0.4rem;
+}
+
+.legend-col strong {
+    color: var(--text-primary);
 }
 
 /* New Tag System */
@@ -806,6 +818,71 @@ input[type="range"]::-moz-range-thumb {
     background: rgba(239, 68, 68, 0.12);
     color: #f87171;
     border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* STI Outlook Grid (3-column comparison) */
+.sti-outlook {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.outlook-item {
+    text-align: center;
+    padding: 0.25rem;
+}
+
+.outlook-label {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.outlook-value {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* Outlook value colors */
+.outlook-value.curable {
+    color: #34d399;
+}
+
+.outlook-value.clears {
+    color: #60a5fa;
+}
+
+.outlook-value.chronic {
+    color: #a78bfa;
+}
+
+.outlook-value.low {
+    color: #6ee7b7;
+}
+
+.outlook-value.moderate {
+    color: #fbbf24;
+}
+
+.outlook-value.serious {
+    color: #fb923c;
+}
+
+.outlook-value.critical {
+    color: #f87171;
+}
+
+.outlook-value.positive {
+    color: #34d399;
 }
 
 .sti-quick-facts {
