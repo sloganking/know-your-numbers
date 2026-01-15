@@ -788,6 +788,25 @@ const SOURCES = {
         }
     },
     
+    // CDC recommendation against routine herpes screening
+    hsv_no_routine_screening_cdc: {
+        id: 'hsv_no_routine_screening_cdc',
+        name: 'CDC - Herpes Screening Recommendations',
+        url: 'https://www.cdc.gov/herpes/testing/index.html',
+        quote: 'CDC does not recommend herpes testing for people without symptoms in most situations. This is because of the limits of a herpes blood test and the possibility of a wrong test result.',
+        verifiedDate: '2025-01-14',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hsv_screening_recommendation', value: 'Not recommended without symptoms', source: 'quote', highlight: 'does not recommend herpes testing for people without symptoms' }
+            ],
+            steps: ['CDC recommends against routine herpes screening for asymptomatic people'],
+            result: { name: 'screening_policy', value: 'Herpes is NOT included in routine STI panels' },
+            warnings: ['Testing IS recommended if you have symptoms']
+        }
+    },
+    
     hiv_window_period_cdc: {
         id: 'hiv_window_period_cdc',
         name: 'CDC - HIV Testing Window Periods',
