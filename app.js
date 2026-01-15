@@ -201,6 +201,42 @@ const STI_DATA = {
 // ============================================
 
 /**
+ * Generate a URL with text fragment to highlight the quoted text
+ * Uses the Text Fragments API: url#:~:text=encoded_text
+ * 
+ * @param {string} baseUrl - The source URL
+ * @param {string} quote - The quote text to highlight
+ * @returns {string} URL with text fragment
+ */
+function generateTextFragmentUrl(baseUrl, quote) {
+    if (!quote || !baseUrl) return baseUrl;
+    
+    // Clean the quote - remove our ellipsis markers and extra whitespace
+    let cleanQuote = quote
+        .replace(/\s*\.\.\.\s*/g, ' ')  // Replace ... with space
+        .replace(/\s+/g, ' ')            // Normalize whitespace
+        .trim();
+    
+    // For long quotes, use start,end format (first ~30 chars and last ~30 chars)
+    // This helps the browser find the text even if there are minor formatting differences
+    if (cleanQuote.length > 80) {
+        // Get first few words and last few words
+        const words = cleanQuote.split(' ');
+        if (words.length > 6) {
+            const startText = words.slice(0, 3).join(' ');
+            const endText = words.slice(-3).join(' ');
+            const fragment = `#:~:text=${encodeURIComponent(startText)},${encodeURIComponent(endText)}`;
+            return baseUrl + fragment;
+        }
+    }
+    
+    // For shorter quotes, use the full text (first 100 chars max)
+    const textToEncode = cleanQuote.substring(0, 100);
+    const fragment = `#:~:text=${encodeURIComponent(textToEncode)}`;
+    return baseUrl + fragment;
+}
+
+/**
  * Create a citable number span with hover tooltip
  * Shows step-by-step derivation for calculated values
  * 
@@ -234,6 +270,9 @@ function createCitableNumber(displayText, sourceId) {
             }
         });
     }
+    
+    // Generate URL with text fragment to jump to quote
+    const fragmentUrl = generateTextFragmentUrl(source.url, source.quote);
     
     let contentHtml = '';
     
@@ -301,7 +340,7 @@ function createCitableNumber(displayText, sourceId) {
             ${stepsHtml}
             ${resultHtml}
             ${warningsHtml}
-            <a href="${source.url}" target="_blank" class="cite-tooltip-link">View source →</a>
+            <a href="${fragmentUrl}" target="_blank" class="cite-tooltip-link">View source →</a>
             <span class="cite-tooltip-meta">Last verified: ${verifiedDate}</span>
         `;
     } else {
@@ -312,7 +351,7 @@ function createCitableNumber(displayText, sourceId) {
                 <span class="cite-tooltip-type direct">Direct quote</span>
             </div>
             <div class="cite-tooltip-quote">"${formattedQuote}"</div>
-            <a href="${source.url}" target="_blank" class="cite-tooltip-link">View source →</a>
+            <a href="${fragmentUrl}" target="_blank" class="cite-tooltip-link">View source →</a>
             <span class="cite-tooltip-meta">Last verified: ${verifiedDate}</span>
         `;
     }
