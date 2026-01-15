@@ -22,22 +22,84 @@ const SOURCES = {
         id: 'hiv_cdc_risk_estimates',
         name: 'CDC HIV Risk and Prevention Estimates',
         url: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
-        // Each part separated by ... must exist on the page
         quote: 'Risk per 10,000 exposures ... Receptive penile-vaginal intercourse ... 8 ... Insertive penile-vaginal intercourse ... 4',
         verifiedDate: '2025-01-14',
         type: 'webpage',
-        notes: 'VERIFIED ✓ - From the Sexual transmission risk table on the CDC page.'
+        isDerived: true,  // Technically we're extracting and converting
+        derivation: {
+            variables: [
+                {
+                    name: 'risk_mtf_per_10k',
+                    value: '8 per 10,000',
+                    source: 'quote',
+                    highlight: '8'
+                },
+                {
+                    name: 'risk_ftm_per_10k',
+                    value: '4 per 10,000',
+                    source: 'quote',
+                    highlight: '4'
+                }
+            ],
+            steps: [
+                'From quote: risk_mtf_per_10k = 8 per 10,000 exposures',
+                'From quote: risk_ftm_per_10k = 4 per 10,000 exposures',
+                'Convert: per_act_mtf = 8 ÷ 10,000 = 0.0008 = 0.08%',
+                'Convert: per_act_ftm = 4 ÷ 10,000 = 0.0004 = 0.04%'
+            ],
+            result: {
+                name: 'per_act_transmission_rate',
+                value: '0.08% (M→F) / 0.04% (F→M)'
+            }
+        }
     },
     
     hiv_boily_2009_meta: {
         id: 'hiv_boily_2009_meta',
         name: 'Boily et al. 2009 - Lancet - HIV Per-Act Transmission Meta-Analysis',
         url: 'https://pubmed.ncbi.nlm.nih.gov/19179227/',
-        // Multi-part quote with key transmission estimates
         quote: 'systematic review and meta-analysis of observational studies of the risk of HIV-1 transmission per heterosexual contact ... female-to-male (0.04% per act [95% CI 0.01-0.14]) and male-to-female (0.08% per act [95% CI 0.06-0.11]) transmission estimates in high-income countries',
         verifiedDate: '2025-01-14',
         type: 'abstract',
-        notes: 'VERIFIED ✓ - Meta-analysis of 25 studies providing per-act HIV transmission probabilities. Note: These are HIGH-INCOME country estimates without antivirals.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'per_act_ftm',
+                    value: '0.04%',
+                    source: 'quote',
+                    highlight: '0.04% per act'
+                },
+                {
+                    name: 'per_act_mtf',
+                    value: '0.08%',
+                    source: 'quote',
+                    highlight: '0.08% per act'
+                },
+                {
+                    name: 'confidence_interval_ftm',
+                    value: '95% CI 0.01-0.14%',
+                    source: 'quote',
+                    highlight: '95% CI 0.01-0.14'
+                },
+                {
+                    name: 'confidence_interval_mtf',
+                    value: '95% CI 0.06-0.11%',
+                    source: 'quote',
+                    highlight: '95% CI 0.06-0.11'
+                }
+            ],
+            steps: [
+                'From quote: per_act_ftm = 0.04% (female-to-male)',
+                'From quote: per_act_mtf = 0.08% (male-to-female)',
+                'Note: These are high-income country estimates',
+                'Note: Meta-analysis of 25 studies'
+            ],
+            result: {
+                name: 'per_act_transmission_rate',
+                value: '0.08% (M→F) / 0.04% (F→M)'
+            }
+        }
     },
     
     hiv_condom_effectiveness: {
@@ -47,7 +109,39 @@ const SOURCES = {
         quote: 'Always using condoms, based on self-report, during sex with an HIV-positive partner reduces the risk of HIV acquisition by an estimated 80% among heterosexual men and women',
         verifiedDate: '2025-01-14',
         type: 'webpage',
-        notes: 'VERIFIED ✓ - Exact quote from CDC condom effectiveness section.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'risk_reduction',
+                    value: '80%',
+                    source: 'quote',
+                    highlight: '80%'
+                },
+                {
+                    name: 'population',
+                    value: 'heterosexual men and women',
+                    source: 'quote',
+                    highlight: 'heterosexual men and women'
+                },
+                {
+                    name: 'usage_type',
+                    value: 'consistent use (self-reported)',
+                    source: 'quote',
+                    highlight: 'Always using condoms, based on self-report'
+                }
+            ],
+            steps: [
+                'From quote: risk_reduction = 80%',
+                'From quote: applies to heterosexual couples',
+                'Note: Based on self-reported "always" use',
+                'Calculation: protected_rate = base_rate × (1 - 0.80)'
+            ],
+            result: {
+                name: 'condom_risk_reduction',
+                value: '80%'
+            }
+        }
     },
     
     // ===========================================
@@ -61,7 +155,45 @@ const SOURCES = {
         quote: 'heterosexual, monogamous couples ... eight months ... Overall, acquisition of HSV-2 was observed in 14 of the susceptible partners who received valacyclovir (1.9 percent), as compared with 27 (3.6 percent) who received placebo',
         verifiedDate: '2025-01-14',
         type: 'abstract',
-        notes: 'VERIFIED ✓ - This gives baseline transmission rate of 3.6% per 8 months without antivirals.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'study_duration',
+                    value: '8 months',
+                    source: 'quote',
+                    highlight: 'eight months'
+                },
+                {
+                    name: 'placebo_transmission',
+                    value: '3.6%',
+                    source: 'quote',
+                    highlight: '3.6 percent'
+                },
+                {
+                    name: 'valacyclovir_transmission',
+                    value: '1.9%',
+                    source: 'quote',
+                    highlight: '1.9 percent'
+                },
+                {
+                    name: 'placebo_count',
+                    value: '27 of 741',
+                    source: 'quote',
+                    highlight: '27'
+                }
+            ],
+            steps: [
+                'From quote: study_duration = 8 months',
+                'From quote: placebo_transmission = 3.6% over 8 months',
+                'From quote: valacyclovir_transmission = 1.9% over 8 months',
+                'Reduction with antivirals: (3.6 - 1.9) / 3.6 = 47%'
+            ],
+            result: {
+                name: 'transmission_over_8_months',
+                value: '3.6% (no treatment) / 1.9% (with antivirals)'
+            }
+        }
     },
     
     // Derived per-act rate for HSV-2 (calculated from the 8-month study data)
@@ -126,11 +258,52 @@ const SOURCES = {
         id: 'chlamydia_price_2021',
         name: 'Price et al. 2021 - BMJ STI - Chlamydia Per-Partnership Transmission',
         url: 'https://pubmed.ncbi.nlm.nih.gov/33349846/',
-        // Multi-part quote with key transmission estimates
         quote: 'Per-partnership transmission probabilities for Chlamydia trachomatis infection ... male-to-female transmission probabilities per partnership were 32.1% [95% credible interval (CrI) 18.4-55.9%] (Natsal-2) and 34.9% (95%CrI 22.6-54.9%) (NHANES). Female-to-male transmission probabilities were 21.4% (95%CrI 5.1-67.0%) (Natsal-2) and 4.6% (95%CrI 1.0-13.1%) (NHANES)',
         verifiedDate: '2025-01-14',
         type: 'abstract',
-        notes: 'VERIFIED ✓ - Per-PARTNERSHIP (not per-act) transmission probabilities from UK and US population surveys. Note the wide credible intervals indicating uncertainty.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'mtf_natsal',
+                    value: '32.1%',
+                    source: 'quote',
+                    highlight: '32.1%'
+                },
+                {
+                    name: 'mtf_nhanes',
+                    value: '34.9%',
+                    source: 'quote',
+                    highlight: '34.9%'
+                },
+                {
+                    name: 'ftm_natsal',
+                    value: '21.4%',
+                    source: 'quote',
+                    highlight: '21.4%'
+                },
+                {
+                    name: 'ftm_nhanes',
+                    value: '4.6%',
+                    source: 'quote',
+                    highlight: '4.6%'
+                }
+            ],
+            steps: [
+                'From quote: mtf_natsal = 32.1% (UK data)',
+                'From quote: mtf_nhanes = 34.9% (US data)',
+                'Average M→F: (32.1 + 34.9) / 2 ≈ 33%',
+                'From quote: ftm_natsal = 21.4% (UK data)',
+                'From quote: ftm_nhanes = 4.6% (US data)',
+                'Average F→M: (21.4 + 4.6) / 2 ≈ 13%',
+                '⚠️ Note: Wide uncertainty ranges (5-67%)'
+            ],
+            result: {
+                name: 'per_partnership_transmission',
+                value: '~33% (M→F) / ~13% (F→M)'
+            },
+            warnings: ['These are per-PARTNERSHIP rates, not per-act', 'Wide credible intervals indicate uncertainty']
+        }
     },
     
     // ===========================================
@@ -141,11 +314,55 @@ const SOURCES = {
         id: 'syphilis_schober_1983',
         name: 'Schober et al. 1983 - How Infectious is Syphilis?',
         url: 'https://pubmed.ncbi.nlm.nih.gov/6871650/',
-        // Multi-part quote with key transmission data
         quote: 'sexual contacts of patients with primary and secondary syphilis ... 65 of 127 (51%) contacts at risk developed syphilis ... heterosexuals (17/29, 58%)',
         verifiedDate: '2025-01-14',
         type: 'abstract',
-        notes: 'VERIFIED ✓ - Per-PARTNERSHIP transmission rate from contacts of infectious syphilis cases. 51% overall, 58% for heterosexuals. This is a classic study from 1983.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'total_contacts',
+                    value: '127',
+                    source: 'quote',
+                    highlight: '127'
+                },
+                {
+                    name: 'total_infected',
+                    value: '65',
+                    source: 'quote',
+                    highlight: '65'
+                },
+                {
+                    name: 'overall_rate',
+                    value: '51%',
+                    source: 'quote',
+                    highlight: '51%'
+                },
+                {
+                    name: 'heterosexual_infected',
+                    value: '17 of 29',
+                    source: 'quote',
+                    highlight: '17/29'
+                },
+                {
+                    name: 'heterosexual_rate',
+                    value: '58%',
+                    source: 'quote',
+                    highlight: '58%'
+                }
+            ],
+            steps: [
+                'From quote: 65 of 127 contacts infected = 51% overall',
+                'From quote: 17 of 29 heterosexual contacts = 58%',
+                'Note: Contacts of PRIMARY/SECONDARY syphilis (most infectious stage)',
+                '⚠️ Note: This is per-partnership, not per-act'
+            ],
+            result: {
+                name: 'per_partnership_transmission',
+                value: '58% (heterosexual)'
+            },
+            warnings: ['Per-PARTNERSHIP rate with highly infectious (primary/secondary) case', 'Transmission much lower in latent stages']
+        }
     },
     
     // ===========================================
@@ -156,11 +373,43 @@ const SOURCES = {
         id: 'gonorrhea_ncbi_book',
         name: 'NCBI Book - Partner Notification for STI Transmission Model',
         url: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
-        // Multi-part quote showing gonorrhea transmission relative to chlamydia
         quote: 'transmission probabilities for chlamydia and gonorrhoea are 38% and 62.5%, respectively ... transmission probability for gonorrhoea is assumed to be twice that of chlamydia',
         verifiedDate: '2025-01-14',
         type: 'webpage',
-        notes: 'VERIFIED ✓ - Per-PARTNERSHIP transmission probabilities from UK modeling study. Gonorrhea ~62.5% per partnership, assumed 2x chlamydia per-act.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'chlamydia_per_partnership',
+                    value: '38%',
+                    source: 'quote',
+                    highlight: '38%'
+                },
+                {
+                    name: 'gonorrhea_per_partnership',
+                    value: '62.5%',
+                    source: 'quote',
+                    highlight: '62.5%'
+                },
+                {
+                    name: 'relative_to_chlamydia',
+                    value: '2x',
+                    source: 'quote',
+                    highlight: 'twice that of chlamydia'
+                }
+            ],
+            steps: [
+                'From quote: gonorrhea_per_partnership = 62.5%',
+                'From quote: chlamydia_per_partnership = 38%',
+                'From quote: gonorrhea per-act ≈ 2× chlamydia per-act',
+                '⚠️ Note: This is per-partnership, not per-act'
+            ],
+            result: {
+                name: 'per_partnership_transmission',
+                value: '62.5%'
+            },
+            warnings: ['Per-PARTNERSHIP rate from modeling study', 'Per-act rate approximately 2× chlamydia']
+        }
     },
     
     // ===========================================
@@ -171,22 +420,98 @@ const SOURCES = {
         id: 'hpv_burchell_2013',
         name: 'Burchell et al. 2013 - HPV Transmission in Couples',
         url: 'https://pubmed.ncbi.nlm.nih.gov/24253288/',
-        // Multi-part quote with transmission incidence rates
         quote: 'HPV type-specific transmission incidence rate was 12.3 (95% confidence interval, 7.1-19.6) per 1000 person-months for female-to-male transmission and 7.3 (95% confidence interval, 3.5-13.5) per 1000 person-months for male-to-female transmission',
         verifiedDate: '2025-01-14',
         type: 'abstract',
-        notes: 'VERIFIED ✓ - Per 1000 person-months transmission rates from couples study. Note: This is incidence over time, not per-act probability.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'ftm_incidence',
+                    value: '12.3 per 1000 person-months',
+                    source: 'quote',
+                    highlight: '12.3'
+                },
+                {
+                    name: 'mtf_incidence',
+                    value: '7.3 per 1000 person-months',
+                    source: 'quote',
+                    highlight: '7.3'
+                },
+                {
+                    name: 'ftm_ci',
+                    value: '95% CI: 7.1-19.6',
+                    source: 'quote',
+                    highlight: '7.1-19.6'
+                },
+                {
+                    name: 'mtf_ci',
+                    value: '95% CI: 3.5-13.5',
+                    source: 'quote',
+                    highlight: '3.5-13.5'
+                }
+            ],
+            steps: [
+                'From quote: ftm_incidence = 12.3 per 1000 person-months',
+                'From quote: mtf_incidence = 7.3 per 1000 person-months',
+                'Convert: ~1.2% per month (F→M), ~0.7% per month (M→F)',
+                '⚠️ Note: This is incidence rate, not per-act probability'
+            ],
+            result: {
+                name: 'monthly_incidence_rate',
+                value: '~1.2% (F→M) / ~0.7% (M→F) per month'
+            },
+            warnings: ['This is incidence over time, not per-act probability', 'HPV is extremely common - most people will acquire it']
+        }
     },
     
     hpv_lifetime_chesson: {
         id: 'hpv_lifetime_chesson',
         name: 'Chesson et al. 2014 - HPV Lifetime Probability',
         url: 'https://pubmed.ncbi.nlm.nih.gov/25299412/',
-        // Multi-part quote with lifetime acquisition probability
         quote: 'estimated lifetime probability of acquiring human papillomavirus ... average lifetime probability of acquiring HPV among those with at least 1 opposite sex partner to be 84.6% (range, 53.6%-95.0%) for women and 91.3% (range, 69.5%-97.7%) for men',
         verifiedDate: '2025-01-14',
         type: 'abstract',
-        notes: 'VERIFIED ✓ - Lifetime HPV acquisition probability. Shows HPV is extremely common - most sexually active people will get it.'
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'lifetime_prob_women',
+                    value: '84.6%',
+                    source: 'quote',
+                    highlight: '84.6%'
+                },
+                {
+                    name: 'lifetime_prob_men',
+                    value: '91.3%',
+                    source: 'quote',
+                    highlight: '91.3%'
+                },
+                {
+                    name: 'range_women',
+                    value: '53.6%-95.0%',
+                    source: 'quote',
+                    highlight: '53.6%-95.0%'
+                },
+                {
+                    name: 'range_men',
+                    value: '69.5%-97.7%',
+                    source: 'quote',
+                    highlight: '69.5%-97.7%'
+                }
+            ],
+            steps: [
+                'From quote: lifetime_prob_women = 84.6%',
+                'From quote: lifetime_prob_men = 91.3%',
+                'Applies to: those with at least 1 opposite sex partner',
+                '⚠️ This is LIFETIME probability, not per-act'
+            ],
+            result: {
+                name: 'lifetime_acquisition_probability',
+                value: '84.6% (women) / 91.3% (men)'
+            },
+            warnings: ['This is LIFETIME probability, not per-act or per-partnership', 'Most sexually active people will acquire HPV at some point']
+        }
     }
 };
 
