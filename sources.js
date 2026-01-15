@@ -261,48 +261,42 @@ const SOURCES = {
         quote: 'Per-partnership transmission probabilities for Chlamydia trachomatis infection ... male-to-female transmission probabilities per partnership were 32.1% [95% credible interval (CrI) 18.4-55.9%] (Natsal-2) and 34.9% (95%CrI 22.6-54.9%) (NHANES). Female-to-male transmission probabilities were 21.4% (95%CrI 5.1-67.0%) (Natsal-2) and 4.6% (95%CrI 1.0-13.1%) (NHANES)',
         verifiedDate: '2025-01-14',
         type: 'abstract',
+        notes: 'Per-PARTNERSHIP rates - see chlamydia_ncbi_per_act for per-act rates'
+    },
+    
+    chlamydia_ncbi_per_act: {
+        id: 'chlamydia_ncbi_per_act',
+        name: 'NCBI Book - Chlamydia Per-Act Transmission',
+        url: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
+        quote: 'the per-sex act transmission probability is uniformly distributed between 6% and 16.7%',
+        verifiedDate: '2025-01-14',
+        type: 'webpage',
         isDerived: true,
         derivation: {
             variables: [
                 {
-                    name: 'mtf_natsal',
-                    value: '32.1%',
+                    name: 'per_act_min',
+                    value: '6%',
                     source: 'quote',
-                    highlight: '32.1%'
+                    highlight: '6%'
                 },
                 {
-                    name: 'mtf_nhanes',
-                    value: '34.9%',
+                    name: 'per_act_max',
+                    value: '16.7%',
                     source: 'quote',
-                    highlight: '34.9%'
-                },
-                {
-                    name: 'ftm_natsal',
-                    value: '21.4%',
-                    source: 'quote',
-                    highlight: '21.4%'
-                },
-                {
-                    name: 'ftm_nhanes',
-                    value: '4.6%',
-                    source: 'quote',
-                    highlight: '4.6%'
+                    highlight: '16.7%'
                 }
             ],
             steps: [
-                'From quote: mtf_natsal = 32.1% (UK data)',
-                'From quote: mtf_nhanes = 34.9% (US data)',
-                'Average M→F: (32.1 + 34.9) / 2 ≈ 33%',
-                'From quote: ftm_natsal = 21.4% (UK data)',
-                'From quote: ftm_nhanes = 4.6% (US data)',
-                'Average F→M: (21.4 + 4.6) / 2 ≈ 13%',
-                '⚠️ Note: Wide uncertainty ranges (5-67%)'
+                'From quote: per-act range = 6% to 16.7%',
+                'Midpoint: (6 + 16.7) / 2 = 11.35%',
+                'Using midpoint as point estimate'
             ],
             result: {
-                name: 'per_partnership_transmission',
-                value: '~33% (M→F) / ~13% (F→M)'
+                name: 'per_act_transmission_rate',
+                value: '~11% (range 6-17%)'
             },
-            warnings: ['These are per-PARTNERSHIP rates, not per-act', 'Wide credible intervals indicate uncertainty']
+            warnings: ['Wide range reflects uncertainty', 'Study does not distinguish M→F vs F→M']
         }
     },
     
@@ -361,7 +355,11 @@ const SOURCES = {
                 name: 'per_partnership_transmission',
                 value: '58% (heterosexual)'
             },
-            warnings: ['Per-PARTNERSHIP rate with highly infectious (primary/secondary) case', 'Transmission much lower in latent stages']
+            warnings: [
+                'PER-PARTNERSHIP rate only - per-act rate CANNOT be determined',
+                'Applies to PRIMARY/SECONDARY stage syphilis (most infectious)',
+                'Not included in per-act calculator due to insufficient data'
+            ]
         }
     },
     
@@ -373,18 +371,12 @@ const SOURCES = {
         id: 'gonorrhea_ncbi_book',
         name: 'NCBI Book - Partner Notification for STI Transmission Model',
         url: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
-        quote: 'transmission probabilities for chlamydia and gonorrhoea are 38% and 62.5%, respectively ... transmission probability for gonorrhoea is assumed to be twice that of chlamydia',
+        quote: 'the per-partnership transmission probabilities for chlamydia and gonorrhoea are 38% and 62.5%, respectively ... the per-sex act transmission probability is uniformly distributed between 6% and 16.7% ... the per-sex act transmission probability for gonorrhoea is assumed to be twice that of chlamydia',
         verifiedDate: '2025-01-14',
         type: 'webpage',
         isDerived: true,
         derivation: {
             variables: [
-                {
-                    name: 'chlamydia_per_partnership',
-                    value: '38%',
-                    source: 'quote',
-                    highlight: '38%'
-                },
                 {
                     name: 'gonorrhea_per_partnership',
                     value: '62.5%',
@@ -392,23 +384,30 @@ const SOURCES = {
                     highlight: '62.5%'
                 },
                 {
-                    name: 'relative_to_chlamydia',
-                    value: '2x',
+                    name: 'chlamydia_per_act_range',
+                    value: '6% to 16.7%',
+                    source: 'quote',
+                    highlight: '6% and 16.7%'
+                },
+                {
+                    name: 'gonorrhea_relative',
+                    value: '2× chlamydia',
                     source: 'quote',
                     highlight: 'twice that of chlamydia'
                 }
             ],
             steps: [
-                'From quote: gonorrhea_per_partnership = 62.5%',
-                'From quote: chlamydia_per_partnership = 38%',
-                'From quote: gonorrhea per-act ≈ 2× chlamydia per-act',
-                '⚠️ Note: This is per-partnership, not per-act'
+                'From quote: chlamydia per-act = 6% to 16.7%',
+                'Midpoint: chlamydia per-act ≈ 11.4%',
+                'From quote: gonorrhea per-act = 2× chlamydia',
+                'Calculation: gonorrhea per-act ≈ 2 × 11.4% = 22.8%',
+                '⚠️ Note: Range is wide (12% to 33%)'
             ],
             result: {
-                name: 'per_partnership_transmission',
-                value: '62.5%'
+                name: 'per_act_transmission_rate',
+                value: '~23% (range 12-33%)'
             },
-            warnings: ['Per-PARTNERSHIP rate from modeling study', 'Per-act rate approximately 2× chlamydia']
+            warnings: ['Wide range due to uncertainty in chlamydia rate', 'Gonorrhea rate derived as 2× chlamydia per model assumption']
         }
     },
     

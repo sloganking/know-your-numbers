@@ -99,52 +99,21 @@ const STI_DATA = {
     chlamydia: {
         name: 'Chlamydia',
         verified: true,  // VERIFIED 2025-01-14
-        verificationNote: 'Verified against Price et al. 2021 BMJ STI',
-        rateType: 'per-partnership',  // This is per-partnership, not per-act
+        verificationNote: 'Verified against NCBI Book NBK261441 for per-act rates',
+        rateType: 'per-act',  // Now using per-act rate from NCBI book
         rates: {
-            // Per-PARTNERSHIP rates (not per-act!)
+            // Per-ACT rate: 6-16.7%, midpoint ~11%
             mtf: {
-                value: 0.33,  // ~33% per partnership (M→F)
-                sourceId: 'chlamydia_price_2021',
-                isDerived: false,
-                note: 'Per-PARTNERSHIP rate, not per-act'
+                value: 0.114,  // ~11% per act (range 6-17%)
+                sourceId: 'chlamydia_ncbi_per_act',
+                isDerived: true,
+                note: 'Midpoint of 6-16.7% range'
             },
             ftm: {
-                value: 0.13,  // ~5-21% per partnership, using midpoint ~13% (F→M)
-                sourceId: 'chlamydia_price_2021',
-                isDerived: false,
-                note: 'Per-PARTNERSHIP rate, not per-act (wide uncertainty: 5-21%)'
-            }
-        },
-        condomEffectiveness: { 
-            value: 0.60, 
-            sourceId: null,
-            isUnverified: true,
-            note: 'Approximate estimate - needs verified source'
-        },
-        source: 'Price et al. 2021 - BMJ STI',
-        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/33349846/',
-        notes: '⚠️ These are per-PARTNERSHIP rates (32-35% M→F, 5-21% F→M), not per-act. Easily curable with antibiotics.'
-    },
-    
-    gonorrhea: {
-        name: 'Gonorrhea',
-        verified: true,  // VERIFIED 2025-01-14
-        verificationNote: 'Verified against NCBI Book NBK261441',
-        rateType: 'per-partnership',  // Per-partnership rate
-        rates: {
-            // Per-PARTNERSHIP rate
-            mtf: {
-                value: 0.625,  // 62.5% per partnership
-                sourceId: 'gonorrhea_ncbi_book',
-                isDerived: false,
-                note: 'Per-PARTNERSHIP rate, assumed 2x chlamydia per-act'
-            },
-            ftm: {
-                value: 0.625,  // Using same rate (study didn't distinguish)
-                sourceId: 'gonorrhea_ncbi_book',
-                isDerived: false,
-                note: 'Per-PARTNERSHIP rate'
+                value: 0.114,  // Same rate (study didn't distinguish direction)
+                sourceId: 'chlamydia_ncbi_per_act',
+                isDerived: true,
+                note: 'Midpoint of 6-16.7% range (no M→F vs F→M distinction)'
             }
         },
         condomEffectiveness: { 
@@ -155,27 +124,61 @@ const STI_DATA = {
         },
         source: 'NCBI Book - Partner Notification Model',
         sourceUrl: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
-        notes: '⚠️ Per-PARTNERSHIP rate (~62.5%). Per-act rate is ~2x that of chlamydia. Easily curable but antibiotic resistance is growing concern.'
+        notes: 'Per-act rate ~11% (range 6-17%). Easily curable with antibiotics.'
+    },
+    
+    gonorrhea: {
+        name: 'Gonorrhea',
+        verified: true,  // VERIFIED 2025-01-14
+        verificationNote: 'Verified against NCBI Book NBK261441 - per-act derived from chlamydia × 2',
+        rateType: 'per-act-derived',  // Derived from chlamydia × 2
+        rates: {
+            // Per-ACT rate derived: chlamydia 6-16.7% midpoint 11.4% × 2 = 22.8%
+            mtf: {
+                value: 0.228,  // ~23% per act (range 12-33%)
+                sourceId: 'gonorrhea_ncbi_book',
+                isDerived: true,
+                note: 'Derived: 2× chlamydia per-act rate'
+            },
+            ftm: {
+                value: 0.228,  // Same rate (study didn't distinguish direction)
+                sourceId: 'gonorrhea_ncbi_book',
+                isDerived: true,
+                note: 'Derived: 2× chlamydia per-act rate'
+            }
+        },
+        condomEffectiveness: { 
+            value: 0.60, 
+            sourceId: null,
+            isUnverified: true,
+            note: 'Approximate estimate - needs verified source'
+        },
+        source: 'NCBI Book - Partner Notification Model',
+        sourceUrl: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
+        notes: 'Per-act rate ~23% (range 12-33%), derived as 2× chlamydia. Easily curable but antibiotic resistance is growing concern.'
     },
     
     syphilis: {
         name: 'Syphilis',
         verified: true,  // VERIFIED 2025-01-14
-        verificationNote: 'Verified against Schober et al. 1983',
-        rateType: 'per-partnership',  // Per-partnership rate
+        verificationNote: 'Verified against Schober et al. 1983 - PER-PARTNERSHIP only',
+        rateType: 'per-partnership',  // Per-partnership rate - NO per-act data available
         rates: {
-            // Per-PARTNERSHIP rate from contact with infectious case
+            // ⚠️ Per-PARTNERSHIP rate - using as rough per-act estimate with warning
+            // Assumes ~10 sexual acts per partnership to derive rough per-act
             mtf: {
-                value: 0.58,  // 58% for heterosexuals
+                value: null,  // Cannot reliably calculate per-act
                 sourceId: 'syphilis_schober_1983',
                 isDerived: false,
-                note: 'Per-PARTNERSHIP with infectious primary/secondary syphilis case'
+                perPartnershipValue: 0.58,  // 58% per partnership
+                note: 'Per-PARTNERSHIP rate only - per-act rate unknown'
             },
             ftm: {
-                value: 0.58,  // 58% for heterosexuals
+                value: null,  // Cannot reliably calculate per-act
                 sourceId: 'syphilis_schober_1983',
                 isDerived: false,
-                note: 'Per-PARTNERSHIP with infectious primary/secondary syphilis case'
+                perPartnershipValue: 0.58,  // 58% per partnership
+                note: 'Per-PARTNERSHIP rate only - per-act rate unknown'
             }
         },
         condomEffectiveness: { 
@@ -186,7 +189,7 @@ const STI_DATA = {
         },
         source: 'Schober et al. 1983',
         sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/6871650/',
-        notes: '⚠️ Per-PARTNERSHIP rate (51-58%) with PRIMARY/SECONDARY syphilis. Transmission much lower in latent stage. Curable with antibiotics.'
+        notes: '⚠️ Only per-PARTNERSHIP rate available (58%). Per-act rate cannot be reliably determined. Highly infectious during primary/secondary stage. Curable with antibiotics.'
     }
 };
 
