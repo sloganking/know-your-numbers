@@ -1215,6 +1215,117 @@ mjx-container {
     color: var(--text-primary) !important;
 }
 
+/* ===========================================
+   CITABLE NUMBERS WITH TOOLTIPS
+   =========================================== */
+
+/* Numbers that have sources */
+.citable {
+    position: relative;
+    cursor: help;
+    border-bottom: 1px dotted var(--accent-primary);
+    transition: color 0.2s ease;
+}
+
+.citable:hover {
+    color: var(--accent-secondary);
+}
+
+/* Tooltip container */
+.cite-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    padding: 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+    margin-bottom: 8px;
+}
+
+.citable:hover .cite-tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Tooltip arrow */
+.cite-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: var(--bg-tertiary);
+}
+
+/* Tooltip content */
+.cite-tooltip-source {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.cite-tooltip-quote {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-left: 2px solid var(--accent-primary);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.cite-tooltip-link {
+    font-size: 0.75rem;
+    color: var(--accent-primary);
+    word-break: break-all;
+}
+
+.cite-tooltip-link:hover {
+    text-decoration: underline;
+}
+
+.cite-tooltip-meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+/* Adjust tooltip position for elements near edges */
+.citable.tooltip-left .cite-tooltip {
+    left: 0;
+    transform: translateX(0);
+}
+
+.citable.tooltip-left .cite-tooltip::after {
+    left: 20px;
+}
+
+.citable.tooltip-right .cite-tooltip {
+    left: auto;
+    right: 0;
+    transform: translateX(0);
+}
+
+.citable.tooltip-right .cite-tooltip::after {
+    left: auto;
+    right: 20px;
+}
+
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
     width: 10px;

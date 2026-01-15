@@ -2,97 +2,191 @@
  * Know Your Numbers - STI Risk Calculator
  * 
  * All transmission rates are sourced from peer-reviewed studies.
- * See the methodology section for full citations.
+ * Every number links to its source with an exact quote.
  */
 
 // ============================================
-// STI TRANSMISSION DATA
+// STI TRANSMISSION DATA (with source references)
 // ============================================
 
 const STI_DATA = {
     hiv: {
         name: 'HIV',
-        // Per-act transmission rates (decimal)
-        // Source: CDC, Boily et al. 2009
         rates: {
-            mtf: 0.0008,  // 0.08% male-to-female
-            ftm: 0.0004   // 0.04% female-to-male
+            mtf: {
+                value: 0.0008,  // 0.08% = 8 per 10,000
+                sourceId: 'hiv_cdc_npep'
+            },
+            ftm: {
+                value: 0.0004,  // 0.04% = 4 per 10,000
+                sourceId: 'hiv_cdc_npep'
+            }
         },
-        // Condom effectiveness (reduction factor)
-        condomEffectiveness: 0.80,  // 80% reduction
-        source: 'CDC HIV Risk',
-        sourceUrl: 'https://www.cdc.gov/hiv/risk/index.html',
+        condomEffectiveness: {
+            value: 0.80,  // 80% reduction
+            sourceId: 'hiv_condom_effectiveness'
+        },
+        source: 'CDC NPEP Guidelines',
+        sourceUrl: 'https://www.cdc.gov/hiv/pdf/programresources/cdc-hiv-npep-guidelines.pdf',
         notes: 'Rates assume detectable viral load. Undetectable = Untransmittable (U=U).'
     },
     
     hsv2: {
         name: 'Herpes (HSV-2)',
-        // Annual rates converted to per-act based on ~100 acts/year
-        // Source: Mertz et al. 1992, Corey et al. 2004
         rates: {
-            mtf: 0.001,   // ~0.1% per act (10% annual / ~100 acts)
-            ftm: 0.0004   // ~0.04% per act (4% annual / ~100 acts)
+            mtf: {
+                value: 0.001,   // ~0.1% per act (derived from ~10% annual / ~100 acts)
+                sourceId: 'hsv2_transmission_annual'
+            },
+            ftm: {
+                value: 0.0004,  // ~0.04% per act (derived from ~4% annual / ~100 acts)
+                sourceId: 'hsv2_transmission_annual'
+            }
         },
-        condomEffectiveness: 0.30,  // 30% reduction (skin-to-skin transmission)
-        source: 'Mertz et al. 1992',
-        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/1656936/',
+        condomEffectiveness: {
+            value: 0.30,  // 30% reduction
+            sourceId: 'hsv2_condom_effectiveness'
+        },
+        source: 'Corey et al. 2004',
+        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/14676829/',
         notes: 'Daily antivirals reduce risk by additional 50%. Avoiding outbreaks further reduces risk.'
     },
     
     hpv: {
         name: 'HPV',
-        // Per-act estimates are highly variable
-        // Source: Burchell et al. 2011, Winer et al. 2006
         rates: {
-            mtf: 0.10,    // ~10% (conservative estimate)
-            ftm: 0.10     // ~10% (symmetric assumption)
+            mtf: {
+                value: 0.10,    // ~10% (conservative per-act estimate)
+                sourceId: 'hpv_transmission_rate'
+            },
+            ftm: {
+                value: 0.10,    // ~10% (symmetric assumption)
+                sourceId: 'hpv_transmission_rate'
+            }
         },
-        condomEffectiveness: 0.70,  // 70% reduction
-        source: 'Burchell et al. 2011',
-        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/21774844/',
+        condomEffectiveness: {
+            value: 0.70,  // 70% reduction
+            sourceId: 'hpv_condom_effectiveness'
+        },
+        source: 'Burchell et al. 2006',
+        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/16847084/',
         notes: 'Vaccination prevents most dangerous strains. 90% of infections clear within 2 years.'
     },
     
     chlamydia: {
         name: 'Chlamydia',
-        // Source: Price et al. 2011 (JRSS)
         rates: {
-            mtf: 0.125,   // 12.5% male-to-female
-            ftm: 0.075    // ~7.5% female-to-male
+            mtf: {
+                value: 0.10,   // 10% male-to-female
+                sourceId: 'chlamydia_transmission_rate'
+            },
+            ftm: {
+                value: 0.08,   // 8% female-to-male
+                sourceId: 'chlamydia_transmission_rate'
+            }
         },
-        condomEffectiveness: 0.65,  // 65% reduction
-        source: 'Price et al. 2011',
-        sourceUrl: 'https://academic.oup.com/jrsssa/article/174/4/975/7077900',
+        condomEffectiveness: {
+            value: 0.62,  // 62% reduction
+            sourceId: 'chlamydia_condom_effectiveness'
+        },
+        source: 'Price et al. 2013',
+        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/23687129/',
         notes: 'Easily cured with antibiotics. Often asymptomatic - get tested regularly.'
     },
     
     gonorrhea: {
         name: 'Gonorrhea',
-        // Source: Hooper et al. 1978, various epidemiological studies
         rates: {
-            mtf: 0.60,    // 60% male-to-female (range 50-70%)
-            ftm: 0.22     // 22% female-to-male (range 20-25%)
+            mtf: {
+                value: 0.60,    // 60% male-to-female (range 50-70%)
+                sourceId: 'gonorrhea_transmission_rate'
+            },
+            ftm: {
+                value: 0.22,    // 22% female-to-male (range 20-25%)
+                sourceId: 'gonorrhea_modern_estimate'
+            }
         },
-        condomEffectiveness: 0.60,  // 60% reduction
-        source: 'Hooper et al. 1978',
-        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/7775396/',
+        condomEffectiveness: {
+            value: 0.60,  // ~60% reduction
+            sourceId: 'condom_general'
+        },
+        source: 'Holmes et al. 1970',
+        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/5308352/',
         notes: 'Extremely high transmission rate. Antibiotic resistance is increasing concern.'
     },
     
     syphilis: {
         name: 'Syphilis',
-        // Per contact with primary sore
-        // Source: CDC, Tuite et al. 2018
         rates: {
-            mtf: 0.30,    // 30% (primary stage with sore)
-            ftm: 0.30     // 30% (symmetric)
+            mtf: {
+                value: 0.30,    // 30% (primary stage with sore)
+                sourceId: 'syphilis_transmission_rate'
+            },
+            ftm: {
+                value: 0.30,    // 30% (symmetric)
+                sourceId: 'syphilis_transmission_rate'
+            }
         },
-        condomEffectiveness: 0.50,  // ~50% (sore may not be covered)
-        source: 'CDC Syphilis Overview',
-        sourceUrl: 'https://www.cdc.gov/syphilis/about/index.html',
+        condomEffectiveness: {
+            value: 0.50,  // ~50% (sore may not be covered)
+            sourceId: 'condom_general'
+        },
+        source: 'Garnett et al. 1997',
+        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/9218479/',
         notes: 'Transmission varies dramatically by stage. Highest risk during primary stage (chancre).'
     }
 };
+
+// ============================================
+// CITABLE NUMBERS SYSTEM
+// ============================================
+
+/**
+ * Create a citable number span with hover tooltip
+ * @param {string} displayText - The text to display (e.g., "0.08%")
+ * @param {string} sourceId - The ID in the SOURCES object
+ * @returns {string} HTML string for the citable element
+ */
+function createCitableNumber(displayText, sourceId) {
+    if (!window.SOURCES || !window.SOURCES[sourceId]) {
+        console.warn(`Source not found: ${sourceId}`);
+        return displayText;
+    }
+    
+    const source = window.SOURCES[sourceId];
+    const escapedQuote = source.quote.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    
+    return `<span class="citable" data-source="${sourceId}">
+        ${displayText}
+        <span class="cite-tooltip">
+            <span class="cite-tooltip-source">${source.name}</span>
+            <span class="cite-tooltip-quote">"${escapedQuote}"</span>
+            <a href="${source.url}" target="_blank" class="cite-tooltip-link">${source.url}</a>
+            <span class="cite-tooltip-meta">Accessed: ${source.accessDate} · Type: ${source.type}</span>
+        </span>
+    </span>`;
+}
+
+/**
+ * Get the source info for a given STI and rate type
+ */
+function getSourceInfo(stiKey, rateType, direction = null) {
+    const stiData = STI_DATA[stiKey];
+    if (!stiData) return null;
+    
+    if (rateType === 'transmission' && direction) {
+        const rateData = stiData.rates[direction];
+        if (typeof rateData === 'object' && rateData.sourceId) {
+            return window.SOURCES ? window.SOURCES[rateData.sourceId] : null;
+        }
+    } else if (rateType === 'condom') {
+        const condomData = stiData.condomEffectiveness;
+        if (typeof condomData === 'object' && condomData.sourceId) {
+            return window.SOURCES ? window.SOURCES[condomData.sourceId] : null;
+        }
+    }
+    return null;
+}
 
 // ============================================
 // CALCULATOR LOGIC
@@ -216,13 +310,31 @@ class RiskCalculator {
         const months = parseInt(this.durationInput.value);
         
         const stiData = STI_DATA[sti];
-        const baseRate = stiData.rates[direction];
+        // Handle both old format (number) and new format (object with value)
+        const baseRate = typeof stiData.rates[direction] === 'object' 
+            ? stiData.rates[direction].value 
+            : stiData.rates[direction];
+        const condomEff = typeof stiData.condomEffectiveness === 'object'
+            ? stiData.condomEffectiveness.value
+            : stiData.condomEffectiveness;
         const adjustedRateValue = useCondom 
-            ? adjustForCondom(baseRate, stiData.condomEffectiveness) 
+            ? adjustForCondom(baseRate, condomEff) 
             : baseRate;
         
-        // Update rate display
-        this.perActRate.textContent = `${(baseRate * 100).toFixed(3)}%`;
+        // Update rate display with citable sources
+        const rateSourceId = typeof stiData.rates[direction] === 'object' 
+            ? stiData.rates[direction].sourceId 
+            : null;
+        
+        if (rateSourceId && window.SOURCES && window.SOURCES[rateSourceId]) {
+            this.perActRate.innerHTML = createCitableNumber(
+                `${(baseRate * 100).toFixed(3)}%`, 
+                rateSourceId
+            );
+        } else {
+            this.perActRate.textContent = `${(baseRate * 100).toFixed(3)}%`;
+        }
+        
         this.adjustedRate.textContent = `${(adjustedRateValue * 100).toFixed(3)}%`;
         this.rateSource.textContent = stiData.source;
         this.rateSource.href = stiData.sourceUrl;
