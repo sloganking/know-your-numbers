@@ -452,7 +452,6 @@ class RiskCalculator {
         // Input elements
         this.stiSelect = document.getElementById('sti-select');
         this.directionSelect = document.getElementById('direction-select');
-        this.condomSelect = document.getElementById('condom-select');
         this.frequencyInput = document.getElementById('frequency-input');
         this.durationInput = document.getElementById('duration-input');
         
@@ -474,7 +473,6 @@ class RiskCalculator {
     bindEvents() {
         this.stiSelect.addEventListener('change', () => this.updateCalculation());
         this.directionSelect.addEventListener('change', () => this.updateCalculation());
-        this.condomSelect.addEventListener('change', () => this.updateCalculation());
         
         this.frequencyInput.addEventListener('input', () => {
             this.frequencyValue.textContent = this.getFrequencyLabel(parseInt(this.frequencyInput.value));
@@ -500,7 +498,6 @@ class RiskCalculator {
     updateCalculation() {
         const sti = this.stiSelect.value;
         const direction = this.directionSelect.value;
-        const useCondom = this.condomSelect.value === 'condom';
         const frequency = parseInt(this.frequencyInput.value);
         const months = parseInt(this.durationInput.value);
         
@@ -533,9 +530,8 @@ class RiskCalculator {
             condomSourceId = null;
         }
         
-        const adjustedRateValue = useCondom 
-            ? adjustForCondom(baseRate, condomEff) 
-            : baseRate;
+        // Calculate both rates for dual display
+        const withCondomRate = adjustForCondom(baseRate, condomEff);
         
         // Update rate display with citable sources
         const rateSourceId = typeof stiData.rates[direction] === 'object' 
@@ -552,10 +548,9 @@ class RiskCalculator {
             this.perActRate.textContent = `${(baseRate * 100).toFixed(3)}%`;
         }
         
-        // Always calculate and display with-condom rate for comparison
+        // Check if condom data is verified
         // condomData already defined above
         const isCondomUnverified = typeof condomData === 'object' && condomData.isUnverified;
-        const withCondomRate = adjustForCondom(baseRate, condomEff);
         
         // Show the with-condom rate (only if we have a verified source)
         if (condomSourceId && window.SOURCES && window.SOURCES[condomSourceId]) {
