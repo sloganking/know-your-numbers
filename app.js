@@ -494,10 +494,10 @@ class RiskCalculator {
     getFrequencyLabel(value) {
         if (value <= 7) {
             return value;
-        } else if (value <= 14) {
-            return `${Math.round(value / 7)}×/day`;
         } else {
-            return `${Math.round(value / 7)}×/day`;
+            // Show times per week, plus per-day equivalent
+            const perDay = (value / 7).toFixed(1);
+            return `${value} (${perDay}×/day)`;
         }
     }
     
