@@ -579,28 +579,38 @@ class RiskCalculator {
         this.rateSource.textContent = stiData.source;
         this.rateSource.href = stiData.sourceUrl;
         
-        // Generate timeline data using the rate based on user's protection choice
-        // If condom data is unverified, always use baseRate (we can't calculate with unverified data)
+        // Generate BOTH timelines for dual-line chart
         const hasVerifiedCondomData = condomSourceId && window.SOURCES && window.SOURCES[condomSourceId];
-        const rateForTimeline = (useCondom && hasVerifiedCondomData) ? withCondomRate : baseRate;
-        const timeline = generateRiskTimeline(rateForTimeline, frequency, months);
+        const timelineUnprotected = generateRiskTimeline(baseRate, frequency, months);
+        const timelineProtected = hasVerifiedCondomData 
+            ? generateRiskTimeline(withCondomRate, frequency, months) 
+            : null;
         
-        // Update chart
-        this.updateChart(timeline, stiData.name, useCondom);
+        // Update chart with both lines
+        this.updateChart(timelineUnprotected, timelineProtected, stiData.name, hasVerifiedCondomData);
         
-        // Update result summary
-        const finalRisk = timeline[timeline.length - 1].risk;
-        const totalEncounters = timeline[timeline.length - 1].encounters;
+        // Update result summary - show both risks
+        const finalRiskUnprotected = timelineUnprotected[timelineUnprotected.length - 1].risk;
+        const finalRiskProtected = timelineProtected ? timelineProtected[timelineProtected.length - 1].risk : null;
+        const totalEncounters = timelineUnprotected[timelineUnprotected.length - 1].encounters;
         
         this.resultDuration.textContent = months;
-        this.resultProbability.textContent = `${(finalRisk * 100).toFixed(1)}%`;
         
-        // Color code the result
-        this.resultProbability.style.color = this.getRiskColor(finalRisk);
+        // Show both risks in the result
+        if (finalRiskProtected !== null) {
+            this.resultProbability.innerHTML = `
+                <span class="risk-unprotected">${(finalRiskUnprotected * 100).toFixed(1)}%</span>
+                <span class="risk-arrow">→</span>
+                <span class="risk-protected">${(finalRiskProtected * 100).toFixed(1)}%</span>
+            `;
+        } else {
+            this.resultProbability.textContent = `${(finalRiskUnprotected * 100).toFixed(1)}%`;
+            this.resultProbability.style.color = this.getRiskColor(finalRiskUnprotected);
+        }
         
         // Generate explanation
         this.resultExplanation.innerHTML = this.generateExplanation(
-            stiData, rateForTimeline, totalEncounters, finalRisk, useCondom, months
+            stiData, baseRate, withCondomRate, totalEncounters, finalRiskUnprotected, finalRiskProtected, hasVerifiedCondomData, months
         );
     }
     
@@ -647,20 +657,32 @@ class RiskCalculator {
         `;
     }
     
-    generateExplanation(stiData, perActRisk, encounters, totalRisk, useCondom, months) {
-        const percentage = (totalRisk * 100).toFixed(1);
-        const perActPercent = (perActRisk * 100).toFixed(3);
+    generateExplanation(stiData, baseRate, withCondomRate, encounters, riskUnprotected, riskProtected, hasCondomData, months) {
+        const unprotectedPercent = (riskUnprotected * 100).toFixed(1);
+        const protectedPercent = riskProtected !== null ? (riskProtected * 100).toFixed(1) : null;
+        const perActPercent = (baseRate * 100).toFixed(3);
+        const perActWithCondom = (withCondomRate * 100).toFixed(3);
         
-        let riskLevel;
-        if (totalRisk < 0.05) riskLevel = 'relatively low';
-        else if (totalRisk < 0.20) riskLevel = 'moderate';
-        else if (totalRisk < 0.50) riskLevel = 'significant';
-        else riskLevel = 'very high';
+        let riskLevelUnprotected;
+        if (riskUnprotected < 0.05) riskLevelUnprotected = 'relatively low';
+        else if (riskUnprotected < 0.20) riskLevelUnprotected = 'moderate';
+        else if (riskUnprotected < 0.50) riskLevelUnprotected = 'significant';
+        else riskLevelUnprotected = 'very high';
         
-        let html = `With a per-act risk of <strong>${perActPercent}%</strong>`;
-        if (useCondom) html += ` (after condom protection)`;
-        html += `, and approximately <strong>${encounters} encounters</strong> over ${months} month${months > 1 ? 's' : ''}, `;
-        html += `your cumulative risk of contracting ${stiData.name} is <strong>${riskLevel}</strong>.`;
+        let html = `Over <strong>${months} month${months > 1 ? 's' : ''}</strong> (~${encounters} encounters):<br>`;
+        html += `<span style="color:#ef4444;">Without condom:</span> <strong>${unprotectedPercent}%</strong> risk (${riskLevelUnprotected})`;
+        
+        if (hasCondomData && protectedPercent !== null) {
+            let riskLevelProtected;
+            if (riskProtected < 0.05) riskLevelProtected = 'relatively low';
+            else if (riskProtected < 0.20) riskLevelProtected = 'moderate';
+            else if (riskProtected < 0.50) riskLevelProtected = 'significant';
+            else riskLevelProtected = 'very high';
+            
+            const reduction = ((riskUnprotected - riskProtected) / riskUnprotected * 100).toFixed(0);
+            html += `<br><span style="color:#10b981;">With condom:</span> <strong>${protectedPercent}%</strong> risk (${riskLevelProtected})`;
+            html += `<br><em>Condoms reduce your cumulative risk by ~${reduction}%</em>`;
+        }
         
         if (stiData.notes) {
             html += `<br><br><em>Note: ${stiData.notes}</em>`;
@@ -669,9 +691,10 @@ class RiskCalculator {
         return html;
     }
     
-    updateChart(timeline, stiName, useCondom) {
-        const labels = timeline.map(d => `Month ${d.month}`);
-        const data = timeline.map(d => (d.risk * 100).toFixed(2));
+    updateChart(timelineUnprotected, timelineProtected, stiName, hasCondomData) {
+        const labels = timelineUnprotected.map(d => `Month ${d.month}`);
+        const dataUnprotected = timelineUnprotected.map(d => (d.risk * 100).toFixed(2));
+        const dataProtected = timelineProtected ? timelineProtected.map(d => (d.risk * 100).toFixed(2)) : null;
         
         if (this.chart) {
             this.chart.destroy();
@@ -679,29 +702,61 @@ class RiskCalculator {
         
         const ctx = this.chartCanvas.getContext('2d');
         
-        // Create gradient
-        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(245, 158, 11, 0.3)');
-        gradient.addColorStop(1, 'rgba(245, 158, 11, 0.02)');
+        // Create gradient for unprotected (red/orange)
+        const gradientUnprotected = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientUnprotected.addColorStop(0, 'rgba(239, 68, 68, 0.25)');
+        gradientUnprotected.addColorStop(1, 'rgba(239, 68, 68, 0.02)');
+        
+        // Create gradient for protected (green)
+        const gradientProtected = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientProtected.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+        gradientProtected.addColorStop(1, 'rgba(16, 185, 129, 0.02)');
+        
+        // Build datasets
+        const datasets = [
+            {
+                label: `Without Condom`,
+                data: dataUnprotected,
+                borderColor: '#ef4444',
+                backgroundColor: gradientUnprotected,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: '#ef4444',
+                pointBorderColor: '#0a0b0d',
+                pointBorderWidth: 2,
+                pointRadius: 3,
+                pointHoverRadius: 5
+            }
+        ];
+        
+        // Add protected line if we have verified condom data
+        if (dataProtected) {
+            datasets.push({
+                label: `With Condom`,
+                data: dataProtected,
+                borderColor: '#10b981',
+                backgroundColor: gradientProtected,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#0a0b0d',
+                pointBorderWidth: 2,
+                pointRadius: 3,
+                pointHoverRadius: 5
+            });
+        }
+        
+        // Store timelines for tooltip access
+        this._timelineUnprotected = timelineUnprotected;
+        this._timelineProtected = timelineProtected;
         
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: `${stiName} Risk${useCondom ? ' (with condom)' : ''}`,
-                    data: data,
-                    borderColor: '#f59e0b',
-                    backgroundColor: gradient,
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.3,
-                    pointBackgroundColor: '#f59e0b',
-                    pointBorderColor: '#0a0b0d',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
+                datasets: datasets
             },
             options: {
                 responsive: true,
@@ -742,11 +797,7 @@ class RiskCalculator {
                         },
                         callbacks: {
                             label: function(context) {
-                                return `Risk: ${context.parsed.y}%`;
-                            },
-                            afterLabel: function(context) {
-                                const dataPoint = timeline[context.dataIndex];
-                                return `(~${dataPoint.encounters} encounters)`;
+                                return `${context.dataset.label}: ${context.parsed.y}%`;
                             }
                         }
                     }

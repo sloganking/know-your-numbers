@@ -654,6 +654,24 @@ input[type="range"]::-moz-range-thumb {
     font-weight: 700;
     font-family: var(--font-mono);
     color: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.risk-unprotected {
+    color: #ef4444;
+}
+
+.risk-protected {
+    color: #10b981;
+}
+
+.risk-arrow {
+    color: var(--text-muted);
+    font-size: 1.5rem;
 }
 
 .result-explanation {
