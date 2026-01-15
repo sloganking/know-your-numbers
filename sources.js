@@ -22,10 +22,11 @@ const SOURCES = {
         id: 'hiv_cdc_risk_estimates',
         name: 'CDC HIV Risk and Prevention Estimates',
         url: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
-        quote: 'Receptive penile-vaginal intercourse 8 Insertive penile-vaginal intercourse 4',
+        // Each part separated by ... must exist on the page
+        quote: 'Risk per 10,000 exposures ... Receptive penile-vaginal intercourse ... 8 ... Insertive penile-vaginal intercourse ... 4',
         verifiedDate: '2025-01-14',
         type: 'webpage',
-        notes: 'VERIFIED ✓ - Official CDC page with risk per 10,000 exposures table.'
+        notes: 'VERIFIED ✓ - From the Sexual transmission risk table on the CDC page.'
     }
     
     // ===========================================

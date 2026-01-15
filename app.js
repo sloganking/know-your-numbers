@@ -127,7 +127,11 @@ function createCitableNumber(displayText, sourceId) {
     }
     
     const source = window.SOURCES[sourceId];
-    const escapedQuote = source.quote.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    // Format quote: replace "..." with styled ellipsis for readability
+    const formattedQuote = source.quote
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/\s*\.\.\.\s*/g, ' <span style="color:#6b7280;">···</span> ');
     const verifiedDate = source.verifiedDate || source.accessDate || 'Unknown';
     const isDerived = source.isDerived || false;
     const typeLabel = isDerived ? 'derived' : 'direct';
@@ -150,7 +154,7 @@ function createCitableNumber(displayText, sourceId) {
                 ${source.name}
                 <span class="cite-tooltip-type ${typeLabel}">${typeDisplay}</span>
             </span>
-            <span class="cite-tooltip-quote">"${escapedQuote}"</span>
+            <span class="cite-tooltip-quote">"${formattedQuote}"</span>
             ${derivationHtml}
             <a href="${source.url}" target="_blank" class="cite-tooltip-link">View source →</a>
             <span class="cite-tooltip-meta">Last verified: ${verifiedDate}</span>

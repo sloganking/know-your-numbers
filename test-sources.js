@@ -44,32 +44,45 @@ function normalizeText(text) {
 
 /**
  * Check if quote exists in page content
- * Uses fuzzy matching to account for minor formatting differences
+ * 
+ * Quotes can contain "..." to indicate separate parts that must all exist.
+ * Example: "Risk per 10,000 ... Receptive vaginal ... 8"
+ * Each part separated by "..." is verified independently.
  */
 function quoteExistsInContent(quote, content) {
-    const normalizedQuote = normalizeText(quote);
     const normalizedContent = normalizeText(content);
     
-    // Direct substring match
-    if (normalizedContent.includes(normalizedQuote)) {
-        return { found: true, method: 'exact' };
+    // Split quote by "..." to get parts that must all be verified
+    const parts = quote.split('...').map(p => p.trim()).filter(p => p.length > 0);
+    
+    if (parts.length === 0) {
+        return { found: false, method: 'empty-quote', missingParts: [] };
     }
     
-    // Try matching key phrases (first 50 chars)
-    const keyPhrase = normalizedQuote.substring(0, 50);
-    if (normalizedContent.includes(keyPhrase)) {
-        return { found: true, method: 'partial-start' };
-    }
+    const missingParts = [];
     
-    // Try matching any 30-char substring
-    for (let i = 0; i < normalizedQuote.length - 30; i += 10) {
-        const chunk = normalizedQuote.substring(i, i + 30);
-        if (normalizedContent.includes(chunk)) {
-            return { found: true, method: 'partial-chunk' };
+    for (const part of parts) {
+        const normalizedPart = normalizeText(part);
+        if (!normalizedContent.includes(normalizedPart)) {
+            missingParts.push(part);
         }
     }
     
-    return { found: false, method: 'none' };
+    if (missingParts.length === 0) {
+        return { 
+            found: true, 
+            method: parts.length > 1 ? 'all-parts-found' : 'exact',
+            partsVerified: parts.length
+        };
+    } else {
+        return { 
+            found: false, 
+            method: 'missing-parts',
+            missingParts: missingParts,
+            partsFound: parts.length - missingParts.length,
+            partsTotal: parts.length
+        };
+    }
 }
 
 /**
@@ -153,12 +166,20 @@ async function testSource(source) {
         const result = quoteExistsInContent(quote, content);
         
         if (result.found) {
-            console.log(`${colors.green}  ✓ PASSED${colors.reset} (match: ${result.method})`);
+            const extra = result.partsVerified > 1 ? `, ${result.partsVerified} parts verified` : '';
+            console.log(`${colors.green}  ✓ PASSED${colors.reset} (${result.method}${extra})`);
             results.passed.push({ id, name, method: result.method });
         } else {
             console.log(`${colors.red}  ✗ FAILED${colors.reset} - Quote not found on page`);
-            console.log(`${colors.dim}  Expected: "${quote.substring(0, 60)}..."${colors.reset}`);
-            results.failed.push({ id, name, quote: quote.substring(0, 100) });
+            if (result.missingParts && result.missingParts.length > 0) {
+                console.log(`${colors.dim}  Found ${result.partsFound}/${result.partsTotal} parts. Missing:${colors.reset}`);
+                result.missingParts.forEach(part => {
+                    console.log(`${colors.red}    → "${part}"${colors.reset}`);
+                });
+            } else {
+                console.log(`${colors.dim}  Expected: "${quote.substring(0, 60)}..."${colors.reset}`);
+            }
+            results.failed.push({ id, name, quote: quote.substring(0, 100), missingParts: result.missingParts });
         }
     } catch (error) {
         console.log(`${colors.red}  ✗ ERROR${colors.reset} - ${error.message}`);
