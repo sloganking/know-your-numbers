@@ -213,11 +213,20 @@ async function runTests() {
     
     const startTime = Date.now();
     
-    for (const sourceId of Object.keys(sourcesToTest)) {
-        await testSource(sourcesToTest[sourceId]);
-        // Small delay to be respectful to servers
-        await new Promise(resolve => setTimeout(resolve, 500));
+    const sourceIds = Object.keys(sourcesToTest);
+    const concurrency = parseInt(process.env.SOURCE_TEST_CONCURRENCY || '4', 10);
+    let currentIndex = 0;
+    
+    async function worker() {
+        while (currentIndex < sourceIds.length) {
+            const sourceId = sourceIds[currentIndex];
+            currentIndex += 1;
+            await testSource(sourcesToTest[sourceId]);
+        }
     }
+    
+    const workers = Array.from({ length: Math.min(concurrency, sourceIds.length) }, () => worker());
+    await Promise.all(workers);
     
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     
