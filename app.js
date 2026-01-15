@@ -461,7 +461,6 @@ class RiskCalculator {
         this.perActRate = document.getElementById('per-act-rate');
         this.adjustedRate = document.getElementById('adjusted-rate');
         this.rateReduction = document.getElementById('rate-reduction');
-        this.rateSource = document.getElementById('rate-source');
         this.resultDuration = document.getElementById('result-duration');
         this.resultProbability = document.getElementById('result-probability');
         this.resultExplanation = document.getElementById('result-explanation-text');
@@ -571,9 +570,6 @@ class RiskCalculator {
             this.rateReduction.textContent = `(${reductionPercent}% reduction)`;
         }
         
-        this.rateSource.textContent = stiData.source;
-        this.rateSource.href = stiData.sourceUrl;
-        
         // Generate BOTH timelines for dual-line chart
         const hasVerifiedCondomData = condomSourceId && window.SOURCES && window.SOURCES[condomSourceId];
         const timelineUnprotected = generateRiskTimeline(baseRate, frequency, months);
@@ -637,8 +633,6 @@ class RiskCalculator {
         this.perActRate.innerHTML = '<span style="color: #f59e0b;">⚠ Unverified</span>';
         this.adjustedRate.innerHTML = '<span style="color: #f59e0b;">⚠ Unverified</span>';
         this.rateReduction.textContent = '';
-        this.rateSource.textContent = 'Pending verification';
-        this.rateSource.href = '#';
         
         // Update result
         this.resultProbability.textContent = 'N/A';
