@@ -217,21 +217,19 @@ function generateTextFragmentUrl(baseUrl, quote) {
         .replace(/\s+/g, ' ')            // Normalize whitespace
         .trim();
     
-    // For long quotes, use start,end format (first ~30 chars and last ~30 chars)
-    // This helps the browser find the text even if there are minor formatting differences
-    if (cleanQuote.length > 80) {
-        // Get first few words and last few words
-        const words = cleanQuote.split(' ');
-        if (words.length > 6) {
-            const startText = words.slice(0, 3).join(' ');
-            const endText = words.slice(-3).join(' ');
-            const fragment = `#:~:text=${encodeURIComponent(startText)},${encodeURIComponent(endText)}`;
-            return baseUrl + fragment;
-        }
+    // Use first ~60 chars of the quote for the text fragment
+    // Avoid start,end format as it can highlight too much if end text appears elsewhere
+    // Try to break at a word boundary
+    let textToEncode = cleanQuote.substring(0, 80);
+    
+    // Find the last space before 60 chars to avoid cutting words
+    const lastSpace = textToEncode.lastIndexOf(' ', 60);
+    if (lastSpace > 30) {
+        textToEncode = textToEncode.substring(0, lastSpace);
+    } else {
+        textToEncode = textToEncode.substring(0, 60);
     }
     
-    // For shorter quotes, use the full text (first 100 chars max)
-    const textToEncode = cleanQuote.substring(0, 100);
     const fragment = `#:~:text=${encodeURIComponent(textToEncode)}`;
     return baseUrl + fragment;
 }
