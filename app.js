@@ -159,22 +159,21 @@ const STI_DATA = {
     syphilis: {
         name: 'Syphilis',
         verified: true,  // VERIFIED 2025-01-14
-        verificationNote: 'Verified against Schober et al. 1983 - PER-PARTNERSHIP only',
-        rateType: 'per-partnership',  // Per-partnership rate - NO per-act data available
+        verificationNote: 'Verified against ASHM Contact Tracing Guidelines',
+        rateType: 'per-act',  // Per-act rate from ASHM
         rates: {
+            // Per-ACT rate: >20% for early syphilis (using 20% as conservative estimate)
             mtf: {
-                value: null,  // Cannot reliably calculate per-act
-                sourceId: 'syphilis_schober_1983',
+                value: 0.20,  // >20% per act for early syphilis
+                sourceId: 'syphilis_ashm_per_act',
                 isDerived: false,
-                perPartnershipValue: 0.58,  // 58% per partnership
-                note: 'Per-PARTNERSHIP rate only - per-act rate unknown'
+                note: '>20% per act for early syphilis (primary, secondary, early latent)'
             },
             ftm: {
-                value: null,  // Cannot reliably calculate per-act
-                sourceId: 'syphilis_schober_1983',
+                value: 0.20,  // Same rate (source doesn't distinguish direction)
+                sourceId: 'syphilis_ashm_per_act',
                 isDerived: false,
-                perPartnershipValue: 0.58,  // 58% per partnership
-                note: 'Per-PARTNERSHIP rate only - per-act rate unknown'
+                note: '>20% per act for early syphilis (no M→F vs F→M distinction)'
             }
         },
         condomEffectiveness: { 
@@ -183,9 +182,9 @@ const STI_DATA = {
             isUnverified: true,
             note: 'Approximate estimate - limited protection due to sores outside condom area'
         },
-        source: 'Schober et al. 1983',
-        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/6871650/',
-        notes: '⚠️ Only per-PARTNERSHIP rate available (58%). Per-act rate cannot be reliably determined. Highly infectious during primary/secondary stage. Curable with antibiotics.'
+        source: 'ASHM Contact Tracing Guidelines',
+        sourceUrl: 'https://contacttracing.ashm.org.au/syphilis/',
+        notes: 'Per-act rate >20% for EARLY syphilis (primary, secondary, early latent). Late syphilis is usually not infectious. Curable with antibiotics.'
     }
 };
 

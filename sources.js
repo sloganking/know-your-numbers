@@ -290,6 +290,46 @@ const SOURCES = {
     // SYPHILIS SOURCES
     // ===========================================
     
+    syphilis_ashm_per_act: {
+        id: 'syphilis_ashm_per_act',
+        name: 'ASHM Contact Tracing Guidelines - Syphilis Per-Act Transmission',
+        url: 'https://contacttracing.ashm.org.au/syphilis/',
+        quote: 'transmission per act of unprotected intercourse Early syphilis (primary, secondary, early latent): >20 %',
+        verifiedDate: '2025-01-14',
+        type: 'webpage',
+        isDerived: true,
+        derivation: {
+            variables: [
+                {
+                    name: 'per_act_early_syphilis',
+                    value: '>20%',
+                    source: 'quote',
+                    highlight: '>20 %'
+                },
+                {
+                    name: 'applicable_stages',
+                    value: 'primary, secondary, early latent',
+                    source: 'quote',
+                    highlight: 'primary, secondary, early latent'
+                }
+            ],
+            steps: [
+                'From quote: per-act transmission = >20% for early syphilis',
+                'From quote: applies to primary, secondary, early latent stages',
+                'Using 20% as conservative estimate (lower bound of >20%)'
+            ],
+            result: {
+                name: 'per_act_transmission_rate',
+                value: '>20% (early syphilis)'
+            },
+            warnings: [
+                'Applies ONLY to early syphilis (primary, secondary, early latent)',
+                'Late latent and tertiary syphilis are usually not infectious',
+                'Rate is stated as ">20%" - using 20% as conservative estimate'
+            ]
+        }
+    },
+    
     syphilis_schober_1983: {
         id: 'syphilis_schober_1983',
         name: 'Schober et al. 1983 - How Infectious is Syphilis?',
@@ -297,56 +337,7 @@ const SOURCES = {
         quote: 'sexual contacts of patients with primary and secondary syphilis ... 65 of 127 (51%) contacts at risk developed syphilis ... heterosexuals (17/29, 58%)',
         verifiedDate: '2025-01-14',
         type: 'abstract',
-        isDerived: true,
-        derivation: {
-            variables: [
-                {
-                    name: 'total_contacts',
-                    value: '127',
-                    source: 'quote',
-                    highlight: '127'
-                },
-                {
-                    name: 'total_infected',
-                    value: '65',
-                    source: 'quote',
-                    highlight: '65'
-                },
-                {
-                    name: 'overall_rate',
-                    value: '51%',
-                    source: 'quote',
-                    highlight: '51%'
-                },
-                {
-                    name: 'heterosexual_infected',
-                    value: '17 of 29',
-                    source: 'quote',
-                    highlight: '17/29'
-                },
-                {
-                    name: 'heterosexual_rate',
-                    value: '58%',
-                    source: 'quote',
-                    highlight: '58%'
-                }
-            ],
-            steps: [
-                'From quote: 65 of 127 contacts infected = 51% overall',
-                'From quote: 17 of 29 heterosexual contacts = 58%',
-                'Note: Contacts of PRIMARY/SECONDARY syphilis (most infectious stage)',
-                '⚠️ Note: This is per-partnership, not per-act'
-            ],
-            result: {
-                name: 'per_partnership_transmission',
-                value: '58% (heterosexual)'
-            },
-            warnings: [
-                'PER-PARTNERSHIP rate only - per-act rate CANNOT be determined',
-                'Applies to PRIMARY/SECONDARY stage syphilis (most infectious)',
-                'Not included in per-act calculator due to insufficient data'
-            ]
-        }
+        notes: 'Per-PARTNERSHIP rate - see syphilis_ashm_per_act for per-act rates'
     },
     
     // ===========================================
