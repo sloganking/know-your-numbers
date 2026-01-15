@@ -1225,6 +1225,18 @@ mjx-container {
     cursor: help;
     border-bottom: 1px dotted var(--accent-primary);
     transition: color 0.2s ease;
+    display: inline-block;
+}
+
+/* Invisible hover bridge above the citable element to connect to tooltip */
+.citable::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: -10px;
+    right: -10px;
+    height: 20px;
+    background: transparent;
 }
 
 .citable:hover {
@@ -1234,11 +1246,14 @@ mjx-container {
 /* Tooltip container */
 .cite-tooltip {
     position: absolute;
-    bottom: 100%;
+    bottom: calc(100% + 12px);
     left: 50%;
     transform: translateX(-50%);
-    width: 320px;
+    width: 380px;
+    max-height: 450px;
+    overflow-y: auto;
     padding: 1rem;
+    padding-bottom: 1.25rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-medium);
     border-radius: var(--radius-md);
@@ -1246,12 +1261,30 @@ mjx-container {
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
     pointer-events: none;
-    margin-bottom: 8px;
+}
+
+/* Invisible extension at bottom of tooltip to bridge to trigger element */
+.cite-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
+    pointer-events: auto;
 }
 
 .citable:hover .cite-tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Keep tooltip open when hovering over it */
+.cite-tooltip:hover {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -1266,6 +1299,7 @@ mjx-container {
     transform: translateX(-50%);
     border: 8px solid transparent;
     border-top-color: var(--bg-tertiary);
+    pointer-events: none;
 }
 
 /* Tooltip content */
@@ -1476,12 +1510,19 @@ mjx-container {
     color: var(--warning);
 }
 
-/* Make tooltip wider for derivations */
-.citable[data-source*="derived"] .cite-tooltip,
-.citable .cite-tooltip:has(.derive-variables) {
-    width: 380px;
-    max-height: 500px;
-    overflow-y: auto;
+/* Ensure scrollbar is visible when needed */
+.cite-tooltip::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cite-tooltip::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.cite-tooltip::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 3px;
 }
 
 /* Adjust tooltip position for elements near edges */
