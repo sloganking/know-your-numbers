@@ -710,6 +710,84 @@ const SOURCES = {
     // TESTING WINDOW PERIOD SOURCES
     // ===========================================
     
+    // Chlamydia/Gonorrhea window period
+    chlamydia_gonorrhea_window_nhs: {
+        id: 'chlamydia_gonorrhea_window_nhs',
+        name: 'NHS Sexual Health Oxfordshire - STI Incubation Periods',
+        url: 'https://www.sexualhealthoxfordshire.nhs.uk/sti/incubation-periods/',
+        quote: 'We usually say to wait ... 2 weeks for chlamydia and gonorrhoea',
+        verifiedDate: '2025-01-14',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'chlamydia_window', value: '2 weeks', source: 'quote', highlight: '2 weeks for chlamydia' },
+                { name: 'gonorrhea_window', value: '2 weeks', source: 'quote', highlight: '2 weeks for chlamydia and gonorrhoea' }
+            ],
+            steps: ['From quote: chlamydia window = 2 weeks', 'From quote: gonorrhea window = 2 weeks'],
+            result: { name: 'window_period', value: '2 weeks for chlamydia and gonorrhea' },
+            warnings: []
+        }
+    },
+    
+    // Syphilis window period - using NHS source (same as chlamydia/gonorrhea)
+    syphilis_window_nhs: {
+        id: 'syphilis_window_nhs',
+        name: 'NHS Sexual Health Oxfordshire - STI Incubation Periods',
+        url: 'https://www.sexualhealthoxfordshire.nhs.uk/sti/incubation-periods/',
+        quote: 'We usually say to wait ... 4 weeks for syphilis and HIV',
+        verifiedDate: '2025-01-14',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'syphilis_window', value: '4 weeks', source: 'quote', highlight: '4 weeks for syphilis' }
+            ],
+            steps: ['From quote: syphilis window = 4 weeks'],
+            result: { name: 'window_period', value: '4 weeks' },
+            warnings: ['NHS also notes: "in some circumstance you also need a test at 3 months"']
+        }
+    },
+    
+    // Herpes window period - antibody test
+    hsv_window_cdc: {
+        id: 'hsv_window_cdc',
+        name: 'CDC - Herpes Testing',
+        url: 'https://www.cdc.gov/herpes/testing/index.html',
+        quote: 'After exposure, it can take up to 16 weeks or more for current tests to detect infection',
+        verifiedDate: '2025-01-14',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hsv_antibody_window', value: 'up to 16 weeks', source: 'quote', highlight: 'up to 16 weeks' }
+            ],
+            steps: ['From quote: HSV antibody test window = up to 16 weeks'],
+            result: { name: 'window_period', value: 'Up to 16 weeks for antibody test' },
+            warnings: ['This is for antibody blood tests; swab of active sore can detect immediately']
+        }
+    },
+    
+    // HPV testing info
+    hpv_testing_cdc: {
+        id: 'hpv_testing_cdc',
+        name: 'CDC - About Genital HPV Infection',
+        url: 'https://www.cdc.gov/sti/about/about-genital-hpv-infection.html',
+        quote: 'There is no test to find out a person\'s "HPV status." Also, there is no approved HPV test to find HPV in the mouth or throat. There are HPV tests that can screen for cervical cancer. Healthcare providers only use these tests for screening women aged 30 years and older.',
+        verifiedDate: '2025-01-14',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hpv_general_test', value: 'No test exists', source: 'quote', highlight: 'There is no test to find out a person\'s "HPV status."' },
+                { name: 'hpv_cervical_screening', value: 'Women 30+', source: 'quote', highlight: 'screening women aged 30 years and older' }
+            ],
+            steps: ['From quote: No general HPV status test exists', 'HPV cervical screening available for women 30+'],
+            result: { name: 'hpv_testing', value: 'No general test; cervical screening for women 30+' },
+            warnings: []
+        }
+    },
+    
     hiv_window_period_cdc: {
         id: 'hiv_window_period_cdc',
         name: 'CDC - HIV Testing Window Periods',
