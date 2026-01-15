@@ -586,6 +586,12 @@ input[type="range"]::-moz-range-thumb {
 
 .rate-reduction.unverified {
     color: #f59e0b;
+}
+
+.rate-no-data {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
     font-weight: 600;
     color: var(--accent-primary);
 }

@@ -514,24 +514,22 @@ class RiskCalculator {
         const isCondomUnverified = typeof condomData === 'object' && condomData.isUnverified;
         const withCondomRate = adjustForCondom(baseRate, condomEff);
         
-        // Show the with-condom rate
+        // Show the with-condom rate (only if we have a verified source)
         if (condomSourceId && window.SOURCES && window.SOURCES[condomSourceId]) {
             this.adjustedRate.innerHTML = createCitableNumber(
                 `${(withCondomRate * 100).toFixed(3)}%`,
                 condomSourceId
             );
+            // Show the reduction percentage
+            const reductionPercent = (condomEff * 100).toFixed(0);
+            this.rateReduction.textContent = `(${reductionPercent}% reduction)`;
         } else if (isCondomUnverified) {
-            // Show unverified warning
-            this.adjustedRate.innerHTML = `<span class="citable-unverified" title="${typeof condomData === 'object' && condomData.note ? condomData.note : 'Condom effectiveness not verified'}">${(withCondomRate * 100).toFixed(3)}% ⚠️</span>`;
+            // Don't show unverified data - show "no data" message
+            this.adjustedRate.innerHTML = `<span class="rate-no-data">No verified data</span>`;
+            this.rateReduction.textContent = '';
         } else {
             this.adjustedRate.textContent = `${(withCondomRate * 100).toFixed(3)}%`;
-        }
-        
-        // Show the reduction percentage
-        const reductionPercent = (condomEff * 100).toFixed(0);
-        if (isCondomUnverified) {
-            this.rateReduction.innerHTML = `<span class="unverified">(${reductionPercent}% reduction ⚠️)</span>`;
-        } else {
+            const reductionPercent = (condomEff * 100).toFixed(0);
             this.rateReduction.textContent = `(${reductionPercent}% reduction)`;
         }
         
@@ -539,7 +537,9 @@ class RiskCalculator {
         this.rateSource.href = stiData.sourceUrl;
         
         // Generate timeline data using the rate based on user's protection choice
-        const rateForTimeline = useCondom ? withCondomRate : baseRate;
+        // If condom data is unverified, always use baseRate (we can't calculate with unverified data)
+        const hasVerifiedCondomData = condomSourceId && window.SOURCES && window.SOURCES[condomSourceId];
+        const rateForTimeline = (useCondom && hasVerifiedCondomData) ? withCondomRate : baseRate;
         const timeline = generateRiskTimeline(rateForTimeline, frequency, months);
         
         // Update chart
