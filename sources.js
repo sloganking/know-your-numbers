@@ -249,7 +249,7 @@ const SOURCES = {
         id: 'chlamydia_ncbi_per_act',
         name: 'NCBI Book - Chlamydia Per-Act Transmission',
         url: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
-        quote: 'the per-sex act transmission probability is uniformly distributed between 6% and 16.7% ... the per-sex act transmission probability for gonorrhoea is assumed to be twice that of chlamydia',
+        quote: 'the per-partnership transmission probabilities for chlamydia and gonorrhoea are 38% and 62.5%, respectively ... the per-sex act transmission probability is uniformly distributed between 6% and 16.7% ... the per-sex act transmission probability for gonorrhoea is assumed to be twice that of chlamydia',
         verifiedDate: '2025-01-14',
         type: 'webpage',
         isDerived: true,
@@ -266,17 +266,11 @@ const SOURCES = {
                     value: '2× chlamydia',
                     source: 'quote',
                     highlight: 'twice that of chlamydia'
-                },
-                {
-                    name: 'chlamydia_per_act',
-                    value: '6% to 16.7%',
-                    source: 'inference',
-                    highlight: '⚠️ INFERRED: Since gonorrhea = 2× chlamydia, the 6-16.7% rate must be for chlamydia'
                 }
             ],
             steps: [
                 'From quote: per-sex act rate = 6% to 16.7%',
-                'From quote: gonorrhoea = "twice that of chlamydia"',
+                'From quote: gonorrhoea per-act = "twice that of chlamydia"',
                 '⚠️ INFERENCE: The 6-16.7% must be for chlamydia (since gonorrhoea is defined relative to it)',
                 'Midpoint: (6 + 16.7) / 2 = 11.35%'
             ],
