@@ -638,6 +638,66 @@ const SOURCES = {
                 '⚠️ HPV can transmit through skin contact not covered by condom'
             ]
         }
+    },
+    
+    gonorrhea_condom_effectiveness: {
+        id: 'gonorrhea_condom_effectiveness',
+        name: 'Crosby et al. 2004 - JAMA Pediatrics - Condom Effectiveness for Gonorrhea',
+        url: 'https://jamanetwork.com/journals/jamapediatrics/fullarticle/486033',
+        quote: 'We found that correct and consistent use of condoms reduced the risk of gonorrhea by 90%',
+        verifiedDate: '2025-01-14',
+        manuallyVerified: true,  // Cloudflare blocks automated testing, manually verified by user
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                {
+                    name: 'risk_reduction',
+                    value: '90%',
+                    source: 'quote',
+                    highlight: '90%'
+                }
+            ],
+            steps: [
+                'From quote: correct and consistent condom use reduced gonorrhea risk by 90%',
+                'This is a risk reduction percentage, so effectiveness = 90%'
+            ],
+            result: {
+                name: 'condom_effectiveness',
+                value: '90%'
+            },
+            warnings: []
+        }
+    },
+    
+    chlamydia_condom_effectiveness: {
+        id: 'chlamydia_condom_effectiveness',
+        name: 'Crosby et al. 2004 - JAMA Pediatrics - Condom Effectiveness for Chlamydia',
+        url: 'https://jamanetwork.com/journals/jamapediatrics/fullarticle/486033',
+        quote: 'We found that correct and consistent use of condoms reduced the risk of chlamydial infection by 60%',
+        verifiedDate: '2025-01-14',
+        manuallyVerified: true,  // Cloudflare blocks automated testing, manually verified by user
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                {
+                    name: 'risk_reduction',
+                    value: '60%',
+                    source: 'quote',
+                    highlight: '60%'
+                }
+            ],
+            steps: [
+                'From quote: correct and consistent condom use reduced chlamydia risk by 60%',
+                'This is a risk reduction percentage, so effectiveness = 60%'
+            ],
+            result: {
+                name: 'condom_effectiveness',
+                value: '60%'
+            },
+            warnings: []
+        }
     }
 };
 

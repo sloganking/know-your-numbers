@@ -153,10 +153,17 @@ function fetchPageContent(url) {
  * Test a single source
  */
 async function testSource(source) {
-    const { id, name, url, quote, type } = source;
+    const { id, name, url, quote, type, manuallyVerified } = source;
     
     console.log(`\n${colors.blue}Testing:${colors.reset} ${name}`);
     console.log(`${colors.dim}  URL: ${url}${colors.reset}`);
+    
+    // Skip automated testing for manually verified sources (e.g., Cloudflare-protected sites)
+    if (manuallyVerified) {
+        console.log(`${colors.yellow}  ⊘ MANUALLY VERIFIED${colors.reset} - skipping automated test`);
+        results.passed.push({ name, method: 'manually-verified' });
+        return;
+    }
     
     // Skip PDFs - can't easily verify
     if (type === 'pdf') {

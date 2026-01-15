@@ -123,14 +123,14 @@ const STI_DATA = {
             }
         },
         condomEffectiveness: { 
-            value: 0.60, 
-            sourceId: null,
-            isUnverified: true,
-            note: 'Approximate estimate - needs verified source'
+            value: 0.60,  // 60% reduction with correct and consistent use
+            sourceId: 'chlamydia_condom_effectiveness',
+            isUnverified: false,
+            note: '60% reduction with correct and consistent condom use'
         },
         source: 'NCBI Book - Partner Notification Model',
         sourceUrl: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
-        notes: 'Per-act rate ~11% (range 6-17%). Easily curable with antibiotics.'
+        notes: 'Per-act rate ~11% (range 6-17%). Condoms 60% effective. Easily curable with antibiotics.'
     },
     
     gonorrhea: {
@@ -154,14 +154,14 @@ const STI_DATA = {
             }
         },
         condomEffectiveness: { 
-            value: 0.60, 
-            sourceId: null,
-            isUnverified: true,
-            note: 'Approximate estimate - needs verified source'
+            value: 0.90,  // 90% reduction with correct and consistent use
+            sourceId: 'gonorrhea_condom_effectiveness',
+            isUnverified: false,
+            note: '90% reduction with correct and consistent condom use'
         },
         source: 'NCBI Book - Partner Notification Model',
         sourceUrl: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
-        notes: 'Per-act rate ~23% (range 12-33%), derived as 2× chlamydia. Easily curable but antibiotic resistance is growing concern.'
+        notes: 'Per-act rate ~23% (range 12-33%). Condoms 90% effective. Easily curable but antibiotic resistance is growing concern.'
     },
     
     syphilis: {
