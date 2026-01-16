@@ -719,6 +719,29 @@ const SOURCES = {
         }
     },
     
+    hpv_obgyn_high_estimate: {
+        id: 'hpv_obgyn_high_estimate',
+        name: 'Contemporary OB/GYN - HPV High Transmissibility',
+        url: 'https://www.contemporaryobgyn.net/view/hpv-answering-your-worried-patientss-questions',
+        quote: 'transmissibility of HPV (as estimated by computer simulation studies on university students) is 40% per coital act',
+        verifiedDate: '2026-01-16',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'per_act_rate', value: '40%', source: 'quote', highlight: '40% per coital act' },
+                { name: 'cumulative_11_acts', value: '100%', source: 'quote', highlight: '100% with only 11 sexual encounters' }
+            ],
+            steps: ['From simulation studies: ~40% per-act', 'After ~11 acts, transmission is virtually certain'],
+            result: { name: 'per_act_transmission', value: '~40% per act (simulation estimate)' },
+            warnings: [
+                '⚠️ This is from computer simulation studies, not direct observation',
+                '⚠️ Higher than HITCH cohort observational data (~0.4%)',
+                '⚠️ May represent upper bound or specific conditions'
+            ]
+        }
+    },
+    
     hpv_lifetime_chesson: {
         id: 'hpv_lifetime_chesson',
         name: 'Chesson et al. 2014 - HPV Lifetime Probability',
@@ -1045,6 +1068,26 @@ const SOURCES = {
     // ===========================================
     // HEPATITIS B SOURCES - VERIFIED ✓
     // ===========================================
+    
+    // Hepatitis B chronic by age
+    hepb_chronic_by_age: {
+        id: 'hepb_chronic_by_age',
+        name: 'CDC Hepatitis B Clinical Overview - Chronic Risk by Age',
+        url: 'https://www.cdc.gov/hepatitis-b/hcp/clinical-overview/index.html',
+        quote: '90% of infected infants ... will remain chronically infected with HBV. By contrast, approximately 95% of infected adults recover completely',
+        verifiedDate: '2026-01-16',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'infant_chronic_rate', value: '90%', source: 'quote', highlight: '90% of infected infants' },
+                { name: 'adult_recovery_rate', value: '95%', source: 'quote', highlight: '95% of infected adults recover completely' }
+            ],
+            steps: ['Infants: 90% become chronic', 'Adults: only 5% become chronic (95% recover)'],
+            result: { name: 'chronic_risk_by_age', value: '90% infants → chronic; 5% adults → chronic' },
+            warnings: ['This is why perinatal vaccination is critical']
+        }
+    },
     
     // Hepatitis B condom effectiveness
     hepb_condom_effectiveness: {

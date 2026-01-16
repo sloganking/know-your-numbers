@@ -97,13 +97,13 @@ const RESEARCH_SOURCES = {
     // HPV - NEW SOURCES TO VERIFY
     // ===========================================
     
-    // 🔴 NEW - MEDIUM - High per-act rate claim (40%!)
+    // 🟢 VERIFIED - Added as hpv_obgyn_high_estimate
     hpv_obgyn_per_act: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'MEDIUM',
-        notes: 'Claims 40% per-act - much higher than our HITCH data!',
+        notes: 'ADDED - 40% per-act from simulation (higher than HITCH observational)',
         url: 'https://www.contemporaryobgyn.net/view/hpv-answering-your-worried-patientss-questions',
-        quote: 'HPV transmissibility is comparable to bacterial rather than viral STIs… the rate of HPV per‑act transmission probability is much higher than HIV or HSV-2, both of which carry a probability of one in 1,000 acts. The median per‑act transmissibility of HPV… is 40% per coital act. Moreover, the likelihood of male-to-female transmission reaches 100% with only 11 sexual encounters.',
+        quote: 'transmissibility of HPV (as estimated by computer simulation studies on university students) is 40% per coital act',
     },
     
     // 🔴 NEW - LOW - Vaccine efficacy
@@ -222,13 +222,13 @@ const RESEARCH_SOURCES = {
         quote: 'In the United States, an estimated 880,000 to 1.89 million people are chronically infected with HBV.',
     },
     
-    // 🔴 NEW - MEDIUM - Chronic progression by age
+    // 🟢 VERIFIED - Added as hepb_chronic_by_age (found on new CDC page)
     hepb_chronic_by_age_cdc: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'MEDIUM',
-        notes: 'Important - explains why adults rarely get chronic',
-        url: 'https://www.cdc.gov/hepatitis/hbv/hbvfaq.htm',
-        quote: 'Risk for chronic infection is related to age at infection: approximately 90% of infected infants become chronically infected, compared with 2–6% of adults.',
+        notes: 'ADDED - 90% infants chronic, 95% adults recover',
+        url: 'https://www.cdc.gov/hepatitis-b/hcp/clinical-overview/index.html',
+        quote: '90% of infected infants ... will remain chronically infected with HBV. By contrast, approximately 95% of infected adults recover completely',
     },
     
     // ===========================================
