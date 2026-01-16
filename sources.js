@@ -332,6 +332,25 @@ const SOURCES = {
     // CHLAMYDIA SOURCES
     // ===========================================
     
+    chlamydia_asymptomatic: {
+        id: 'chlamydia_asymptomatic',
+        name: 'Finnish Student Health Service - Chlamydia Symptoms',
+        url: 'https://www.yths.fi/en/health-information-resource/chlamydia/',
+        quote: 'Chlamydia is often symptomless: about 50% of men and 70% of women have no symptoms',
+        verifiedDate: '2026-01-16',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'men_asymptomatic', value: '50%', source: 'quote', highlight: '50% of men' },
+                { name: 'women_asymptomatic', value: '70%', source: 'quote', highlight: '70% of women' }
+            ],
+            steps: ['From quote: ~50% of men have no symptoms', 'From quote: ~70% of women have no symptoms'],
+            result: { name: 'asymptomatic_rate', value: '50% men, 70% women' },
+            warnings: []
+        }
+    },
+    
     chlamydia_price_2021: {
         id: 'chlamydia_price_2021',
         name: 'Price et al. 2021 - BMJ STI - Chlamydia Per-Partnership Transmission',
@@ -1051,6 +1070,25 @@ const SOURCES = {
             ],
             steps: ['Most common non-viral STI globally'],
             result: { name: 'global_incidence', value: '156 million new cases/year' },
+            warnings: []
+        }
+    },
+    
+    // Trichomoniasis HIV risk
+    trich_hiv_risk: {
+        id: 'trich_hiv_risk',
+        name: 'CDC STI Treatment Guidelines - Trichomoniasis HIV Risk',
+        url: 'https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm',
+        quote: 'T. vaginalis infection is associated with a 1.5-fold increased risk for HIV acquisition and is associated with an increase in HIV vaginal shedding',
+        verifiedDate: '2026-01-16',
+        type: 'guideline',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hiv_risk_increase', value: '1.5-fold', source: 'quote', highlight: '1.5-fold increased risk for HIV acquisition' }
+            ],
+            steps: ['Trich increases HIV acquisition risk by 50%'],
+            result: { name: 'hiv_risk_multiplier', value: '1.5x' },
             warnings: []
         }
     },
