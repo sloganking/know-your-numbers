@@ -245,7 +245,7 @@ async function runTests() {
     const startTime = Date.now();
     
     const sourceIds = Object.keys(sourcesToTest);
-    const concurrency = parseInt(process.env.SOURCE_TEST_CONCURRENCY || '4', 10);
+    const concurrency = parseInt(process.env.SOURCE_TEST_CONCURRENCY || '8', 10);
     let currentIndex = 0;
     
     async function worker() {
