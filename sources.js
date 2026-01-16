@@ -89,6 +89,42 @@ const SOURCES = {
         }
     },
     
+    hiv_prep_effectiveness: {
+        id: 'hiv_prep_effectiveness',
+        name: 'CDC HIV Risk and Prevention - PrEP Effectiveness',
+        url: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
+        quote: 'the risk of acquiring HIV is reduced by about 99% among MSM',
+        verifiedDate: '2026-01-16',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'prep_effectiveness', value: '~99%', source: 'quote', highlight: 'reduced by about 99%' }
+            ],
+            steps: ['PrEP reduces HIV acquisition risk by ~99% when taken daily/consistently'],
+            result: { name: 'prep_risk_reduction', value: '~99%' },
+            warnings: ['Requires consistent adherence (daily or at least 4x/week)']
+        }
+    },
+    
+    hiv_viral_suppression: {
+        id: 'hiv_viral_suppression',
+        name: 'CDC HIV Risk and Prevention - Viral Suppression (U=U)',
+        url: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
+        quote: 'no risk of sexual transmission. This translates to an effectiveness estimate of 100%',
+        verifiedDate: '2026-01-16',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'suppression_effectiveness', value: '100%', source: 'quote', highlight: '100%' }
+            ],
+            steps: ['Viral suppression through ART eliminates sexual transmission', 'Undetectable = Untransmittable (U=U)'],
+            result: { name: 'transmission_prevention', value: '100% (0 transmissions observed)' },
+            warnings: ['Requires consistent ART adherence and viral suppression']
+        }
+    },
+    
     hiv_condom_effectiveness: {
         id: 'hiv_condom_effectiveness',
         name: 'CDC - Condom Effectiveness for HIV Prevention',
@@ -512,6 +548,25 @@ const SOURCES = {
                 name: 'per_act_transmission_rate',
                 value: '50% (M→F) / 20% (F→M)'
             },
+            warnings: []
+        }
+    },
+    
+    // Gonorrhea antibiotic resistance
+    gonorrhea_resistance: {
+        id: 'gonorrhea_resistance',
+        name: 'Kirkcaldy et al. 2019 - Gonorrhea Antibiotic Resistance',
+        url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7064409/',
+        quote: 'successively acquired antimicrobial resistance to each antimicrobial agent used and recommended for treatment ... The confluence of emerging resistance to cephalosporins and macrolides',
+        verifiedDate: '2026-01-16',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'resistance_concern', value: 'Acquired resistance to each antibiotic', source: 'quote', highlight: 'successively acquired antimicrobial resistance to each antimicrobial agent' }
+            ],
+            steps: ['Gonorrhea has developed resistance to all previously used antibiotics', 'Resistance to current treatments (cephalosporins, macrolides) is emerging'],
+            result: { name: 'resistance_status', value: 'Major global health concern' },
             warnings: []
         }
     },

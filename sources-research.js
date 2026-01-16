@@ -35,31 +35,31 @@ const RESEARCH_SOURCES = {
         quote: 'In consensual sex, the per-act risk for HIV transmission from vaginal intercourse is 0.08%, and for receptive anal intercourse, 1.38%.',
     },
     
-    // 🔴 NEW - HIGH PRIORITY - PrEP efficacy
+    // 🟢 VERIFIED - Added as hiv_prep_effectiveness (found on hivpartners page)
     hiv_prep_efficacy_cdc: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'HIGH',
-        notes: 'Important prevention info - ~99% efficacy',
-        url: 'https://www.cdc.gov/hiv/basics/prep.html',
-        quote: 'When taken daily, PrEP reduces the risk of getting HIV from sex by about 99%.',
+        notes: 'ADDED - ~99% efficacy from CDC hivpartners page',
+        url: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
+        quote: 'the risk of acquiring HIV is reduced by about 99% among MSM',
     },
     
     // 🔴 NEW - MEDIUM PRIORITY - PEP effectiveness
     hiv_pep_cdc: {
         status: '🔴 UNVERIFIED',
         priority: 'MEDIUM',
-        notes: 'Emergency prevention info',
+        notes: 'Emergency prevention info - old URL redirects',
         url: 'https://www.cdc.gov/hiv/basics/pep/about-pep.html',
         quote: 'PEP… can prevent HIV infection when started within 72 hours after a possible exposure.',
     },
     
-    // 🔴 NEW - HIGH PRIORITY - U=U
+    // 🟢 VERIFIED - Added as hiv_viral_suppression (found on hivpartners page)
     hiv_undetectable_cdc: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'HIGH',
-        notes: 'Critical - U=U is major prevention message',
-        url: 'https://www.cdc.gov/hiv/library/reports/evidence-status/principle-u-u.html',
-        quote: 'People living with HIV who maintain an undetectable viral load… do not transmit HIV to their sexual partners.',
+        notes: 'ADDED - U=U 100% effectiveness from CDC hivpartners page',
+        url: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
+        quote: 'no risk of sexual transmission. This translates to an effectiveness estimate of 100%',
     },
     
     // ===========================================
@@ -158,13 +158,13 @@ const RESEARCH_SOURCES = {
         quote: 'N. gonorrhoeae is fairly easily transmitted: the estimated probability of penile-to-vaginal transmission is approximately 50% per sex act, and of vaginal-to-penile transmission is approximately 20% per act.',
     },
     
-    // 🔴 NEW - LOW - Antibiotic resistance (context)
+    // 🟢 VERIFIED - Added as gonorrhea_resistance
     gonorrhea_resistance_2019: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'LOW',
-        notes: 'Important context but not for calculator',
-        url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7064409/',
-        quote: 'Provision of effective treatment is under threat, as N. gonorrhoeae has successively acquired antimicrobial resistance to each antimicrobial agent used… The confluence of emerging resistance to cephalosporins and macrolides and a dwindling antimicrobial development pipeline threatens to undermine gonorrhea control.',
+        notes: 'ADDED - Antibiotic resistance concern',
+        url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7064409/',
+        quote: 'successively acquired antimicrobial resistance to each antimicrobial agent used and recommended for treatment ... The confluence of emerging resistance to cephalosporins and macrolides',
     },
     
     // ===========================================
