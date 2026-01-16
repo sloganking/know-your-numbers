@@ -4,7 +4,7 @@
 
 An evidence-based, fully transparent STI transmission risk calculator. Every number is sourced, every calculation is shown, every quote is verifiable.
 
-🌐 **Live Site:** [View on GitHub Pages](#) *(add your URL)*
+🌐 **Live Site:** [https://sloganking.github.io/sexual-health/](https://sloganking.github.io/sexual-health/)
 
 ---
 
@@ -24,7 +24,7 @@ This site provides those numbers with complete transparency.
 ## Features
 
 ### 📊 Interactive Risk Calculator
-- Select any of 6 STIs (HIV, HSV-2, HPV, Chlamydia, Gonorrhea, Syphilis)
+- Select any of 8 STIs (HIV, HSV-2, HPV, Chlamydia, Gonorrhea, Syphilis, Hepatitis B, Trichomoniasis)
 - Choose transmission direction (Male→Female or Female→Male)
 - Adjust frequency and duration
 - See cumulative risk over time with dual-line chart (protected vs unprotected)
