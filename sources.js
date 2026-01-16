@@ -221,15 +221,65 @@ const SOURCES = {
         }
     },
     
-    // Derived per-act rate for HSV-2 (calculated from the 8-month study data)
+    // PRIMARY SOURCE - Direct per-act measurements from Magaret 2016
+    hsv2_magaret_2016: {
+        id: 'hsv2_magaret_2016',
+        name: 'Magaret et al. 2016 - Clin Infect Dis - HSV-2 Per-Act Transmission',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/26578538/',
+        quote: 'The highest rate of transmission was from men to women: 28.5 transmissions per 1000 unprotected sex acts. We found that condoms were differentially protective against HSV-2 transmission by sex; condom use reduced per-act risk of transmission from men to women by 96% ... and marginally from women to men by 65%',
+        verifiedDate: '2026-01-16',
+        type: 'abstract',
+        isDerived: true,  // Derived: converting 28.5/1000 to percentage
+        derivation: {
+            variables: [
+                {
+                    name: 'mtf_per_1000',
+                    value: '28.5 per 1000',
+                    source: 'quote',
+                    highlight: '28.5 transmissions per 1000 unprotected sex acts'
+                },
+                {
+                    name: 'condom_mtf_reduction',
+                    value: '96%',
+                    source: 'quote',
+                    highlight: 'reduced per-act risk of transmission from men to women by 96%'
+                },
+                {
+                    name: 'condom_ftm_reduction',
+                    value: '65%',
+                    source: 'quote',
+                    highlight: 'from women to men by 65%'
+                }
+            ],
+            steps: [
+                'From quote: M→F = 28.5 per 1000 acts',
+                'Convert: M→F = 28.5 ÷ 1000 = 0.0285 = 2.85% per act',
+                'From quote: Condom effectiveness M→F = 96%',
+                'From quote: Condom effectiveness F→M = 65%',
+                'Note: F→M rate not directly stated but implied to be much lower'
+            ],
+            result: {
+                name: 'per_act_transmission_rate',
+                value: '2.85% (M→F)'
+            },
+            warnings: [
+                'F→M rate not directly stated in this quote',
+                'Study conducted in African HIV-discordant couples',
+                'F→M condom result (65%) was marginally significant (P=0.060)'
+            ]
+        }
+    },
+    
+    // BACKUP SOURCE - Derived per-act rate (less reliable than Magaret 2016)
     hsv2_per_act_derived: {
         id: 'hsv2_per_act_derived',
-        name: 'HSV-2 Per-Act Rate (Derived)',
+        name: 'HSV-2 Per-Act Rate (Derived from Corey 2004)',
         url: 'https://pubmed.ncbi.nlm.nih.gov/14702423/',
         quote: 'heterosexual, monogamous couples ... eight months ... 27 (3.6 percent) who received placebo',
         verifiedDate: '2025-01-14',
         type: 'abstract',
         isDerived: true,
+        isBackup: true,  // Superseded by hsv2_magaret_2016
         derivation: {
             variables: [
                 {
@@ -271,7 +321,10 @@ const SOURCES = {
                 value: '0.053%',
                 numericValue: 0.00053
             },
-            warnings: ['Sex frequency assumed (not stated in study)']
+            warnings: [
+                'Sex frequency assumed (not stated in study)',
+                '⚠️ SUPERSEDED by Magaret 2016 direct measurements'
+            ]
         }
     },
     
@@ -388,6 +441,44 @@ const SOURCES = {
     // GONORRHEA SOURCES
     // ===========================================
     
+    // PRIMARY SOURCE - Direct per-act measurements
+    gonorrhea_kirkcaldy_2019: {
+        id: 'gonorrhea_kirkcaldy_2019',
+        name: 'Kirkcaldy et al. 2019 - Sex Health - Gonorrhea Transmission',
+        url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7064409/',
+        quote: 'N. gonorrhoeae is fairly easily transmitted: the estimated probability of penile-to-vaginal transmission is approximately 50% per sex act, and of vaginal-to-penile transmission is approximately 20% per act.',
+        verifiedDate: '2026-01-16',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                {
+                    name: 'mtf_per_act',
+                    value: '50%',
+                    source: 'quote',
+                    highlight: 'penile-to-vaginal transmission is approximately 50% per sex act'
+                },
+                {
+                    name: 'ftm_per_act',
+                    value: '20%',
+                    source: 'quote',
+                    highlight: 'vaginal-to-penile transmission is approximately 20% per act'
+                }
+            ],
+            steps: [
+                'From quote: M→F transmission = 50% per act',
+                'From quote: F→M transmission = 20% per act',
+                'Average: (50 + 20) / 2 = 35%'
+            ],
+            result: {
+                name: 'per_act_transmission_rate',
+                value: '50% (M→F) / 20% (F→M)'
+            },
+            warnings: []
+        }
+    },
+    
+    // BACKUP SOURCE - Derived estimate (less reliable than Kirkcaldy 2019)
     gonorrhea_ncbi_book: {
         id: 'gonorrhea_ncbi_book',
         name: 'NCBI Book - Partner Notification for STI Transmission Model',
@@ -396,6 +487,7 @@ const SOURCES = {
         verifiedDate: '2025-01-14',
         type: 'webpage',
         isDerived: true,
+        isBackup: true,  // Superseded by gonorrhea_kirkcaldy_2019
         derivation: {
             variables: [
                 {
@@ -431,7 +523,8 @@ const SOURCES = {
             warnings: [
                 '⚠️ Chlamydia rate is INFERRED, not explicitly stated',
                 'Wide range due to uncertainty (12-33%)',
-                'Gonorrhea derived as 2× chlamydia per model assumption'
+                'Gonorrhea derived as 2× chlamydia per model assumption',
+                '⚠️ SUPERSEDED by Kirkcaldy 2019 direct measurements'
             ]
         }
     },

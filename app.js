@@ -42,33 +42,35 @@ const STI_DATA = {
     
     hsv2: {
         name: 'Herpes (HSV-2)',
-        verified: true,  // VERIFIED 2025-01-14
-        verificationNote: 'Verified against Corey et al. 2004 NEJM study',
-        rateType: 'per-act-derived',  // Derived from 8-month study
+        verified: true,  // VERIFIED 2026-01-16
+        verificationNote: 'Verified against Magaret et al. 2016 - direct per-act measurements',
+        rateType: 'per-act',  // DIRECT per-act measurement from Magaret 2016
         rates: {
             mtf: {
-                value: 0.00053,  // Derived per-act rate
-                sourceId: 'hsv2_per_act_derived',  // Uses the new derived source
-                isDerived: true
+                value: 0.0285,  // 28.5 per 1000 = 2.85% per act (DIRECT measurement)
+                sourceId: 'hsv2_magaret_2016',
+                isDerived: false,
+                note: 'Direct measurement: 28.5 per 1000 unprotected sex acts'
             },
             ftm: {
-                value: 0.00053,  // Using same rate (study didn't distinguish direction)
-                sourceId: 'hsv2_per_act_derived',
-                isDerived: true
+                value: 0.0285,  // F→M rate not directly stated; using M→F as estimate
+                sourceId: 'hsv2_magaret_2016',
+                isDerived: true,
+                note: 'F→M rate not stated in source; using M→F as estimate (likely lower in reality)'
             }
         },
         condomEffectiveness: { 
-            // Direction-specific effectiveness from PMC4725379
-            mtf: { value: 0.96, sourceId: 'hsv2_condom_effectiveness' },  // 96% effective M→F
-            ftm: { value: 0.65, sourceId: 'hsv2_condom_effectiveness' },  // 65% effective F→M
+            // Direction-specific effectiveness from Magaret 2016 AND Martin 2009
+            mtf: { value: 0.96, sourceId: 'hsv2_magaret_2016' },  // 96% effective M→F
+            ftm: { value: 0.65, sourceId: 'hsv2_magaret_2016' },  // 65% effective F→M
             value: 0.805,  // Fallback average
-            sourceId: 'hsv2_condom_effectiveness',
+            sourceId: 'hsv2_magaret_2016',
             isUnverified: false,
             note: '96% effective M→F, 65% effective F→M'
         },
-        source: 'Corey et al. 2004 - NEJM (derived)',
-        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/14702423/',
-        notes: 'Per-act rate derived from 8-month study. Condoms 96% effective M→F, 65% F→M.'
+        source: 'Magaret et al. 2016 - Clin Infect Dis',
+        sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/26578538/',
+        notes: 'Per-act rate 2.85% M→F (direct measurement). Condoms 96% effective M→F, 65% F→M.'
     },
     
     hpv: {
@@ -135,22 +137,22 @@ const STI_DATA = {
     
     gonorrhea: {
         name: 'Gonorrhea',
-        verified: true,  // VERIFIED 2025-01-14
-        verificationNote: 'Verified against NCBI Book NBK261441 - per-act derived from chlamydia × 2',
-        rateType: 'per-act-derived',  // Derived from chlamydia × 2
+        verified: true,  // VERIFIED 2026-01-16
+        verificationNote: 'Verified against Kirkcaldy et al. 2019 - direct per-act measurements',
+        rateType: 'per-act',  // DIRECT per-act measurement from Kirkcaldy 2019
         rates: {
-            // Per-ACT rate derived: chlamydia 6-16.7% midpoint 11.4% × 2 = 22.8%
+            // Per-ACT rate from Kirkcaldy 2019: M→F 50%, F→M 20%
             mtf: {
-                value: 0.228,  // ~23% per act (range 12-33%)
-                sourceId: 'gonorrhea_ncbi_book',
-                isDerived: true,
-                note: 'Derived: 2× chlamydia per-act rate'
+                value: 0.50,  // 50% per act (DIRECT measurement)
+                sourceId: 'gonorrhea_kirkcaldy_2019',
+                isDerived: false,
+                note: 'Direct estimate: ~50% penile-to-vaginal per act'
             },
             ftm: {
-                value: 0.228,  // Same rate (study didn't distinguish direction)
-                sourceId: 'gonorrhea_ncbi_book',
-                isDerived: true,
-                note: 'Derived: 2× chlamydia per-act rate'
+                value: 0.20,  // 20% per act (DIRECT measurement)
+                sourceId: 'gonorrhea_kirkcaldy_2019',
+                isDerived: false,
+                note: 'Direct estimate: ~20% vaginal-to-penile per act'
             }
         },
         condomEffectiveness: { 
@@ -159,9 +161,9 @@ const STI_DATA = {
             isUnverified: false,
             note: '90% reduction with correct and consistent condom use'
         },
-        source: 'NCBI Book - Partner Notification Model',
-        sourceUrl: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
-        notes: 'Per-act rate ~23% (range 12-33%). Condoms 90% effective. Easily curable but antibiotic resistance is growing concern.'
+        source: 'Kirkcaldy et al. 2019 - Sex Health',
+        sourceUrl: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7064409/',
+        notes: 'Per-act rate 50% M→F, 20% F→M. Condoms 90% effective. Curable with antibiotics (but resistance growing).'
     },
     
     syphilis: {
