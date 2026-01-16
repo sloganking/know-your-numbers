@@ -84,11 +84,11 @@ const RESEARCH_SOURCES = {
         quote: 'Overall, acquisition of HSV-2 was observed in 14 of the susceptible partners who received valacyclovir (1.9 percent), as compared with 27 (3.6 percent) who received placebo (hazard ratio, 0.52… P=0.04).',
     },
     
-    // 🔴 NEW - MEDIUM - Asymptomatic shedding (important context)
+    // 🟢 VERIFIED - Added to sources.js as hsv2_cdc_asymptomatic
     hsv2_cdc_asymptomatic: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'MEDIUM',
-        notes: 'Important context for STI profiles',
+        notes: 'ADDED - Most herpes transmitted while asymptomatic',
         url: 'https://www.cdc.gov/std/treatment-guidelines/herpes.htm',
         quote: 'The majority of persons infected with HSV-2 have not had the condition diagnosed, many of whom have mild or unrecognized infections but shed virus intermittently in the anogenital area. Consequently, most genital herpes infections are transmitted by persons unaware that they have the infection or who are asymptomatic when transmission occurs.',
     },
@@ -136,11 +136,11 @@ const RESEARCH_SOURCES = {
         quote: 'Chlamydia trachomatis is highly transmissible via sexual contact… Sexual transmission rates per sex act are thought to be slightly higher from men to women than from women to men, but given the number of asymptomatic carriers… estimates remain imprecise.',
     },
     
-    // 🔴 NEW - MEDIUM - Asymptomatic rates
+    // 🟢 VERIFIED - Added to sources.js as chlamydia_asymptomatic
     chlamydia_asymptomatic: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'MEDIUM',
-        notes: 'Good for profiles - 50% men, 70% women asymptomatic',
+        notes: 'ADDED - 50% men, 70% women asymptomatic',
         url: 'https://www.yths.fi/en/health-information-resource/chlamydia/',
         quote: 'Chlamydia is often symptomless: about 50% of men and 70% of women have no symptoms.',
     },
@@ -235,11 +235,11 @@ const RESEARCH_SOURCES = {
     // TRICHOMONIASIS - NEW SOURCES TO VERIFY
     // ===========================================
     
-    // 🔴 NEW - MEDIUM - HIV risk multiplier
+    // 🟢 VERIFIED - Added to sources.js as trich_hiv_risk
     trich_hiv_risk_cdc: {
-        status: '🔴 UNVERIFIED',
+        status: '🟢 VERIFIED',
         priority: 'MEDIUM',
-        notes: 'We mention 1.5x HIV risk but need source',
+        notes: 'ADDED - 1.5x HIV acquisition risk',
         url: 'https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm',
         quote: 'T. vaginalis infection is associated with a 1.5-fold increased risk for HIV acquisition and is associated with an increase in HIV vaginal shedding, which is reduced with T. vaginalis treatment.',
     },

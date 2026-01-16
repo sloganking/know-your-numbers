@@ -221,6 +221,25 @@ const SOURCES = {
         }
     },
     
+    // HSV-2 asymptomatic transmission
+    hsv2_cdc_asymptomatic: {
+        id: 'hsv2_cdc_asymptomatic',
+        name: 'CDC STD Treatment Guidelines - Herpes Transmission',
+        url: 'https://www.cdc.gov/std/treatment-guidelines/herpes.htm',
+        quote: 'The majority of persons infected with HSV-2 have not had the condition diagnosed, many of whom have mild or unrecognized infections but shed virus intermittently in the anogenital area. Consequently, most genital herpes infections are transmitted by persons unaware that they have the infection or who are asymptomatic when transmission occurs.',
+        verifiedDate: '2026-01-16',
+        type: 'guideline',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'transmission_context', value: 'Most transmitted asymptomatically', source: 'quote', highlight: 'most genital herpes infections are transmitted by persons unaware that they have the infection or who are asymptomatic' }
+            ],
+            steps: ['Most HSV-2 infections are undiagnosed', 'Virus sheds intermittently even without symptoms', 'Most transmission occurs during asymptomatic periods'],
+            result: { name: 'transmission_pattern', value: 'Majority transmitted while asymptomatic' },
+            warnings: []
+        }
+    },
+    
     // PRIMARY SOURCE - Direct per-act measurements from Magaret 2016
     hsv2_magaret_2016: {
         id: 'hsv2_magaret_2016',
