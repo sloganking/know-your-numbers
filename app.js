@@ -211,28 +211,35 @@ const STI_DATA = {
 function generateTextFragmentUrl(baseUrl, quote) {
     if (!quote || !baseUrl) return baseUrl;
     
-    // Clean the quote - remove our ellipsis markers and extra whitespace
-    let cleanQuote = quote
-        .replace(/\s*\.\.\.\s*/g, ' ')  // Replace ... with space
-        .replace(/\s+/g, ' ')            // Normalize whitespace
-        .trim();
+    // Check if quote has omission markers (...)
+    // If so, create multiple text fragments to highlight each section
+    const parts = quote.split(/\s*\.\.\.\s*/).filter(p => p.trim().length > 0);
     
-    // Use as much of the quote as possible (up to ~200 chars for URL length limits)
-    // This ensures we highlight the exact text and avoid wrong matches
-    let textToEncode = cleanQuote;
-    
-    // If quote is very long, truncate at word boundary around 200 chars
-    if (textToEncode.length > 200) {
-        const lastSpace = textToEncode.lastIndexOf(' ', 200);
-        if (lastSpace > 100) {
-            textToEncode = textToEncode.substring(0, lastSpace);
-        } else {
-            textToEncode = textToEncode.substring(0, 200);
-        }
+    if (parts.length > 1) {
+        // Multiple sections with omissions — use multiple &text= fragments
+        const fragments = parts.map(part => {
+            let cleanPart = part.replace(/\s+/g, ' ').trim();
+            // Keep more of each part (up to 300 chars each)
+            if (cleanPart.length > 300) {
+                const lastSpace = cleanPart.lastIndexOf(' ', 300);
+                cleanPart = lastSpace > 100 ? cleanPart.substring(0, lastSpace) : cleanPart.substring(0, 300);
+            }
+            return encodeURIComponent(cleanPart);
+        });
+        return baseUrl + '#:~:text=' + fragments.join('&text=');
     }
     
-    const fragment = `#:~:text=${encodeURIComponent(textToEncode)}`;
-    return baseUrl + fragment;
+    // Single continuous quote — use as much as possible (up to 500 chars)
+    let cleanQuote = quote
+        .replace(/\s+/g, ' ')
+        .trim();
+    
+    if (cleanQuote.length > 500) {
+        const lastSpace = cleanQuote.lastIndexOf(' ', 500);
+        cleanQuote = lastSpace > 200 ? cleanQuote.substring(0, lastSpace) : cleanQuote.substring(0, 500);
+    }
+    
+    return baseUrl + `#:~:text=${encodeURIComponent(cleanQuote)}`;
 }
 
 /**

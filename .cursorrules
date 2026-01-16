@@ -42,6 +42,15 @@ This is the #1 rule for this project and MUST NEVER be broken:
 - Quotes MUST include enough context to be understandable on their own, even if that context is not used in the calculation
 - Extra context is OK if it clarifies meaning; avoid unrelated content
 
+### Text Fragments + Omission Markers (REQUIRED)
+
+- Every citation link MUST include a text fragment (`#:~:text=...`) that jumps to the quoted text
+- **Use as much of the quote as possible** (up to ~500 characters) — the goal is to highlight the ENTIRE quoted text on the source page, not just a few words
+- If any part of a quote is omitted, the quote MUST visibly show that omission using `...`
+- For quotes with omissions (`...`), use **multiple text fragments** with `&text=` to highlight each section separately
+  - Example: `#:~:text=first%20section&text=second%20section`
+- Never splice quote segments together without `...` indicating missing text
+
 ### Running Verification:
 
 After ANY change to sources.js, run:
@@ -62,17 +71,6 @@ All quotes must pass verification. If a quote fails, it's WRONG.
 - [ ] Per-partnership rates are NOT used as per-act rates
 - [ ] NO unused variables - every variable must be used in steps/result
 - [ ] Quote includes enough context for a human to understand the number
-
-### Text Fragments + Omission Markers (REQUIRED)
-
-- Every citation link MUST include a text fragment to jump to the quoted text
-- If any part of a quote is omitted, the quote MUST visibly show that omission using ...
-- Never splice quote segments together without ... indicating missing text
-
-### NO CONFABULATED QUOTES (CRITICAL)
-
-- NEVER create prose quotes that do not exist on the source page
-- If data comes from a TABLE or CHART, say so explicitly
-- Do NOT pretend table data is a prose quote - describe it honestly
-- For table/chart data: use format like 'From Table 1: Risk Ratio = 0.04'
-- [ ] NO confabulated quotes - if data is from a table, describe it as table data
+- [ ] Every citation link includes a `#:~:text=` fragment with as much text as possible (aim for full quote)
+- [ ] For quotes with `...` omissions, use multiple `&text=` fragments to highlight each section
+- [ ] Any omitted quote text is marked with `...`
