@@ -1056,6 +1056,37 @@ input[type="range"]::-moz-range-thumb {
     margin-bottom: 0.75rem;
 }
 
+/* Info Callout Box */
+.info-callout {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-left: 3px solid var(--info);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    margin-top: 1.25rem;
+}
+
+.info-callout h5 {
+    color: var(--info);
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
+}
+
+.info-callout p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.info-callout p:last-child {
+    margin-bottom: 0;
+}
+
+.info-callout em {
+    color: var(--text-primary);
+    font-style: italic;
+}
+
 /* Math and Code Blocks */
 .math-block {
     background: var(--bg-tertiary);
