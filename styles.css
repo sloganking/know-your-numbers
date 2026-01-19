@@ -53,6 +53,7 @@
 html {
     scroll-behavior: smooth;
     font-size: 16px;
+    overflow-x: hidden;
 }
 
 body {
@@ -62,6 +63,7 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
 }
 
 /* Grain Overlay for texture */
@@ -163,9 +165,70 @@ a:hover {
     text-decoration: none;
 }
 
+/* Mobile Navigation Toggle */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 102;
+}
+
+.nav-toggle-bar {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 1px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-toggle.active .nav-toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle.active .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-toggle.active .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
 @media (max-width: 768px) {
+    .nav-toggle {
+        display: flex;
+    }
+    
     .nav-links {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(10, 11, 13, 0.98);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        z-index: 101;
+        padding: 2rem;
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .nav-links a {
+        font-size: 1.25rem;
+        padding: 0.75rem 1rem;
     }
 }
 
@@ -1397,6 +1460,7 @@ mjx-container {
     left: 50%;
     transform: translateX(-50%);
     width: 380px;
+    max-width: calc(100vw - 2rem);
     max-height: 450px;
     overflow-y: auto;
     padding: 1rem;
@@ -1412,6 +1476,51 @@ mjx-container {
     pointer-events: none;
 }
 
+/* Mobile tooltip - use fixed position to prevent overflow */
+@media (max-width: 768px) {
+    .cite-tooltip {
+        position: fixed;
+        bottom: auto;
+        top: 50%;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%);
+        width: calc(100vw - 2rem);
+        max-width: calc(100vw - 2rem);
+        max-height: 70vh;
+        /* Force all content to wrap */
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    
+    .cite-tooltip::after {
+        display: none;
+    }
+    
+    .cite-tooltip::before {
+        display: none;
+    }
+    
+    /* Force text wrapping in tooltip content - be specific to avoid inheritance issues */
+    .cite-tooltip-source,
+    .cite-tooltip-quote,
+    .cite-tooltip-link,
+    .cite-tooltip-meta,
+    .cite-tooltip-derivation,
+    .cite-tooltip-warning {
+        white-space: normal;
+        word-break: break-word;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
+    }
+    
+    /* Hide tooltips completely when not active - prevent overflow */
+    .citable:not(:hover):not(.tooltip-active) .cite-tooltip {
+        display: none;
+    }
+}
+
 /* Invisible extension at bottom of tooltip to bridge to trigger element */
 .cite-tooltip::before {
     content: '';
@@ -1424,7 +1533,8 @@ mjx-container {
     pointer-events: auto;
 }
 
-.citable:hover .cite-tooltip {
+.citable:hover .cite-tooltip,
+.citable.tooltip-active .cite-tooltip {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -1459,15 +1569,20 @@ mjx-container {
 }
 
 .cite-tooltip-quote {
+    display: block;
     font-size: 0.8rem;
     color: var(--text-secondary);
     font-style: italic;
-    line-height: 1.5;
+    line-height: 2;
     margin-bottom: 0.75rem;
-    padding: 0.5rem;
+    padding: 0.75rem;
     background: var(--bg-secondary);
     border-left: 2px solid var(--accent-primary);
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    /* Force text wrapping */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .cite-tooltip-link {
@@ -1476,12 +1591,21 @@ mjx-container {
     color: var(--accent-primary);
     word-break: break-all;
     margin-top: 0.5rem;
-    padding-top: 0.5rem;
+    padding: 0.75rem;
     border-top: 1px solid var(--border-subtle);
+    background: var(--bg-primary);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    /* Ensure clickable on touch devices */
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.3);
+    touch-action: manipulation;
 }
 
-.cite-tooltip-link:hover {
+.cite-tooltip-link:hover,
+.cite-tooltip-link:active {
     text-decoration: underline;
+    background: var(--bg-tertiary);
 }
 
 .cite-tooltip-meta {
@@ -1532,14 +1656,22 @@ mjx-container {
 .quote-ellipsis {
     color: var(--text-muted);
     padding: 0 0.25rem;
+    white-space: normal;
 }
 
 .quote-highlight {
     background: rgba(245, 158, 11, 0.25);
     color: var(--accent-secondary);
-    padding: 0.1rem 0.2rem;
+    padding: 0.15rem 0.25rem;
     border-radius: 2px;
     cursor: help;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* Ensure highlights don't cause vertical overlap */
+    display: inline;
+    line-height: inherit;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
 }
 
 /* Unverified number styling */
@@ -1574,9 +1706,30 @@ mjx-container {
     color: var(--text-secondary);
 }
 
-.citable-unverified:hover .unverified-tooltip {
+.citable-unverified:hover .unverified-tooltip,
+.citable-unverified.tooltip-active .unverified-tooltip {
     opacity: 1;
     visibility: visible;
+}
+
+@media (max-width: 768px) {
+    .citable-unverified .unverified-tooltip {
+        position: fixed;
+        bottom: auto;
+        top: 50%;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%);
+        white-space: normal;
+        text-align: center;
+        width: calc(100vw - 3rem);
+        max-width: calc(100vw - 3rem);
+    }
+    
+    /* Hide when not active */
+    .citable-unverified:not(:hover):not(.tooltip-active) .unverified-tooltip {
+        display: none;
+    }
 }
 
 /* Step-by-step derivation display */
@@ -1702,25 +1855,27 @@ mjx-container {
     border-radius: 3px;
 }
 
-/* Adjust tooltip position for elements near edges */
-.citable.tooltip-left .cite-tooltip {
-    left: 0;
-    transform: translateX(0);
-}
+/* Adjust tooltip position for elements near edges - DESKTOP ONLY */
+@media (min-width: 769px) {
+    .citable.tooltip-left .cite-tooltip {
+        left: 0;
+        transform: translateX(0);
+    }
 
-.citable.tooltip-left .cite-tooltip::after {
-    left: 20px;
-}
+    .citable.tooltip-left .cite-tooltip::after {
+        left: 20px;
+    }
 
-.citable.tooltip-right .cite-tooltip {
-    left: auto;
-    right: 0;
-    transform: translateX(0);
-}
+    .citable.tooltip-right .cite-tooltip {
+        left: auto;
+        right: 0;
+        transform: translateX(0);
+    }
 
-.citable.tooltip-right .cite-tooltip::after {
-    left: auto;
-    right: 20px;
+    .citable.tooltip-right .cite-tooltip::after {
+        left: auto;
+        right: 20px;
+    }
 }
 
 /* Scrollbar Styling */
@@ -1746,4 +1901,377 @@ mjx-container {
 ::selection {
     background: rgba(245, 158, 11, 0.3);
     color: var(--text-primary);
+}
+
+/* ===========================================
+   MOBILE OPTIMIZATIONS
+   =========================================== */
+
+/* Prevent horizontal overflow on mobile */
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100vw;
+    }
+    
+    .nav,
+    .hero,
+    .section,
+    .footer,
+    .container,
+    .sti-card,
+    .testing-block,
+    .calculator-inputs,
+    .calculator-output,
+    .mission-content,
+    .methodology-content {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+}
+
+/* Mobile Navigation - Add hamburger menu functionality via CSS */
+@media (max-width: 768px) {
+    .nav {
+        padding: 0.75rem 1rem;
+    }
+    
+    .nav-brand {
+        gap: 0.5rem;
+    }
+    
+    .nav-icon {
+        font-size: 1.25rem;
+    }
+    
+    .nav-title {
+        font-size: 1rem;
+    }
+    
+    /* Hero adjustments */
+    .hero {
+        padding: calc(var(--section-padding) + 50px) 1rem var(--section-padding);
+        min-height: auto;
+    }
+    
+    .hero-title {
+        font-size: clamp(1.75rem, 7vw, 2.5rem);
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-cta {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .hero-cta .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Section padding */
+    .section {
+        padding: clamp(2.5rem, 8vw, 4rem) 0;
+    }
+    
+    .section-header {
+        margin-bottom: 2rem;
+    }
+    
+    .section-header h2 {
+        font-size: clamp(1.5rem, 5vw, 2rem);
+    }
+    
+    /* Mission section */
+    .mission-text .lead {
+        font-size: 1.1rem;
+    }
+    
+    .mission-text p {
+        font-size: 0.95rem;
+    }
+    
+    .mission-principles {
+        padding: 1.25rem;
+    }
+    
+    /* Calculator section */
+    .calculator-inputs {
+        padding: 1.25rem;
+    }
+    
+    .input-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .chart-container {
+        padding: 1rem;
+        min-height: 280px;
+    }
+    
+    .result-summary {
+        padding: 1rem;
+    }
+    
+    .result-main {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .result-value {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .risk-arrow {
+        transform: rotate(90deg);
+    }
+    
+    /* Rate display */
+    .current-rate-display {
+        padding: 1rem;
+    }
+    
+    /* STI cards */
+    .sti-card {
+        padding: 1.25rem;
+    }
+    
+    .sti-header h3 {
+        font-size: 1.25rem;
+    }
+    
+    /* Tables - make responsive with proper containment */
+    .rates-table,
+    .testing-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0;
+        max-width: 100%;
+    }
+    
+    .rates-table th,
+    .rates-table td,
+    .testing-table th,
+    .testing-table td {
+        padding: 0.5rem 0.4rem;
+        font-size: 0.75rem;
+        /* Allow text to wrap in table cells on mobile */
+        white-space: normal;
+        min-width: 60px;
+    }
+    
+    /* Keep first column (STI name) from wrapping */
+    .testing-table td:first-child,
+    .rates-table td:first-child {
+        white-space: nowrap;
+    }
+    
+    .testing-block {
+        padding: 1.25rem;
+        overflow-x: hidden;
+    }
+    
+    .testing-block h3 {
+        font-size: 1.1rem;
+    }
+    
+    /* Ensure citable elements in tables don't cause overflow */
+    .testing-table .citable,
+    .rates-table .citable {
+        display: inline;
+        word-break: break-word;
+    }
+    
+    /* Tooltips within tables should use fixed positioning */
+    .testing-table .cite-tooltip,
+    .rates-table .cite-tooltip {
+        position: fixed;
+        max-width: calc(100vw - 2rem);
+        width: calc(100vw - 2rem);
+        left: 50% !important;
+        transform: translate(-50%, -50%);
+    }
+    
+    /* Classification legend */
+    .classification-legend {
+        padding: 1.25rem;
+    }
+    
+    .legend-intro {
+        font-size: 0.9rem;
+    }
+    
+    /* STI details */
+    .sti-details summary {
+        font-size: 0.85rem;
+    }
+    
+    .details-content p {
+        font-size: 0.85rem;
+    }
+    
+    .info-callout {
+        padding: 0.875rem 1rem;
+    }
+    
+    .info-callout h5 {
+        font-size: 0.85rem;
+    }
+    
+    .info-callout p {
+        font-size: 0.8rem;
+    }
+    
+    /* Methodology section */
+    .method-block > p {
+        font-size: 0.95rem;
+    }
+    
+    .math-block {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .code-block {
+        padding: 0.75rem;
+    }
+    
+    .code-block code {
+        font-size: 0.75rem;
+    }
+    
+    .caveat {
+        padding: 1rem;
+    }
+    
+    .caveat h4 {
+        font-size: 0.9rem;
+    }
+    
+    .caveat p {
+        font-size: 0.8rem;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: 2.5rem 0 1.5rem;
+    }
+    
+    .footer-content {
+        gap: 1.5rem;
+    }
+    
+    .footer-main h3 {
+        font-size: 1.1rem;
+    }
+    
+    .footer-main p {
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 375px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .stat-card {
+        padding: 1rem 1.25rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+    }
+    
+    /* Make tables scroll horizontally with visual indicator */
+    .rates-table,
+    .testing-table {
+        position: relative;
+    }
+    
+    /* Smaller tooltip quote text with proper line spacing */
+    .cite-tooltip-quote {
+        display: block;
+        font-size: 0.9rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 2.2;
+        padding: 1rem;
+    }
+    
+    .derive-var {
+        font-size: 0.7rem;
+        flex-wrap: wrap;
+    }
+    
+    .derive-step {
+        font-size: 0.65rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .derive-var-value {
+        word-break: break-word;
+    }
+    
+    .derive-variables,
+    .derive-steps {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+}
+
+/* Touch-friendly targets */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 44px;
+    }
+    
+    .nav-links a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        width: 28px;
+        height: 28px;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .sti-details summary {
+        padding: 0.75rem 0;
+    }
+    
+    /* On touch devices, make citable elements tap-to-open */
+    .citable {
+        cursor: pointer;
+    }
 }
