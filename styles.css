@@ -53,6 +53,7 @@
 html {
     scroll-behavior: smooth;
     font-size: 16px;
+    overflow-x: hidden;
 }
 
 body {
@@ -62,6 +63,7 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
 }
 
 /* Grain Overlay for texture */
@@ -1474,15 +1476,17 @@ mjx-container {
     pointer-events: none;
 }
 
-/* Mobile tooltip adjustments */
-@media (max-width: 480px) {
+/* Mobile tooltip - use fixed position to prevent overflow */
+@media (max-width: 768px) {
     .cite-tooltip {
         position: fixed;
         bottom: auto;
         top: 50%;
-        left: 50%;
+        left: 50% !important;
+        right: auto !important;
         transform: translate(-50%, -50%);
         width: calc(100vw - 2rem);
+        max-width: calc(100vw - 2rem);
         max-height: 70vh;
     }
     
@@ -1491,6 +1495,11 @@ mjx-container {
     }
     
     .cite-tooltip::before {
+        display: none;
+    }
+    
+    /* Hide tooltips completely when not active - prevent overflow */
+    .citable:not(:hover):not(.tooltip-active) .cite-tooltip {
         display: none;
     }
 }
@@ -1656,7 +1665,6 @@ mjx-container {
     transition: opacity 0.2s, visibility 0.2s;
     z-index: 100;
     color: var(--text-secondary);
-    max-width: calc(100vw - 2rem);
 }
 
 .citable-unverified:hover .unverified-tooltip,
@@ -1665,16 +1673,23 @@ mjx-container {
     visibility: visible;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .citable-unverified .unverified-tooltip {
         position: fixed;
         bottom: auto;
         top: 50%;
-        left: 50%;
+        left: 50% !important;
+        right: auto !important;
         transform: translate(-50%, -50%);
         white-space: normal;
         text-align: center;
         width: calc(100vw - 3rem);
+        max-width: calc(100vw - 3rem);
+    }
+    
+    /* Hide when not active */
+    .citable-unverified:not(:hover):not(.tooltip-active) .unverified-tooltip {
+        display: none;
     }
 }
 
@@ -1801,25 +1816,27 @@ mjx-container {
     border-radius: 3px;
 }
 
-/* Adjust tooltip position for elements near edges */
-.citable.tooltip-left .cite-tooltip {
-    left: 0;
-    transform: translateX(0);
-}
+/* Adjust tooltip position for elements near edges - DESKTOP ONLY */
+@media (min-width: 769px) {
+    .citable.tooltip-left .cite-tooltip {
+        left: 0;
+        transform: translateX(0);
+    }
 
-.citable.tooltip-left .cite-tooltip::after {
-    left: 20px;
-}
+    .citable.tooltip-left .cite-tooltip::after {
+        left: 20px;
+    }
 
-.citable.tooltip-right .cite-tooltip {
-    left: auto;
-    right: 0;
-    transform: translateX(0);
-}
+    .citable.tooltip-right .cite-tooltip {
+        left: auto;
+        right: 0;
+        transform: translateX(0);
+    }
 
-.citable.tooltip-right .cite-tooltip::after {
-    left: auto;
-    right: 20px;
+    .citable.tooltip-right .cite-tooltip::after {
+        left: auto;
+        right: 20px;
+    }
 }
 
 /* Scrollbar Styling */
@@ -1850,6 +1867,30 @@ mjx-container {
 /* ===========================================
    MOBILE OPTIMIZATIONS
    =========================================== */
+
+/* Prevent horizontal overflow on mobile */
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100vw;
+    }
+    
+    .nav,
+    .hero,
+    .section,
+    .footer,
+    .container,
+    .sti-card,
+    .testing-block,
+    .calculator-inputs,
+    .calculator-output,
+    .mission-content,
+    .methodology-content {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+}
 
 /* Mobile Navigation - Add hamburger menu functionality via CSS */
 @media (max-width: 768px) {
