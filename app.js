@@ -39,7 +39,7 @@ const STI_DATA = {
             {
                 id: 'prep',
                 name: 'Uninfected partner takes daily Truvada or Descovy (PrEP)',
-                shortName: 'PrEP',
+                shortName: 'Daily PrEP',
                 value: 0.99,  // ~99% reduction
                 sourceId: 'hiv_prep_effectiveness',
                 note: 'Prescription pills (Truvada/Descovy) taken daily by the HIV-negative partner'
@@ -51,6 +51,22 @@ const STI_DATA = {
                 value: 1.0,  // 100% reduction (effectively zero transmission)
                 sourceId: 'hiv_viral_suppression',
                 note: 'Antiretroviral therapy (ART) suppresses virus to undetectable — cannot transmit (U=U)'
+            },
+            {
+                id: 'cabotegravir',
+                name: 'Uninfected partner receives Apretude injection (every 2 months)',
+                shortName: 'Apretude',
+                value: 0.99,  // Superior to oral PrEP; using same 99% efficacy
+                sourceId: 'cabotegravir_hptn083',
+                note: 'Cabotegravir injection every 2 months — 66% better than daily pills in trials'
+            },
+            {
+                id: 'lenacapavir',
+                name: 'Uninfected partner receives Sunlenca injection (every 6 months)',
+                shortName: 'Sunlenca',
+                value: 0.99,  // ~100% efficacy in PURPOSE 1 trial
+                sourceId: 'lenacapavir_purpose1',
+                note: 'Lenacapavir injection twice yearly — 100% efficacy in women\'s trial (FDA approved June 2025)'
             }
         ],
         source: 'CDC HIV Risk and Prevention Estimates',
@@ -129,6 +145,16 @@ const STI_DATA = {
             isUnverified: false,
             note: '70% reduction with consistent condom use'
         },
+        preventatives: [
+            {
+                id: 'hpv_vaccine',
+                name: 'Uninfected partner has received HPV vaccine (Gardasil 9)',
+                shortName: 'HPV Vaccine',
+                value: 0.88,  // 88% reduction in HPV infections at population level
+                sourceId: 'hpv_vaccine_cdc_impact',
+                note: 'Gardasil 9 provides 88%+ protection against HPV types that cause most cancers and warts (lifetime protection, 2-3 dose series)'
+            }
+        ],
         source: 'Malagón et al. 2021 (HITCH cohort)',
         sourceUrl: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8012224/',
         notes: 'Per-act rates derived from person–month transmission rates. Condoms 70% effective. Vaccine is most effective prevention.'
@@ -160,6 +186,16 @@ const STI_DATA = {
             isUnverified: false,
             note: '60% reduction with correct and consistent condom use'
         },
+        preventatives: [
+            {
+                id: 'doxypep',
+                name: 'Uninfected partner takes DoxyPEP within 72h after sex (MSM/TGW only)',
+                shortName: 'DoxyPEP',
+                value: 0.88,  // ~88% reduction for chlamydia in NEJM trial
+                sourceId: 'doxypep_nejm_2023',
+                note: '200mg doxycycline within 72h after sex. Only for MSM/TGW. Max 1 dose/day. ⚠️ POST-exposure, not daily.'
+            }
+        ],
         source: 'NCBI Book - Partner Notification Model',
         sourceUrl: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
         notes: 'Per-act rate ~11% (range 6-17%). Condoms 60% effective. Easily curable with antibiotics.'
@@ -191,6 +227,16 @@ const STI_DATA = {
             isUnverified: false,
             note: '90% reduction with correct and consistent condom use'
         },
+        preventatives: [
+            {
+                id: 'doxypep',
+                name: 'Uninfected partner takes DoxyPEP within 72h after sex (MSM/TGW only)',
+                shortName: 'DoxyPEP',
+                value: 0.55,  // ~55% reduction for gonorrhea (lower due to antibiotic resistance)
+                sourceId: 'doxypep_nejm_2023',
+                note: '200mg doxycycline within 72h after sex. Only 55% effective for gonorrhea due to resistance. ⚠️ POST-exposure.'
+            }
+        ],
         source: 'Kirkcaldy et al. 2019 - Sex Health',
         sourceUrl: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7064409/',
         notes: 'Per-act rate 50% M→F, 20% F→M. Condoms 90% effective. Curable with antibiotics (but resistance growing).'
@@ -222,6 +268,16 @@ const STI_DATA = {
             isUnverified: false,
             note: '50-71% reduction with consistent correct use (60.5% midpoint)'
         },
+        preventatives: [
+            {
+                id: 'doxypep',
+                name: 'Uninfected partner takes DoxyPEP within 72h after sex (MSM/TGW only)',
+                shortName: 'DoxyPEP',
+                value: 0.87,  // ~87% reduction for syphilis in NEJM trial
+                sourceId: 'doxypep_nejm_2023',
+                note: '200mg doxycycline within 72h after sex. Only for MSM/TGW. Max 1 dose/day. ⚠️ POST-exposure, not daily.'
+            }
+        ],
         source: 'ASHM Contact Tracing Guidelines',
         sourceUrl: 'https://contacttracing.ashm.org.au/syphilis/',
         notes: 'Per-act rate >20% for EARLY syphilis. Condoms 50-71% effective (can transmit through uncovered sores). Curable with antibiotics.'
@@ -564,6 +620,16 @@ class RiskCalculator {
                     </span>`;
                 }
                 
+                // Determine the icon based on preventative type
+                let icon = '💊';  // Default: medication
+                if (prev.id.includes('vaccine')) {
+                    icon = '💉';  // Vaccine
+                } else if (prev.id.includes('doxypep')) {
+                    icon = '⏱️';  // Post-exposure (time-sensitive)
+                } else if (prev.id.includes('cabotegravir') || prev.id.includes('lenacapavir')) {
+                    icon = '💉';  // Injectable
+                }
+                
                 const div = document.createElement('div');
                 div.className = 'input-group preventative-toggle';
                 div.innerHTML = `
@@ -571,7 +637,7 @@ class RiskCalculator {
                         <input type="checkbox" id="prev-${prev.id}" checked>
                         <span class="checkbox-custom"></span>
                         <span class="checkbox-text">
-                            💊 ${prev.name} <span class="citable reduction-badge" data-source="${prev.sourceId}">${reductionPercent}% reduction${tooltipHtml}</span>
+                            ${icon} ${prev.name} <span class="citable reduction-badge" data-source="${prev.sourceId}">${reductionPercent}% reduction${tooltipHtml}</span>
                             <span class="checkbox-hint">${prev.note}</span>
                         </span>
                     </label>
