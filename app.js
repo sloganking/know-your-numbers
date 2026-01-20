@@ -35,9 +35,27 @@ const STI_DATA = {
             value: 0.80,  // 80% risk reduction
             sourceId: 'hiv_condom_effectiveness'
         },
+        preventatives: [
+            {
+                id: 'prep',
+                name: 'Uninfected partner takes daily PrEP',
+                shortName: 'PrEP',
+                value: 0.99,  // ~99% reduction
+                sourceId: 'hiv_prep_effectiveness',
+                note: 'Pre-exposure prophylaxis taken by HIV-negative partner'
+            },
+            {
+                id: 'uu',
+                name: 'Infected partner has undetectable viral load',
+                shortName: 'U=U',
+                value: 1.0,  // 100% reduction (effectively zero transmission)
+                sourceId: 'hiv_viral_suppression',
+                note: 'Undetectable = Untransmittable when on effective ART'
+            }
+        ],
         source: 'CDC HIV Risk and Prevention Estimates',
         sourceUrl: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
-        notes: 'Per-act rates assuming detectable viral load. Undetectable = Untransmittable (U=U). Condom reduces risk by ~80%.'
+        notes: 'Per-act rates assuming detectable viral load. U=U eliminates transmission. PrEP reduces risk by ~99%.'
     },
     
     hsv2: {
@@ -68,11 +86,16 @@ const STI_DATA = {
             isUnverified: false,
             note: '96% effective M→F, 65% effective F→M'
         },
-        antiviralEffectiveness: {
-            value: 0.47,  // ~47% reduction with daily valacyclovir
-            sourceId: 'hsv2_corey_2004',
-            note: 'Daily suppressive therapy (e.g., valacyclovir) reduces transmission by ~47%'
-        },
+        preventatives: [
+            {
+                id: 'valacyclovir',
+                name: 'Infected partner takes daily valacyclovir',
+                shortName: 'Antivirals',
+                value: 0.47,  // ~47% reduction
+                sourceId: 'hsv2_corey_2004',
+                note: 'Daily suppressive antiviral taken by HSV-2+ partner'
+            }
+        ],
         source: 'Magaret et al. 2016 - Clin Infect Dis',
         sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/26578538/',
         notes: 'Per-act rate 2.85% M→F (direct measurement). Condoms 96% effective M→F, 65% F→M. Daily antivirals reduce transmission by ~47%.'
@@ -476,9 +499,9 @@ class RiskCalculator {
         this.frequencyInput = document.getElementById('frequency-input');
         this.durationInput = document.getElementById('duration-input');
         
-        // Antiviral toggle
-        this.antiviralToggleGroup = document.getElementById('antiviral-toggle-group');
-        this.antiviralCheckbox = document.getElementById('antiviral-checkbox');
+        // Preventatives container
+        this.preventativesContainer = document.getElementById('preventatives-container');
+        this.preventativeCheckboxes = {};  // Will hold checkbox elements keyed by preventative id
         
         // Display elements
         this.frequencyValue = document.getElementById('frequency-value');
@@ -496,12 +519,10 @@ class RiskCalculator {
     
     bindEvents() {
         this.stiSelect.addEventListener('change', () => {
-            this.updateAntiviralVisibility();
+            this.updatePreventativesUI();
             this.updateCalculation();
         });
         this.directionSelect.addEventListener('change', () => this.updateCalculation());
-        
-        this.antiviralCheckbox.addEventListener('change', () => this.updateCalculation());
         
         this.frequencyInput.addEventListener('input', () => {
             this.frequencyValue.textContent = this.getFrequencyLabel(parseInt(this.frequencyInput.value));
@@ -513,23 +534,67 @@ class RiskCalculator {
             this.updateCalculation();
         });
         
-        // Initial visibility check
-        this.updateAntiviralVisibility();
+        // Initial preventatives UI
+        this.updatePreventativesUI();
     }
     
-    updateAntiviralVisibility() {
+    updatePreventativesUI() {
         const sti = this.stiSelect.value;
         const stiData = STI_DATA[sti];
         
-        // Show antiviral toggle only for STIs with antiviral data
-        // Check it by default so users see all protection options immediately
-        if (stiData && stiData.antiviralEffectiveness) {
-            this.antiviralToggleGroup.style.display = 'block';
-            this.antiviralCheckbox.checked = true;  // Default ON to show all lines
-        } else {
-            this.antiviralToggleGroup.style.display = 'none';
-            this.antiviralCheckbox.checked = false;
+        // Clear existing checkboxes
+        this.preventativesContainer.innerHTML = '';
+        this.preventativeCheckboxes = {};
+        
+        // If this STI has preventatives, create checkboxes for each
+        if (stiData && stiData.preventatives && stiData.preventatives.length > 0) {
+            stiData.preventatives.forEach(prev => {
+                const source = window.SOURCES ? window.SOURCES[prev.sourceId] : null;
+                const reductionPercent = Math.round(prev.value * 100);
+                
+                // Build citation tooltip HTML
+                let tooltipHtml = '';
+                if (source) {
+                    tooltipHtml = `<span class="cite-tooltip">
+                        <span class="cite-tooltip-source">${source.name}</span>
+                        <span class="cite-tooltip-quote">"${source.quote}"</span>
+                        <a href="${source.url}" target="_blank" class="cite-tooltip-link">View Source →</a>
+                    </span>`;
+                }
+                
+                const div = document.createElement('div');
+                div.className = 'input-group preventative-toggle';
+                div.innerHTML = `
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="prev-${prev.id}" checked>
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-text">
+                            💊 ${prev.name} <span class="citable reduction-badge" data-source="${prev.sourceId}">${reductionPercent}% reduction${tooltipHtml}</span>
+                            <span class="checkbox-hint">${prev.note}</span>
+                        </span>
+                    </label>
+                `;
+                
+                this.preventativesContainer.appendChild(div);
+                
+                // Store reference and bind event
+                const checkbox = div.querySelector(`#prev-${prev.id}`);
+                this.preventativeCheckboxes[prev.id] = checkbox;
+                checkbox.addEventListener('change', () => this.updateCalculation());
+            });
         }
+    }
+    
+    getEnabledPreventatives() {
+        const sti = this.stiSelect.value;
+        const stiData = STI_DATA[sti];
+        
+        if (!stiData || !stiData.preventatives) return [];
+        
+        return stiData.preventatives.filter(prev => {
+            const checkbox = this.preventativeCheckboxes[prev.id];
+            return checkbox && checkbox.checked;
+        });
     }
     
     getFrequencyLabel(value) {
@@ -580,16 +645,24 @@ class RiskCalculator {
         // Calculate condom-adjusted rate
         const withCondomRate = adjustForCondom(baseRate, condomEff);
         
-        // Check for antiviral data
-        const antiviralData = stiData.antiviralEffectiveness;
-        const hasAntiviralData = antiviralData && antiviralData.value !== undefined;
-        const antiviralsEnabled = hasAntiviralData && this.antiviralCheckbox.checked;
-        const antiviralEff = hasAntiviralData ? antiviralData.value : 0;
-        const antiviralSourceId = hasAntiviralData ? antiviralData.sourceId : null;
+        // Get enabled preventatives and calculate combined effectiveness
+        const enabledPreventatives = this.getEnabledPreventatives();
+        const hasPreventatives = enabledPreventatives.length > 0;
         
-        // Calculate antiviral-adjusted rates
-        const withAntiviralRate = antiviralsEnabled ? adjustForCondom(baseRate, antiviralEff) : null;
-        const withBothRate = antiviralsEnabled ? adjustForCondom(withCondomRate, antiviralEff) : null;
+        // Calculate combined preventative effectiveness (multiplicative)
+        // E.g., PrEP (99%) + U=U (100%) = 1 - (1-0.99)*(1-1.0) = 100%
+        let combinedPreventativeEff = 0;
+        if (hasPreventatives) {
+            let remainingRisk = 1;
+            enabledPreventatives.forEach(prev => {
+                remainingRisk *= (1 - prev.value);
+            });
+            combinedPreventativeEff = 1 - remainingRisk;
+        }
+        
+        // Calculate preventative-adjusted rates
+        const withPreventativeRate = hasPreventatives ? adjustForCondom(baseRate, combinedPreventativeEff) : null;
+        const withBothRate = hasPreventatives ? adjustForCondom(withCondomRate, combinedPreventativeEff) : null;
         
         // Update rate display with citable sources
         const rateSourceId = typeof stiData.rates[direction] === 'object' 
@@ -631,46 +704,47 @@ class RiskCalculator {
         
         // Generate timelines for all scenarios
         const hasVerifiedCondomData = condomSourceId && window.SOURCES && window.SOURCES[condomSourceId];
-        const hasVerifiedAntiviralData = antiviralSourceId && window.SOURCES && window.SOURCES[antiviralSourceId];
         
         const timelineUnprotected = generateRiskTimeline(baseRate, frequency, months);
         const timelineCondom = hasVerifiedCondomData 
             ? generateRiskTimeline(withCondomRate, frequency, months) 
             : null;
-        const timelineAntiviral = (antiviralsEnabled && hasVerifiedAntiviralData)
-            ? generateRiskTimeline(withAntiviralRate, frequency, months)
+        const timelinePreventative = hasPreventatives
+            ? generateRiskTimeline(withPreventativeRate, frequency, months)
             : null;
-        const timelineBoth = (antiviralsEnabled && hasVerifiedCondomData && hasVerifiedAntiviralData)
+        const timelineBoth = (hasPreventatives && hasVerifiedCondomData)
             ? generateRiskTimeline(withBothRate, frequency, months)
             : null;
+        
+        // Build preventative label for chart
+        const preventativeLabel = enabledPreventatives.length > 0
+            ? enabledPreventatives.map(p => p.shortName).join(' + ')
+            : 'Preventatives';
         
         // Update chart with all relevant lines
         this.updateChart({
             unprotected: timelineUnprotected,
             condom: timelineCondom,
-            antiviral: timelineAntiviral,
+            preventative: timelinePreventative,
             both: timelineBoth
         }, stiData.name, {
             hasCondomData: hasVerifiedCondomData,
-            hasAntiviralData: antiviralsEnabled && hasVerifiedAntiviralData,
-            antiviralSourceId: antiviralSourceId
+            hasPreventativeData: hasPreventatives,
+            preventativeLabel: preventativeLabel
         });
         
         // Update result summary - show risks
         const finalRiskUnprotected = timelineUnprotected[timelineUnprotected.length - 1].risk;
         const finalRiskCondom = timelineCondom ? timelineCondom[timelineCondom.length - 1].risk : null;
-        const finalRiskAntiviral = timelineAntiviral ? timelineAntiviral[timelineAntiviral.length - 1].risk : null;
+        const finalRiskPreventative = timelinePreventative ? timelinePreventative[timelinePreventative.length - 1].risk : null;
         const finalRiskBoth = timelineBoth ? timelineBoth[timelineBoth.length - 1].risk : null;
         const totalEncounters = timelineUnprotected[timelineUnprotected.length - 1].encounters;
         
         this.resultDuration.textContent = months;
         
-        // Determine best protection level to display
-        const bestRisk = finalRiskBoth ?? finalRiskCondom ?? finalRiskUnprotected;
-        
         // Show risks in the result
-        if (antiviralsEnabled && finalRiskBoth !== null) {
-            // Show full progression: unprotected → condom → condom + antiviral
+        if (hasPreventatives && finalRiskBoth !== null) {
+            // Show full progression: unprotected → best protection
             this.resultProbability.innerHTML = `
                 <span class="risk-unprotected">${(finalRiskUnprotected * 100).toFixed(1)}%</span>
                 <span class="risk-arrow">→</span>
@@ -690,9 +764,9 @@ class RiskCalculator {
         // Generate explanation
         this.resultExplanation.innerHTML = this.generateExplanation(
             stiData, baseRate, withCondomRate, totalEncounters, 
-            finalRiskUnprotected, finalRiskCondom, finalRiskAntiviral, finalRiskBoth,
-            hasVerifiedCondomData, antiviralsEnabled && hasVerifiedAntiviralData, 
-            antiviralEff, months
+            finalRiskUnprotected, finalRiskCondom, finalRiskPreventative, finalRiskBoth,
+            hasVerifiedCondomData, hasPreventatives, 
+            combinedPreventativeEff, preventativeLabel, months
         );
     }
     
@@ -738,8 +812,8 @@ class RiskCalculator {
     }
     
     generateExplanation(stiData, baseRate, withCondomRate, encounters, 
-                        riskUnprotected, riskCondom, riskAntiviral, riskBoth,
-                        hasCondomData, hasAntiviralData, antiviralEff, months) {
+                        riskUnprotected, riskCondom, riskPreventative, riskBoth,
+                        hasCondomData, hasPreventativeData, preventativeEff, preventativeLabel, months) {
         const unprotectedPercent = (riskUnprotected * 100).toFixed(1);
         
         const getRiskLevel = (risk) => {
@@ -754,19 +828,20 @@ class RiskCalculator {
         
         if (hasCondomData && riskCondom !== null) {
             const condomPercent = (riskCondom * 100).toFixed(1);
-            const reduction = ((riskUnprotected - riskCondom) / riskUnprotected * 100).toFixed(0);
-            html += `<br><span style="color:#10b981;">With condom:</span> <strong>${condomPercent}%</strong> risk (${getRiskLevel(riskCondom)})`;
+            html += `<br><span style="color:#10b981;">Condom only:</span> <strong>${condomPercent}%</strong> risk (${getRiskLevel(riskCondom)})`;
         }
         
-        if (hasAntiviralData && riskAntiviral !== null) {
-            const antiviralPercent = (riskAntiviral * 100).toFixed(1);
-            html += `<br><span style="color:#8b5cf6;">Antivirals only:</span> <strong>${antiviralPercent}%</strong> risk (${getRiskLevel(riskAntiviral)})`;
+        if (hasPreventativeData && riskPreventative !== null) {
+            const preventativePercent = (riskPreventative * 100).toFixed(1);
+            html += `<br><span style="color:#8b5cf6;">${preventativeLabel} only:</span> <strong>${preventativePercent}%</strong> risk (${getRiskLevel(riskPreventative)})`;
         }
         
-        if (hasAntiviralData && hasCondomData && riskBoth !== null) {
+        if (hasPreventativeData && hasCondomData && riskBoth !== null) {
             const bothPercent = (riskBoth * 100).toFixed(1);
-            const totalReduction = ((riskUnprotected - riskBoth) / riskUnprotected * 100).toFixed(0);
-            html += `<br><span style="color:#06b6d4;">Condom + antivirals:</span> <strong>${bothPercent}%</strong> risk (${getRiskLevel(riskBoth)})`;
+            const totalReduction = riskUnprotected > 0 
+                ? ((riskUnprotected - riskBoth) / riskUnprotected * 100).toFixed(0)
+                : 100;
+            html += `<br><span style="color:#06b6d4;">Condom + ${preventativeLabel}:</span> <strong>${bothPercent}%</strong> risk (${getRiskLevel(riskBoth)})`;
             html += `<br><em>Combined protection reduces your cumulative risk by ~${totalReduction}%</em>`;
         } else if (hasCondomData && riskCondom !== null) {
             const reduction = ((riskUnprotected - riskCondom) / riskUnprotected * 100).toFixed(0);
@@ -781,8 +856,8 @@ class RiskCalculator {
     }
     
     updateChart(timelines, stiName, options) {
-        const { unprotected, condom, antiviral, both } = timelines;
-        const { hasCondomData, hasAntiviralData } = options;
+        const { unprotected, condom, preventative, both } = timelines;
+        const { hasCondomData, hasPreventativeData, preventativeLabel } = options;
         
         // Labels show month and encounter count
         const labels = unprotected.map(d => {
@@ -849,11 +924,11 @@ class RiskCalculator {
             });
         }
         
-        // Add antiviral-only line if enabled
-        if (hasAntiviralData && antiviral) {
+        // Add preventative-only line if enabled
+        if (hasPreventativeData && preventative) {
             datasets.push({
-                label: 'Antivirals Only',
-                data: antiviral.map(d => (d.risk * 100).toFixed(2)),
+                label: `${preventativeLabel} Only`,
+                data: preventative.map(d => (d.risk * 100).toFixed(2)),
                 borderColor: '#8b5cf6',
                 backgroundColor: gradientAntiviral,
                 borderWidth: 2,
@@ -869,9 +944,9 @@ class RiskCalculator {
         }
         
         // Add combined protection line if both available
-        if (hasAntiviralData && hasCondomData && both) {
+        if (hasPreventativeData && hasCondomData && both) {
             datasets.push({
-                label: 'Condom + Antivirals',
+                label: `Condom + ${preventativeLabel}`,
                 data: both.map(d => (d.risk * 100).toFixed(2)),
                 borderColor: '#06b6d4',
                 backgroundColor: gradientBoth,
