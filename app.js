@@ -782,7 +782,11 @@ class RiskCalculator {
         const { unprotected, condom, antiviral, both } = timelines;
         const { hasCondomData, hasAntiviralData } = options;
         
-        const labels = unprotected.map(d => `Month ${d.month}`);
+        // Labels show month and encounter count
+        const labels = unprotected.map(d => {
+            if (d.month === 0) return 'Start';
+            return `Mo ${d.month} (${d.encounters})`;
+        });
         
         if (this.chart) {
             this.chart.destroy();
@@ -929,6 +933,12 @@ class RiskCalculator {
                             size: 13
                         },
                         callbacks: {
+                            title: (tooltipItems) => {
+                                const index = tooltipItems[0].dataIndex;
+                                const dataPoint = unprotected[index];
+                                if (dataPoint.month === 0) return 'Start (0 sex acts)';
+                                return `Month ${dataPoint.month} (${dataPoint.encounters} sex acts)`;
+                            },
                             label: function(context) {
                                 return `${context.dataset.label}: ${context.parsed.y}%`;
                             }
