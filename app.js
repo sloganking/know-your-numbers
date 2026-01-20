@@ -38,19 +38,19 @@ const STI_DATA = {
         preventatives: [
             {
                 id: 'prep',
-                name: 'Uninfected partner takes daily PrEP',
+                name: 'Uninfected partner takes daily PrEP medication',
                 shortName: 'PrEP',
                 value: 0.99,  // ~99% reduction
                 sourceId: 'hiv_prep_effectiveness',
-                note: 'Pre-exposure prophylaxis taken by HIV-negative partner'
+                note: 'Prescription pill taken daily by the HIV-negative partner to prevent infection'
             },
             {
                 id: 'uu',
-                name: 'Infected partner has undetectable viral load',
+                name: 'HIV+ partner takes daily medication (virus suppressed)',
                 shortName: 'U=U',
                 value: 1.0,  // 100% reduction (effectively zero transmission)
                 sourceId: 'hiv_viral_suppression',
-                note: 'Undetectable = Untransmittable when on effective ART'
+                note: 'When HIV medication suppresses the virus to undetectable levels, transmission drops to zero'
             }
         ],
         source: 'CDC HIV Risk and Prevention Estimates',
