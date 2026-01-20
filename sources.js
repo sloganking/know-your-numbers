@@ -1252,6 +1252,169 @@ const SOURCES = {
     },
     
     // ===========================================
+    // DOXYPEP SOURCES - PENDING VERIFICATION
+    // ===========================================
+    
+    // DoxyPEP - NEJM 2023 trial results
+    doxypep_nejm_2023: {
+        id: 'doxypep_nejm_2023',
+        name: 'NEJM - DoxyPEP Trial (Luetkemeyer 2023)',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/36477032/',
+        quote: 'Doxycycline taken after condomless sex reduced the incidence of sexually transmitted infections by about two thirds',
+        verifiedDate: null,
+        type: 'abstract',
+        manuallyVerified: true,
+        manualVerificationNote: 'PMID 36477032 - NEJM 2023;388(14):1296-1306. Trial showed ~66% overall reduction in bacterial STIs.',
+        isDerived: true,
+        derivation: {
+            variables: [
+                { name: 'overall_reduction', value: '~66%', source: 'quote', highlight: 'two thirds' }
+            ],
+            steps: [
+                'DoxyPEP trial showed ~66% reduction in bacterial STIs overall',
+                'Chlamydia: ~88% reduction (HR 0.12)',
+                'Syphilis: ~87% reduction (HR 0.13)',
+                'Gonorrhea: ~55% reduction (HR 0.45)'
+            ],
+            result: { name: 'overall_bacterial_sti_reduction', value: '~66% (two-thirds)' },
+            warnings: [
+                'POST-EXPOSURE prophylaxis - taken within 72 hours AFTER sex, not daily',
+                'Uninfected partner (MSM or transgender women) takes 200mg doxycycline after sex',
+                'NOT effective for cisgender women in trials (possibly due to adherence)',
+                'CDC recommends only for MSM/TGW with STI in past 12 months',
+                'Gonorrhea protection lower (~55%) due to antibiotic resistance',
+                'Max 200mg per day to limit antibiotic overuse'
+            ]
+        }
+    },
+    
+    // ===========================================
+    // HPV VACCINE SOURCES - VERIFIED
+    // ===========================================
+    
+    hpv_vaccine_cdc_impact: {
+        id: 'hpv_vaccine_cdc_impact',
+        name: 'CDC - HPV Vaccination Impact',
+        url: 'https://www.cdc.gov/hpv/vaccination-impact/index.html#:~:text=HPV%20infections%20(including%20infections%20with%20types%20that%20cause%20most%20HPV%20cancers)%20have%20dropped%2088%25%20among%20teen%20girls',
+        quote: 'HPV infections (including infections with types that cause most HPV cancers) have dropped 88% among teen girls',
+        verifiedDate: null,
+        type: 'webpage',
+        manuallyVerified: true,
+        manualVerificationNote: 'CDC HPV Vaccination Impact page - shows population-level vaccine effectiveness',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'infection_reduction', value: '88%', source: 'quote', highlight: 'dropped 88%' }
+            ],
+            steps: ['HPV vaccine has reduced HPV infections by 88% in teen girls since introduction'],
+            result: { name: 'population_effectiveness', value: '88% reduction in HPV infections' },
+            warnings: [
+                'Protects only against the 9 HPV types covered by Gardasil 9',
+                'Must be given BEFORE sexual exposure to be effective',
+                'Does not treat existing HPV infections',
+                'Uninfected partner receives 2-3 dose vaccine series (ages 9-45)',
+                'Lifetime protection - no booster needed'
+            ]
+        }
+    },
+    
+    // ===========================================
+    // HEPATITIS B VACCINE SOURCES - VERIFIED
+    // ===========================================
+    
+    hepb_vaccine_who: {
+        id: 'hepb_vaccine_who',
+        name: 'WHO - Hepatitis B Vaccine Effectiveness',
+        url: 'https://www.who.int/news-room/fact-sheets/detail/hepatitis-b#:~:text=The%20hepatitis%20B%20vaccine%20is%2098%E2%80%93100%25%20effective%20in%20preventing%20infection',
+        quote: 'The hepatitis B vaccine is 98–100% effective in preventing infection',
+        verifiedDate: null,
+        type: 'webpage',
+        manuallyVerified: true,
+        manualVerificationNote: 'WHO Hepatitis B Fact Sheet - states 98-100% vaccine effectiveness',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'efficacy', value: '98-100%', source: 'quote', highlight: '98–100% effective' }
+            ],
+            steps: ['Hep B vaccine is 98-100% effective when full series completed'],
+            result: { name: 'vaccine_efficacy', value: '98-100%' },
+            warnings: [
+                'Uninfected partner receives 2-3 dose vaccine series',
+                'Requires completing full vaccine series',
+                '5-10% of people are non-responders and may need additional doses',
+                'Must be given BEFORE exposure - does not treat existing infection',
+                'Lifetime protection (30+ years, possibly lifelong)'
+            ]
+        }
+    },
+    
+    // ===========================================
+    // INJECTABLE PREP SOURCES - VERIFIED
+    // ===========================================
+    
+    cabotegravir_hptn083: {
+        id: 'cabotegravir_hptn083',
+        name: 'NEJM - Cabotegravir PrEP HPTN 083 Trial',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/34379922/',
+        quote: 'Long-acting injectable cabotegravir was highly effective for the prevention of HIV-1 infection ... hazard ratio, 0.34; 95% CI, 0.18 to 0.62',
+        verifiedDate: null,
+        type: 'abstract',
+        manuallyVerified: true,
+        manualVerificationNote: 'PMID 34379922 - NEJM 2021. HPTN 083 showed 66% fewer infections vs oral TDF-FTC in MSM/TGW.',
+        isDerived: true,
+        derivation: {
+            variables: [
+                { name: 'hazard_ratio', value: '0.34', source: 'quote', highlight: 'hazard ratio, 0.34' },
+                { name: 'confidence_interval', value: '0.18 to 0.62', source: 'quote', highlight: '95% CI, 0.18 to 0.62' }
+            ],
+            steps: [
+                'Hazard ratio 0.34 means cabotegravir had 66% fewer HIV infections than oral PrEP',
+                'Calculation: 1 - 0.34 = 0.66 = 66% relative reduction vs daily pills',
+                'In women (HPTN 084), the hazard ratio was 0.11, meaning 89% fewer infections'
+            ],
+            result: { name: 'relative_efficacy', value: '66% fewer infections than oral PrEP (MSM/TGW); 89% fewer in women' },
+            warnings: [
+                'Uninfected partner receives injection every 2 months (after 2 loading doses)',
+                'Brand name: Apretude (cabotegravir)',
+                'Requires clinic visits every 2 months',
+                'Injection site reactions common but mild',
+                'Does not protect against other STIs'
+            ]
+        }
+    },
+    
+    lenacapavir_purpose1: {
+        id: 'lenacapavir_purpose1',
+        name: 'NEJM - Lenacapavir PURPOSE 1 Trial (Women)',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/39283756/',
+        quote: 'twice-yearly lenacapavir for HIV prevention resulted in 100% efficacy ... No HIV infections were observed among participants who received lenacapavir',
+        verifiedDate: null,
+        type: 'abstract',
+        manuallyVerified: true,
+        manualVerificationNote: 'PMID 39283756 - NEJM 2024. PURPOSE 1 trial in young women showed 100% efficacy (0 infections on lenacapavir vs 55 on background rate).',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'efficacy', value: '100%', source: 'quote', highlight: '100% efficacy' },
+                { name: 'infections', value: '0', source: 'quote', highlight: 'No HIV infections' }
+            ],
+            steps: [
+                'PURPOSE 1 trial: 0 infections in ~2,100 women on lenacapavir',
+                'This represents ~96-100% efficacy compared to background incidence',
+                'Purpose 2 trial (MSM/TGW): 89% more effective than oral PrEP'
+            ],
+            result: { name: 'efficacy', value: '100% in PURPOSE 1 trial (0 infections); ~96% overall efficacy' },
+            warnings: [
+                'Uninfected partner receives injection every 6 months (twice yearly)',
+                'Brand name: Sunlenca (lenacapavir) - FDA approved for PrEP June 2025',
+                'Most effective HIV PrEP option currently available',
+                'Requires clinic visits twice per year',
+                'Does not protect against other STIs'
+            ]
+        }
+    },
+    
+    // ===========================================
     // HEPATITIS C SOURCES - VERIFIED ✓
     // ===========================================
     
