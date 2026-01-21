@@ -1295,7 +1295,7 @@ const SOURCES = {
     hpv_vaccine_cdc_impact: {
         id: 'hpv_vaccine_cdc_impact',
         name: 'CDC - HPV Vaccination Impact',
-        url: 'https://www.cdc.gov/hpv/vaccination-impact/index.html#:~:text=HPV%20infections%20(including%20infections%20with%20types%20that%20cause%20most%20HPV%20cancers)%20have%20dropped%2088%25%20among%20teen%20girls',
+        url: 'https://www.cdc.gov/hpv/vaccination-impact/index.html',
         quote: 'HPV infections (including infections with types that cause most HPV cancers) have dropped 88% among teen girls',
         verifiedDate: null,
         type: 'webpage',
@@ -1325,7 +1325,7 @@ const SOURCES = {
     hepb_vaccine_who: {
         id: 'hepb_vaccine_who',
         name: 'WHO - Hepatitis B Vaccine Effectiveness',
-        url: 'https://www.who.int/news-room/fact-sheets/detail/hepatitis-b#:~:text=The%20hepatitis%20B%20vaccine%20is%2098%E2%80%93100%25%20effective%20in%20preventing%20infection',
+        url: 'https://www.who.int/news-room/fact-sheets/detail/hepatitis-b',
         quote: 'The hepatitis B vaccine is 98–100% effective in preventing infection',
         verifiedDate: null,
         type: 'webpage',

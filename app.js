@@ -40,6 +40,8 @@ const STI_DATA = {
                 id: 'prep',
                 name: 'Uninfected partner takes daily Truvada or Descovy (PrEP)',
                 shortName: 'Daily PrEP',
+                actor: 'uninfected',
+                category: 'daily',
                 value: 0.99,  // ~99% reduction
                 sourceId: 'hiv_prep_effectiveness',
                 note: 'Prescription pills (Truvada/Descovy) taken daily by the HIV-negative partner'
@@ -48,6 +50,8 @@ const STI_DATA = {
                 id: 'uu',
                 name: 'HIV+ partner takes daily ART and has suppressed virus',
                 shortName: 'ART (U=U)',
+                actor: 'infected',
+                category: 'daily',
                 value: 1.0,  // 100% reduction (effectively zero transmission)
                 sourceId: 'hiv_viral_suppression',
                 note: 'Antiretroviral therapy (ART) suppresses virus to undetectable — cannot transmit (U=U)'
@@ -56,6 +60,8 @@ const STI_DATA = {
                 id: 'cabotegravir',
                 name: 'Uninfected partner receives Apretude injection (every 2 months)',
                 shortName: 'Apretude',
+                actor: 'uninfected',
+                category: 'injectable',
                 value: 0.99,  // Superior to oral PrEP; using same 99% efficacy
                 sourceId: 'cabotegravir_hptn083',
                 note: 'Cabotegravir injection every 2 months — 66% better than daily pills in trials'
@@ -64,6 +70,8 @@ const STI_DATA = {
                 id: 'lenacapavir',
                 name: 'Uninfected partner receives Sunlenca injection (every 6 months)',
                 shortName: 'Sunlenca',
+                actor: 'uninfected',
+                category: 'injectable',
                 value: 0.99,  // ~100% efficacy in PURPOSE 1 trial
                 sourceId: 'lenacapavir_purpose1',
                 note: 'Lenacapavir injection twice yearly — 100% efficacy in women\'s trial (FDA approved June 2025)'
@@ -109,6 +117,8 @@ const STI_DATA = {
                 id: 'valacyclovir',
                 name: 'Infected partner takes daily valacyclovir',
                 shortName: 'Valacyclovir',
+                actor: 'infected',
+                category: 'daily',
                 value: 0.47,  // ~47% reduction (consistent with Corey study)
                 sourceId: 'hsv2_corey_2004',
                 note: 'Daily suppressive antiviral taken by HSV-2+ partner'
@@ -150,6 +160,8 @@ const STI_DATA = {
                 id: 'hpv_vaccine',
                 name: 'Uninfected partner has received HPV vaccine (Gardasil 9)',
                 shortName: 'HPV Vaccine',
+                actor: 'uninfected',
+                category: 'vaccine',
                 value: 0.88,  // 88% reduction in HPV infections at population level
                 sourceId: 'hpv_vaccine_cdc_impact',
                 note: 'Gardasil 9 provides 88%+ protection against HPV types that cause most cancers and warts (lifetime protection, 2-3 dose series)'
@@ -191,6 +203,8 @@ const STI_DATA = {
                 id: 'doxypep',
                 name: 'Uninfected partner takes DoxyPEP within 72h after sex (MSM/TGW only)',
                 shortName: 'DoxyPEP',
+                actor: 'uninfected',
+                category: 'post',
                 value: 0.88,  // ~88% reduction for chlamydia in NEJM trial
                 sourceId: 'doxypep_nejm_2023',
                 note: '200mg doxycycline within 72h after sex. Only for MSM/TGW. Max 1 dose/day. ⚠️ POST-exposure, not daily.'
@@ -232,6 +246,8 @@ const STI_DATA = {
                 id: 'doxypep',
                 name: 'Uninfected partner takes DoxyPEP within 72h after sex (MSM/TGW only)',
                 shortName: 'DoxyPEP',
+                actor: 'uninfected',
+                category: 'post',
                 value: 0.55,  // ~55% reduction for gonorrhea (lower due to antibiotic resistance)
                 sourceId: 'doxypep_nejm_2023',
                 note: '200mg doxycycline within 72h after sex. Only 55% effective for gonorrhea due to resistance. ⚠️ POST-exposure.'
@@ -273,6 +289,8 @@ const STI_DATA = {
                 id: 'doxypep',
                 name: 'Uninfected partner takes DoxyPEP within 72h after sex (MSM/TGW only)',
                 shortName: 'DoxyPEP',
+                actor: 'uninfected',
+                category: 'post',
                 value: 0.87,  // ~87% reduction for syphilis in NEJM trial
                 sourceId: 'doxypep_nejm_2023',
                 note: '200mg doxycycline within 72h after sex. Only for MSM/TGW. Max 1 dose/day. ⚠️ POST-exposure, not daily.'
@@ -559,7 +577,8 @@ class RiskCalculator {
         
         // Preventatives container
         this.preventativesContainer = document.getElementById('preventatives-container');
-        this.preventativeCheckboxes = {};  // Will hold checkbox elements keyed by preventative id
+        this.preventativeSelects = {};  // Holds select elements keyed by actor group
+        this.preventativeDetails = {};  // Holds detail containers keyed by actor group
         
         // Display elements
         this.frequencyValue = document.getElementById('frequency-value');
@@ -600,57 +619,107 @@ class RiskCalculator {
         const sti = this.stiSelect.value;
         const stiData = STI_DATA[sti];
         
-        // Clear existing checkboxes
+        // Clear existing controls
         this.preventativesContainer.innerHTML = '';
-        this.preventativeCheckboxes = {};
+        this.preventativeSelects = {};
+        this.preventativeDetails = {};
         
-        // If this STI has preventatives, create checkboxes for each
-        if (stiData && stiData.preventatives && stiData.preventatives.length > 0) {
-            stiData.preventatives.forEach(prev => {
-                const source = window.SOURCES ? window.SOURCES[prev.sourceId] : null;
-                const reductionPercent = Math.round(prev.value * 100);
-                
-                // Build citation tooltip HTML
-                let tooltipHtml = '';
-                if (source) {
-                    tooltipHtml = `<span class="cite-tooltip">
-                        <span class="cite-tooltip-source">${source.name}</span>
-                        <span class="cite-tooltip-quote">"${source.quote}"</span>
-                        <a href="${source.url}" target="_blank" class="cite-tooltip-link">View Source →</a>
-                    </span>`;
-                }
-                
-                // Determine the icon based on preventative type
-                let icon = '💊';  // Default: medication
-                if (prev.id.includes('vaccine')) {
-                    icon = '💉';  // Vaccine
-                } else if (prev.id.includes('doxypep')) {
-                    icon = '⏱️';  // Post-exposure (time-sensitive)
-                } else if (prev.id.includes('cabotegravir') || prev.id.includes('lenacapavir')) {
-                    icon = '💉';  // Injectable
-                }
-                
-                const div = document.createElement('div');
-                div.className = 'input-group preventative-toggle';
-                div.innerHTML = `
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="prev-${prev.id}" checked>
-                        <span class="checkbox-custom"></span>
-                        <span class="checkbox-text">
-                            ${icon} ${prev.name} <span class="citable reduction-badge" data-source="${prev.sourceId}">${reductionPercent}% reduction${tooltipHtml}</span>
-                            <span class="checkbox-hint">${prev.note}</span>
-                        </span>
-                    </label>
-                `;
-                
-                this.preventativesContainer.appendChild(div);
-                
-                // Store reference and bind event
-                const checkbox = div.querySelector(`#prev-${prev.id}`);
-                this.preventativeCheckboxes[prev.id] = checkbox;
-                checkbox.addEventListener('change', () => this.updateCalculation());
-            });
+        if (!stiData || !stiData.preventatives || stiData.preventatives.length === 0) {
+            return;
         }
+        
+        const groups = {
+            infected: [],
+            uninfected: [],
+            both: []
+        };
+        
+        stiData.preventatives.forEach(prev => {
+            const actor = prev.actor || 'both';
+            if (!groups[actor]) groups[actor] = [];
+            groups[actor].push(prev);
+        });
+        
+        const groupOrder = ['infected', 'uninfected', 'both'];
+        const groupLabels = {
+            infected: 'Infected partner medication',
+            uninfected: 'Uninfected partner prevention',
+            both: 'Both partners prevention'
+        };
+        
+        groupOrder.forEach(groupKey => {
+            const items = groups[groupKey];
+            if (!items || items.length === 0) return;
+            
+            const selectId = `preventative-select-${groupKey}`;
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'input-group preventative-select-group';
+            groupDiv.innerHTML = `
+                <label for="${selectId}">${groupLabels[groupKey]}</label>
+                <select id="${selectId}" class="preventative-select"></select>
+                <div class="preventative-detail" id="${selectId}-detail"></div>
+            `;
+            
+            const select = groupDiv.querySelector(`#${selectId}`);
+            const optionsHtml = [
+                '<option value="">None</option>',
+                ...items.map(item => `<option value="${item.id}">${item.shortName}</option>`)
+            ].join('');
+            select.innerHTML = optionsHtml;
+            
+            // Default to first option so preventatives show by default
+            select.value = items[0].id;
+            
+            const detail = groupDiv.querySelector(`#${selectId}-detail`);
+            
+            this.preventativeSelects[groupKey] = select;
+            this.preventativeDetails[groupKey] = detail;
+            
+            select.addEventListener('change', () => {
+                this.renderPreventativeDetail(groupKey);
+                this.updateCalculation();
+            });
+            
+            this.preventativesContainer.appendChild(groupDiv);
+            this.renderPreventativeDetail(groupKey);
+        });
+    }
+    
+    getPreventativeIcon(prev) {
+        if (prev.category === 'vaccine' || prev.category === 'injectable') return '💉';
+        if (prev.category === 'post') return '⏱️';
+        return '💊';
+    }
+    
+    renderPreventativeDetail(groupKey) {
+        const select = this.preventativeSelects[groupKey];
+        const detail = this.preventativeDetails[groupKey];
+        if (!select || !detail) return;
+        
+        const selectedId = select.value;
+        if (!selectedId) {
+            detail.innerHTML = '<span class="preventative-none">No medication selected</span>';
+            return;
+        }
+        
+        const stiData = STI_DATA[this.stiSelect.value];
+        const selected = stiData.preventatives.find(prev => prev.id === selectedId);
+        if (!selected) {
+            detail.innerHTML = '';
+            return;
+        }
+        
+        const reductionPercent = Math.round(selected.value * 100);
+        const reductionBadge = `<span class="reduction-badge">${createCitableNumber(`${reductionPercent}% reduction`, selected.sourceId)}</span>`;
+        const icon = this.getPreventativeIcon(selected);
+        
+        detail.innerHTML = `
+            <div class="preventative-detail-main">
+                <span class="preventative-selected">${icon} ${selected.name}</span>
+                ${reductionBadge}
+            </div>
+            <div class="preventative-note">${selected.note}</div>
+        `;
     }
     
     getEnabledPreventatives() {
@@ -659,10 +728,14 @@ class RiskCalculator {
         
         if (!stiData || !stiData.preventatives) return [];
         
-        return stiData.preventatives.filter(prev => {
-            const checkbox = this.preventativeCheckboxes[prev.id];
-            return checkbox && checkbox.checked;
+        const selected = [];
+        Object.values(this.preventativeSelects).forEach(select => {
+            if (!select || !select.value) return;
+            const match = stiData.preventatives.find(prev => prev.id === select.value);
+            if (match) selected.push(match);
         });
+        
+        return selected;
     }
     
     getFrequencyLabel(value) {
