@@ -81,7 +81,7 @@ const STI_DATA = {
         sourceUrl: 'https://www.cdc.gov/hivpartners/php/riskandprevention/index.html',
         notes: 'Per-act rates assuming detectable viral load. U=U eliminates transmission. PrEP reduces risk by ~99%.'
     },
-    
+
     hsv2: {
         name: 'Herpes (HSV-2)',
         verified: true,  // VERIFIED 2026-01-20
@@ -103,7 +103,7 @@ const STI_DATA = {
                 note: 'F→M rate not directly stated; using M→F as estimate'
             }
         },
-        condomEffectiveness: { 
+        condomEffectiveness: {
             // Direction-specific effectiveness from Martin 2009
             mtf: { value: 0.96, sourceId: 'hsv2_condom_effectiveness' },  // 96% effective M→F
             ftm: { value: 0.65, sourceId: 'hsv2_condom_effectiveness' },  // 65% effective F→M
@@ -128,7 +128,7 @@ const STI_DATA = {
         sourceUrl: 'https://pubmed.ncbi.nlm.nih.gov/14702423/',
         notes: 'Per-act rate ~0.053% (derived from 3.6% over 8 months). Condoms 96% effective M→F, 65% F→M. Daily antivirals reduce transmission by ~47%.'
     },
-    
+
     hpv: {
         name: 'HPV',
         verified: true,  // VERIFIED 2025-01-14
@@ -149,7 +149,7 @@ const STI_DATA = {
                 note: 'Derived from 5.6 per 100 person-months with assumed frequency'
             }
         },
-        condomEffectiveness: { 
+        condomEffectiveness: {
             value: 0.70,  // 70% reduction with consistent use
             sourceId: 'hpv_condom_effectiveness',
             isUnverified: false,
@@ -171,7 +171,7 @@ const STI_DATA = {
         sourceUrl: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8012224/',
         notes: 'Per-act rates derived from person–month transmission rates. Condoms 70% effective. Vaccine is most effective prevention.'
     },
-    
+
     chlamydia: {
         name: 'Chlamydia',
         verified: true,  // VERIFIED 2025-01-14
@@ -192,7 +192,7 @@ const STI_DATA = {
                 note: 'Midpoint of 6-16.7% range (no M→F vs F→M distinction)'
             }
         },
-        condomEffectiveness: { 
+        condomEffectiveness: {
             value: 0.60,  // 60% reduction with correct and consistent use
             sourceId: 'chlamydia_condom_effectiveness',
             isUnverified: false,
@@ -214,7 +214,7 @@ const STI_DATA = {
         sourceUrl: 'https://www.ncbi.nlm.nih.gov/books/NBK261441/',
         notes: 'Per-act rate ~11% (range 6-17%). Condoms 60% effective. Easily curable with antibiotics.'
     },
-    
+
     gonorrhea: {
         name: 'Gonorrhea',
         verified: true,  // VERIFIED 2026-01-16
@@ -235,7 +235,7 @@ const STI_DATA = {
                 note: 'Direct estimate: ~20% vaginal-to-penile per act'
             }
         },
-        condomEffectiveness: { 
+        condomEffectiveness: {
             value: 0.90,  // 90% reduction with correct and consistent use
             sourceId: 'gonorrhea_condom_effectiveness',
             isUnverified: false,
@@ -257,7 +257,7 @@ const STI_DATA = {
         sourceUrl: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7064409/',
         notes: 'Per-act rate 50% M→F, 20% F→M. Condoms 90% effective. Curable with antibiotics (but resistance growing).'
     },
-    
+
     syphilis: {
         name: 'Syphilis',
         verified: true,  // VERIFIED 2025-01-14
@@ -278,7 +278,7 @@ const STI_DATA = {
                 note: '>20% per act for early syphilis (no M→F vs F→M distinction)'
             }
         },
-        condomEffectiveness: { 
+        condomEffectiveness: {
             value: 0.605,  // Midpoint of 50-71% range for consistent correct use
             sourceId: 'syphilis_condom_effectiveness',
             isUnverified: false,
@@ -316,11 +316,11 @@ const STI_DATA = {
  */
 function generateTextFragmentUrl(baseUrl, quote) {
     if (!quote || !baseUrl) return baseUrl;
-    
+
     // Check if quote has omission markers (...)
     // If so, create multiple text fragments to highlight each section
     const parts = quote.split(/\s*\.\.\.\s*/).filter(p => p.trim().length > 0);
-    
+
     if (parts.length > 1) {
         // Multiple sections with omissions — use multiple &text= fragments
         const fragments = parts.map(part => {
@@ -334,17 +334,17 @@ function generateTextFragmentUrl(baseUrl, quote) {
         });
         return baseUrl + '#:~:text=' + fragments.join('&text=');
     }
-    
+
     // Single continuous quote — use as much as possible (up to 500 chars)
     let cleanQuote = quote
         .replace(/\s+/g, ' ')
         .trim();
-    
+
     if (cleanQuote.length > 500) {
         const lastSpace = cleanQuote.lastIndexOf(' ', 500);
         cleanQuote = lastSpace > 200 ? cleanQuote.substring(0, lastSpace) : cleanQuote.substring(0, 500);
     }
-    
+
     return baseUrl + `#:~:text=${encodeURIComponent(cleanQuote)}`;
 }
 
@@ -361,37 +361,37 @@ function createCitableNumber(displayText, sourceId) {
         console.warn(`Source not found: ${sourceId}`);
         return `<span class="citable-unverified">${displayText} <span style="color:#f59e0b;">⚠️</span></span>`;
     }
-    
+
     const source = window.SOURCES[sourceId];
     const verifiedDate = source.verifiedDate || 'Unknown';
     const isDerived = source.isDerived || false;
-    
+
     // Format quote: highlight parts that correspond to variables
     let formattedQuote = source.quote
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;')
         .replace(/\s*\.\.\.\s*/g, ' <span class="quote-ellipsis">···</span> ');
-    
+
     // If there's a derivation with variables, highlight them in the quote
     if (isDerived && source.derivation && source.derivation.variables) {
         source.derivation.variables.forEach(v => {
             if (v.highlight && v.source === 'quote') {
                 const regex = new RegExp(`(${v.highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-                formattedQuote = formattedQuote.replace(regex, 
+                formattedQuote = formattedQuote.replace(regex,
                     `<span class="quote-highlight" title="${v.name} = ${v.value}">$1</span>`);
             }
         });
     }
-    
+
     // Generate URL with text fragment to jump to quote
     const fragmentUrl = generateTextFragmentUrl(source.url, source.quote);
-    
+
     let contentHtml = '';
-    
+
     if (isDerived && source.derivation) {
         // DERIVED VALUE - Show step-by-step
         const d = source.derivation;
-        
+
         // Variables section
         let varsHtml = '<div class="derive-variables">';
         varsHtml += '<div class="derive-section-title">📋 Extracted Variables</div>';
@@ -416,7 +416,7 @@ function createCitableNumber(displayText, sourceId) {
             </div>`;
         });
         varsHtml += '</div>';
-        
+
         // Steps section
         let stepsHtml = '<div class="derive-steps">';
         stepsHtml += '<div class="derive-section-title">🧮 Calculation</div>';
@@ -425,13 +425,13 @@ function createCitableNumber(displayText, sourceId) {
             stepsHtml += `<div class="derive-step ${isWarning ? 'step-warning' : ''}">${step}</div>`;
         });
         stepsHtml += '</div>';
-        
+
         // Result section
         let resultHtml = '<div class="derive-result">';
         resultHtml += `<span class="derive-result-name">${d.result.name}</span> = `;
         resultHtml += `<span class="derive-result-value">${d.result.value}</span>`;
         resultHtml += '</div>';
-        
+
         // Warnings
         let warningsHtml = '';
         if (d.warnings && d.warnings.length > 0) {
@@ -441,7 +441,7 @@ function createCitableNumber(displayText, sourceId) {
             });
             warningsHtml += '</div>';
         }
-        
+
         contentHtml = `
             <div class="cite-tooltip-source">
                 ${source.name}
@@ -467,7 +467,7 @@ function createCitableNumber(displayText, sourceId) {
             <span class="cite-tooltip-meta">Last verified: ${verifiedDate}</span>
         `;
     }
-    
+
     return `<span class="citable" data-source="${sourceId}">
         ${displayText}
         <span class="cite-tooltip">${contentHtml}</span>
@@ -480,7 +480,7 @@ function createCitableNumber(displayText, sourceId) {
 function getSourceInfo(stiKey, rateType, direction = null) {
     const stiData = STI_DATA[stiKey];
     if (!stiData) return null;
-    
+
     if (rateType === 'transmission' && direction) {
         const rateData = stiData.rates[direction];
         if (typeof rateData === 'object' && rateData.sourceId) {
@@ -535,7 +535,7 @@ function adjustForCondom(baseRisk, effectiveness) {
 function generateRiskTimeline(perActRisk, frequency, months) {
     const dataPoints = [];
     const encountersPerMonth = frequency * 4.33; // ~4.33 weeks per month
-    
+
     for (let month = 0; month <= months; month++) {
         const totalEncounters = Math.round(encountersPerMonth * month);
         const risk = calculateCumulativeRisk(perActRisk, totalEncounters);
@@ -545,7 +545,7 @@ function generateRiskTimeline(perActRisk, frequency, months) {
             encounters: totalEncounters
         });
     }
-    
+
     return dataPoints;
 }
 
@@ -561,25 +561,25 @@ class RiskCalculator {
         this.syncLabelsWithSliders();
         this.updateCalculation();
     }
-    
+
     syncLabelsWithSliders() {
         // Sync labels with actual slider values (browsers may restore cached values)
         this.frequencyValue.textContent = this.getFrequencyLabel(parseInt(this.frequencyInput.value));
         this.durationValue.textContent = this.durationInput.value;
     }
-    
+
     initElements() {
         // Input elements
         this.stiSelect = document.getElementById('sti-select');
         this.directionSelect = document.getElementById('direction-select');
         this.frequencyInput = document.getElementById('frequency-input');
         this.durationInput = document.getElementById('duration-input');
-        
+
         // Preventatives container
         this.preventativesContainer = document.getElementById('preventatives-container');
         this.preventativeSelects = {};  // Holds select elements keyed by actor group
         this.preventativeDetails = {};  // Holds detail containers keyed by actor group
-        
+
         // Display elements
         this.frequencyValue = document.getElementById('frequency-value');
         this.durationValue = document.getElementById('duration-value');
@@ -589,68 +589,68 @@ class RiskCalculator {
         this.resultDuration = document.getElementById('result-duration');
         this.resultProbability = document.getElementById('result-probability');
         this.resultExplanation = document.getElementById('result-explanation-text');
-        
+
         // Chart
         this.chartCanvas = document.getElementById('risk-chart');
     }
-    
+
     bindEvents() {
         this.stiSelect.addEventListener('change', () => {
             this.updatePreventativesUI();
             this.updateCalculation();
         });
         this.directionSelect.addEventListener('change', () => this.updateCalculation());
-        
+
         this.frequencyInput.addEventListener('input', () => {
             this.frequencyValue.textContent = this.getFrequencyLabel(parseInt(this.frequencyInput.value));
             this.updateCalculation();
         });
-        
+
         this.durationInput.addEventListener('input', () => {
             this.durationValue.textContent = this.durationInput.value;
             this.updateCalculation();
         });
-        
+
         // Initial preventatives UI
         this.updatePreventativesUI();
     }
-    
+
     updatePreventativesUI() {
         const sti = this.stiSelect.value;
         const stiData = STI_DATA[sti];
-        
+
         // Clear existing controls
         this.preventativesContainer.innerHTML = '';
         this.preventativeSelects = {};
         this.preventativeDetails = {};
-        
+
         if (!stiData || !stiData.preventatives || stiData.preventatives.length === 0) {
             return;
         }
-        
+
         const groups = {
             infected: [],
             uninfected: [],
             both: []
         };
-        
+
         stiData.preventatives.forEach(prev => {
             const actor = prev.actor || 'both';
             if (!groups[actor]) groups[actor] = [];
             groups[actor].push(prev);
         });
-        
+
         const groupOrder = ['infected', 'uninfected', 'both'];
         const groupLabels = {
             infected: 'Infected partner medication',
             uninfected: 'Uninfected partner prevention',
             both: 'Both partners prevention'
         };
-        
+
         groupOrder.forEach(groupKey => {
             const items = groups[groupKey];
             if (!items || items.length === 0) return;
-            
+
             const selectId = `preventative-select-${groupKey}`;
             const groupDiv = document.createElement('div');
             groupDiv.className = 'input-group preventative-select-group';
@@ -659,60 +659,60 @@ class RiskCalculator {
                 <select id="${selectId}" class="preventative-select"></select>
                 <div class="preventative-detail" id="${selectId}-detail"></div>
             `;
-            
+
             const select = groupDiv.querySelector(`#${selectId}`);
             const optionsHtml = [
                 '<option value="">None</option>',
                 ...items.map(item => `<option value="${item.id}">${item.shortName}</option>`)
             ].join('');
             select.innerHTML = optionsHtml;
-            
+
             // Default to first option so preventatives show by default
             select.value = items[0].id;
-            
+
             const detail = groupDiv.querySelector(`#${selectId}-detail`);
-            
+
             this.preventativeSelects[groupKey] = select;
             this.preventativeDetails[groupKey] = detail;
-            
+
             select.addEventListener('change', () => {
                 this.renderPreventativeDetail(groupKey);
                 this.updateCalculation();
             });
-            
+
             this.preventativesContainer.appendChild(groupDiv);
             this.renderPreventativeDetail(groupKey);
         });
     }
-    
+
     getPreventativeIcon(prev) {
         if (prev.category === 'vaccine' || prev.category === 'injectable') return '💉';
         if (prev.category === 'post') return '⏱️';
         return '💊';
     }
-    
+
     renderPreventativeDetail(groupKey) {
         const select = this.preventativeSelects[groupKey];
         const detail = this.preventativeDetails[groupKey];
         if (!select || !detail) return;
-        
+
         const selectedId = select.value;
         if (!selectedId) {
             detail.innerHTML = '<span class="preventative-none">No medication selected</span>';
             return;
         }
-        
+
         const stiData = STI_DATA[this.stiSelect.value];
         const selected = stiData.preventatives.find(prev => prev.id === selectedId);
         if (!selected) {
             detail.innerHTML = '';
             return;
         }
-        
+
         const reductionPercent = Math.round(selected.value * 100);
         const reductionBadge = `<span class="reduction-badge">${createCitableNumber(`${reductionPercent}% reduction`, selected.sourceId)}</span>`;
         const icon = this.getPreventativeIcon(selected);
-        
+
         detail.innerHTML = `
             <div class="preventative-detail-main">
                 <span class="preventative-selected">${icon} ${selected.name}</span>
@@ -721,23 +721,23 @@ class RiskCalculator {
             <div class="preventative-note">${selected.note}</div>
         `;
     }
-    
+
     getEnabledPreventatives() {
         const sti = this.stiSelect.value;
         const stiData = STI_DATA[sti];
-        
+
         if (!stiData || !stiData.preventatives) return [];
-        
+
         const selected = [];
         Object.values(this.preventativeSelects).forEach(select => {
             if (!select || !select.value) return;
             const match = stiData.preventatives.find(prev => prev.id === select.value);
             if (match) selected.push(match);
         });
-        
+
         return selected;
     }
-    
+
     getFrequencyLabel(value) {
         if (value <= 7) {
             return value;
@@ -747,26 +747,26 @@ class RiskCalculator {
             return `${value} (${perDay}×/day)`;
         }
     }
-    
+
     updateCalculation() {
         const sti = this.stiSelect.value;
         const direction = this.directionSelect.value;
         const frequency = parseInt(this.frequencyInput.value);
         const months = parseInt(this.durationInput.value);
-        
+
         const stiData = STI_DATA[sti];
-        
+
         // Check if this STI has verified data
         if (!stiData.verified || !stiData.rates[direction].value) {
             this.showUnverifiedMessage(stiData);
             return;
         }
-        
+
         // Handle both old format (number) and new format (object with value)
-        const baseRate = typeof stiData.rates[direction] === 'object' 
-            ? stiData.rates[direction].value 
+        const baseRate = typeof stiData.rates[direction] === 'object'
+            ? stiData.rates[direction].value
             : stiData.rates[direction];
-        
+
         // Get direction-specific condom effectiveness if available
         let condomEff;
         let condomSourceId;
@@ -782,14 +782,14 @@ class RiskCalculator {
             condomEff = condomData;
             condomSourceId = null;
         }
-        
+
         // Calculate condom-adjusted rate
         const withCondomRate = adjustForCondom(baseRate, condomEff);
-        
+
         // Get enabled preventatives and calculate combined effectiveness
         const enabledPreventatives = this.getEnabledPreventatives();
         const hasPreventatives = enabledPreventatives.length > 0;
-        
+
         // Calculate combined preventative effectiveness (multiplicative)
         // E.g., PrEP (99%) + U=U (100%) = 1 - (1-0.99)*(1-1.0) = 100%
         let combinedPreventativeEff = 0;
@@ -800,30 +800,30 @@ class RiskCalculator {
             });
             combinedPreventativeEff = 1 - remainingRisk;
         }
-        
+
         // Calculate preventative-adjusted rates
         const withPreventativeRate = hasPreventatives ? adjustForCondom(baseRate, combinedPreventativeEff) : null;
         const withBothRate = hasPreventatives ? adjustForCondom(withCondomRate, combinedPreventativeEff) : null;
-        
+
         // Update rate display with citable sources
-        const rateSourceId = typeof stiData.rates[direction] === 'object' 
-            ? stiData.rates[direction].sourceId 
+        const rateSourceId = typeof stiData.rates[direction] === 'object'
+            ? stiData.rates[direction].sourceId
             : null;
         // condomSourceId already defined above with direction-specific logic
-        
+
         if (rateSourceId && window.SOURCES && window.SOURCES[rateSourceId]) {
             this.perActRate.innerHTML = createCitableNumber(
-                `${(baseRate * 100).toFixed(3)}%`, 
+                `${(baseRate * 100).toFixed(3)}%`,
                 rateSourceId
             );
         } else {
             this.perActRate.textContent = `${(baseRate * 100).toFixed(3)}%`;
         }
-        
+
         // Check if condom data is verified
         // condomData already defined above
         const isCondomUnverified = typeof condomData === 'object' && condomData.isUnverified;
-        
+
         // Show the with-condom rate (only if we have a verified source)
         if (condomSourceId && window.SOURCES && window.SOURCES[condomSourceId]) {
             this.adjustedRate.innerHTML = createCitableNumber(
@@ -842,13 +842,13 @@ class RiskCalculator {
             const reductionPercent = (condomEff * 100).toFixed(0);
             this.rateReduction.textContent = `(${reductionPercent}% reduction)`;
         }
-        
+
         // Generate timelines for all scenarios
         const hasVerifiedCondomData = condomSourceId && window.SOURCES && window.SOURCES[condomSourceId];
-        
+
         const timelineUnprotected = generateRiskTimeline(baseRate, frequency, months);
-        const timelineCondom = hasVerifiedCondomData 
-            ? generateRiskTimeline(withCondomRate, frequency, months) 
+        const timelineCondom = hasVerifiedCondomData
+            ? generateRiskTimeline(withCondomRate, frequency, months)
             : null;
         const timelinePreventative = hasPreventatives
             ? generateRiskTimeline(withPreventativeRate, frequency, months)
@@ -856,12 +856,12 @@ class RiskCalculator {
         const timelineBoth = (hasPreventatives && hasVerifiedCondomData)
             ? generateRiskTimeline(withBothRate, frequency, months)
             : null;
-        
+
         // Build preventative label for chart
         const preventativeLabel = enabledPreventatives.length > 0
             ? enabledPreventatives.map(p => p.shortName).join(' + ')
             : 'Preventatives';
-        
+
         // Update chart with all relevant lines
         this.updateChart({
             unprotected: timelineUnprotected,
@@ -873,16 +873,16 @@ class RiskCalculator {
             hasPreventativeData: hasPreventatives,
             preventativeLabel: preventativeLabel
         });
-        
+
         // Update result summary - show risks
         const finalRiskUnprotected = timelineUnprotected[timelineUnprotected.length - 1].risk;
         const finalRiskCondom = timelineCondom ? timelineCondom[timelineCondom.length - 1].risk : null;
         const finalRiskPreventative = timelinePreventative ? timelinePreventative[timelinePreventative.length - 1].risk : null;
         const finalRiskBoth = timelineBoth ? timelineBoth[timelineBoth.length - 1].risk : null;
         const totalEncounters = timelineUnprotected[timelineUnprotected.length - 1].encounters;
-        
+
         this.resultDuration.textContent = months;
-        
+
         // Show risks in the result
         if (hasPreventatives && finalRiskBoth !== null) {
             // Show full progression: unprotected → best protection
@@ -901,30 +901,30 @@ class RiskCalculator {
             this.resultProbability.textContent = `${(finalRiskUnprotected * 100).toFixed(1)}%`;
             this.resultProbability.style.color = this.getRiskColor(finalRiskUnprotected);
         }
-        
+
         // Generate explanation
         this.resultExplanation.innerHTML = this.generateExplanation(
-            stiData, baseRate, withCondomRate, totalEncounters, 
+            stiData, baseRate, withCondomRate, totalEncounters,
             finalRiskUnprotected, finalRiskCondom, finalRiskPreventative, finalRiskBoth,
-            hasVerifiedCondomData, hasPreventatives, 
+            hasVerifiedCondomData, hasPreventatives,
             combinedPreventativeEff, preventativeLabel, months
         );
     }
-    
+
     getRiskColor(risk) {
         if (risk < 0.05) return '#10b981';      // Low - green
         if (risk < 0.20) return '#f59e0b';      // Moderate - amber
         if (risk < 0.50) return '#f97316';      // High - orange
         return '#ef4444';                        // Very high - red
     }
-    
+
     showUnverifiedMessage(stiData) {
         // Clear the chart
         if (this.chart) {
             this.chart.destroy();
             this.chart = null;
         }
-        
+
         // Show unavailable message in chart area
         const ctx = this.chartCanvas.getContext('2d');
         ctx.clearRect(0, 0, this.chartCanvas.width, this.chartCanvas.height);
@@ -934,12 +934,12 @@ class RiskCalculator {
         ctx.fillText('Data not yet available', this.chartCanvas.width / 2, this.chartCanvas.height / 2 - 20);
         ctx.font = '13px Outfit, sans-serif';
         ctx.fillText('Sources being verified', this.chartCanvas.width / 2, this.chartCanvas.height / 2 + 10);
-        
+
         // Update rate displays
         this.perActRate.innerHTML = '<span style="color: #f59e0b;">⚠ Unverified</span>';
         this.adjustedRate.innerHTML = '<span style="color: #f59e0b;">⚠ Unverified</span>';
         this.rateReduction.textContent = '';
-        
+
         // Update result
         this.resultProbability.textContent = 'N/A';
         this.resultProbability.style.color = '#6b7280';
@@ -951,35 +951,35 @@ class RiskCalculator {
             <em>Reason: ${stiData.verificationNote || 'Sources pending verification'}</em>
         `;
     }
-    
-    generateExplanation(stiData, baseRate, withCondomRate, encounters, 
-                        riskUnprotected, riskCondom, riskPreventative, riskBoth,
-                        hasCondomData, hasPreventativeData, preventativeEff, preventativeLabel, months) {
+
+    generateExplanation(stiData, baseRate, withCondomRate, encounters,
+        riskUnprotected, riskCondom, riskPreventative, riskBoth,
+        hasCondomData, hasPreventativeData, preventativeEff, preventativeLabel, months) {
         const unprotectedPercent = (riskUnprotected * 100).toFixed(1);
-        
+
         const getRiskLevel = (risk) => {
             if (risk < 0.05) return 'relatively low';
             if (risk < 0.20) return 'moderate';
             if (risk < 0.50) return 'significant';
             return 'very high';
         };
-        
+
         let html = `Over <strong>${months} month${months > 1 ? 's' : ''}</strong> (~${encounters} encounters):<br>`;
         html += `<span style="color:#ef4444;">No protection:</span> <strong>${unprotectedPercent}%</strong> risk (${getRiskLevel(riskUnprotected)})`;
-        
+
         if (hasCondomData && riskCondom !== null) {
             const condomPercent = (riskCondom * 100).toFixed(1);
             html += `<br><span style="color:#10b981;">Condom only:</span> <strong>${condomPercent}%</strong> risk (${getRiskLevel(riskCondom)})`;
         }
-        
+
         if (hasPreventativeData && riskPreventative !== null) {
             const preventativePercent = (riskPreventative * 100).toFixed(1);
             html += `<br><span style="color:#8b5cf6;">${preventativeLabel} only:</span> <strong>${preventativePercent}%</strong> risk (${getRiskLevel(riskPreventative)})`;
         }
-        
+
         if (hasPreventativeData && hasCondomData && riskBoth !== null) {
             const bothPercent = (riskBoth * 100).toFixed(1);
-            const totalReduction = riskUnprotected > 0 
+            const totalReduction = riskUnprotected > 0
                 ? ((riskUnprotected - riskBoth) / riskUnprotected * 100).toFixed(0)
                 : 100;
             html += `<br><span style="color:#06b6d4;">Condom + ${preventativeLabel}:</span> <strong>${bothPercent}%</strong> risk (${getRiskLevel(riskBoth)})`;
@@ -988,47 +988,47 @@ class RiskCalculator {
             const reduction = ((riskUnprotected - riskCondom) / riskUnprotected * 100).toFixed(0);
             html += `<br><em>Condoms reduce your cumulative risk by ~${reduction}%</em>`;
         }
-        
+
         if (stiData.notes) {
             html += `<br><br><em>Note: ${stiData.notes}</em>`;
         }
-        
+
         return html;
     }
-    
+
     updateChart(timelines, stiName, options) {
         const { unprotected, condom, preventative, both } = timelines;
         const { hasCondomData, hasPreventativeData, preventativeLabel } = options;
-        
+
         // Labels show month and encounter count
         const labels = unprotected.map(d => {
             if (d.month === 0) return 'Start';
             return `Mo ${d.month} (${d.encounters})`;
         });
-        
+
         if (this.chart) {
             this.chart.destroy();
         }
-        
+
         const ctx = this.chartCanvas.getContext('2d');
-        
+
         // Create gradients for each line type
         const gradientUnprotected = ctx.createLinearGradient(0, 0, 0, 300);
         gradientUnprotected.addColorStop(0, 'rgba(239, 68, 68, 0.2)');
         gradientUnprotected.addColorStop(1, 'rgba(239, 68, 68, 0.02)');
-        
+
         const gradientCondom = ctx.createLinearGradient(0, 0, 0, 300);
         gradientCondom.addColorStop(0, 'rgba(16, 185, 129, 0.2)');
         gradientCondom.addColorStop(1, 'rgba(16, 185, 129, 0.02)');
-        
+
         const gradientAntiviral = ctx.createLinearGradient(0, 0, 0, 300);
         gradientAntiviral.addColorStop(0, 'rgba(139, 92, 246, 0.2)');
         gradientAntiviral.addColorStop(1, 'rgba(139, 92, 246, 0.02)');
-        
+
         const gradientBoth = ctx.createLinearGradient(0, 0, 0, 300);
         gradientBoth.addColorStop(0, 'rgba(6, 182, 212, 0.2)');
         gradientBoth.addColorStop(1, 'rgba(6, 182, 212, 0.02)');
-        
+
         // Build datasets - always show unprotected
         const datasets = [
             {
@@ -1046,7 +1046,7 @@ class RiskCalculator {
                 pointHoverRadius: 5
             }
         ];
-        
+
         // Add condom line if data available
         if (hasCondomData && condom) {
             datasets.push({
@@ -1064,7 +1064,7 @@ class RiskCalculator {
                 pointHoverRadius: 5
             });
         }
-        
+
         // Add preventative-only line if enabled
         if (hasPreventativeData && preventative) {
             datasets.push({
@@ -1083,7 +1083,7 @@ class RiskCalculator {
                 borderDash: [5, 5]  // Dashed line to distinguish
             });
         }
-        
+
         // Add combined protection line if both available
         if (hasPreventativeData && hasCondomData && both) {
             datasets.push({
@@ -1101,10 +1101,10 @@ class RiskCalculator {
                 pointHoverRadius: 5
             });
         }
-        
+
         // Store timelines for tooltip access
         this._timelines = timelines;
-        
+
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -1157,7 +1157,7 @@ class RiskCalculator {
                                 if (dataPoint.month === 0) return 'Start (0 sex acts)';
                                 return `Month ${dataPoint.month} (${dataPoint.encounters} sex acts)`;
                             },
-                            label: function(context) {
+                            label: function (context) {
                                 return `${context.dataset.label}: ${context.parsed.y}%`;
                             }
                         }
@@ -1191,7 +1191,7 @@ class RiskCalculator {
                                 family: "'JetBrains Mono', monospace",
                                 size: 11
                             },
-                            callback: function(value) {
+                            callback: function (value) {
                                 return value + '%';
                             },
                             stepSize: 20
@@ -1209,18 +1209,18 @@ class RiskCalculator {
 
 function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 const navHeight = document.querySelector('.nav').offsetHeight;
                 const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 20;
-                
+
                 window.scrollTo({
                     top: targetPosition,
                     behavior: 'smooth'
                 });
-                
+
                 // Close mobile menu if open
                 closeMobileMenu();
             }
@@ -1235,26 +1235,26 @@ function initSmoothScrolling() {
 function initMobileNav() {
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
-    
+
     if (!navToggle || !navLinks) return;
-    
+
     navToggle.addEventListener('click', () => {
         const isOpen = navLinks.classList.contains('active');
-        
+
         if (isOpen) {
             closeMobileMenu();
         } else {
             openMobileMenu();
         }
     });
-    
+
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.nav')) {
             closeMobileMenu();
         }
     });
-    
+
     // Close menu on escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
@@ -1266,7 +1266,7 @@ function initMobileNav() {
 function openMobileMenu() {
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
-    
+
     if (navToggle && navLinks) {
         navToggle.classList.add('active');
         navToggle.setAttribute('aria-expanded', 'true');
@@ -1278,7 +1278,7 @@ function openMobileMenu() {
 function closeMobileMenu() {
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
-    
+
     if (navToggle && navLinks) {
         navToggle.classList.remove('active');
         navToggle.setAttribute('aria-expanded', 'false');
@@ -1294,9 +1294,9 @@ function closeMobileMenu() {
 function initMobileTooltips() {
     // On touch devices, toggle tooltips on tap instead of hover
     if (!('ontouchstart' in window)) return;
-    
+
     let activeTooltip = null;
-    
+
     document.addEventListener('click', (e) => {
         // If clicking on a link inside the tooltip, let it through!
         const clickedLink = e.target.closest('a.cite-tooltip-link');
@@ -1304,18 +1304,18 @@ function initMobileTooltips() {
             // Allow the link to work - don't prevent default
             return;
         }
-        
+
         const citable = e.target.closest('.citable, .citable-unverified');
-        
+
         if (citable) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             // Close any other open tooltip
             if (activeTooltip && activeTooltip !== citable) {
                 activeTooltip.classList.remove('tooltip-active');
             }
-            
+
             // Toggle this tooltip
             citable.classList.toggle('tooltip-active');
             activeTooltip = citable.classList.contains('tooltip-active') ? citable : null;
@@ -1336,16 +1336,16 @@ function initMobileTooltips() {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize calculator
     const calculator = new RiskCalculator();
-    
+
     // Initialize smooth scrolling
     initSmoothScrolling();
-    
+
     // Initialize mobile navigation
     initMobileNav();
-    
+
     // Initialize mobile tooltips
     initMobileTooltips();
-    
+
     // Log data sources for transparency
     console.log('📊 Know Your Numbers - STI Risk Calculator');
     console.log('Data sources:', Object.entries(STI_DATA).map(([key, data]) => ({
