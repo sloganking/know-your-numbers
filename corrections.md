@@ -97,6 +97,32 @@ Don't just pick the "more recent" study — it might be measuring something diff
 
 ---
 
+## Citation URLs Must Keep Text Fragments
+
+**Date:** 2026-01-20  
+**Issue:** Removed required `#:~:text=` fragments from citation URLs in `sources.js`
+
+### The Problem
+
+Two citation URLs were changed to base URLs without text fragments:
+- CDC HPV vaccination impact page
+- WHO hepatitis B fact sheet
+
+This violates the repository rule that **every citation URL must include a text fragment** to highlight the exact quoted text on the source page.
+
+### The Fix
+
+Reverted both URLs to include their full `#:~:text=` fragments:
+- `https://www.cdc.gov/hpv/vaccination-impact/index.html#:~:text=...`
+- `https://www.who.int/news-room/fact-sheets/detail/hepatitis-b#:~:text=...`
+
+### Rule
+
+**Never remove text fragments from citation URLs.**  
+If a URL already contains a fragment, keep it and add the quote-based fragment via the generator when rendering. The stored URL must retain its `#:~:text=` fragment at all times.
+
+---
+
 ## Pending Investigations
 
 *Add items here when you notice potential data issues that need research:*
@@ -110,4 +136,5 @@ Don't just pick the "more recent" study — it might be measuring something diff
 | Date | STI | Change | Reason |
 |------|-----|--------|--------|
 | 2026-01-20 | HSV-2 | Changed per-act rate from 2.85% to 0.053% | Was using shedding-only rate; now using overall average derived from Corey 2004 |
+| 2026-01-20 | N/A | Restored text fragments in citation URLs | Repository policy requires `#:~:text=` on all citation URLs |
 
