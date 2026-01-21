@@ -17,7 +17,7 @@ const SOURCES = {
     // ===========================================
     // HIV SOURCES - VERIFIED ✓
     // ===========================================
-    
+
     hiv_cdc_risk_estimates: {
         id: 'hiv_cdc_risk_estimates',
         name: 'CDC HIV Risk and Prevention Estimates',
@@ -53,7 +53,7 @@ const SOURCES = {
             }
         }
     },
-    
+
     hiv_boily_2009_meta: {
         id: 'hiv_boily_2009_meta',
         name: 'Boily et al. 2009 - Lancet - HIV Per-Act Transmission Meta-Analysis',
@@ -88,7 +88,7 @@ const SOURCES = {
             }
         }
     },
-    
+
     hiv_prep_effectiveness: {
         id: 'hiv_prep_effectiveness',
         name: 'CDC HIV Risk and Prevention - PrEP Effectiveness',
@@ -106,7 +106,7 @@ const SOURCES = {
             warnings: ['Requires consistent adherence (daily or at least 4x/week)']
         }
     },
-    
+
     hiv_viral_suppression: {
         id: 'hiv_viral_suppression',
         name: 'CDC HIV Risk and Prevention - Viral Suppression (U=U)',
@@ -124,7 +124,7 @@ const SOURCES = {
             warnings: ['Requires consistent ART adherence and viral suppression']
         }
     },
-    
+
     hiv_condom_effectiveness: {
         id: 'hiv_condom_effectiveness',
         name: 'CDC - Condom Effectiveness for HIV Prevention',
@@ -166,11 +166,11 @@ const SOURCES = {
             }
         }
     },
-    
+
     // ===========================================
     // HSV-2 (Herpes) SOURCES
     // ===========================================
-    
+
     hsv2_corey_2004: {
         id: 'hsv2_corey_2004',
         name: 'Corey et al. 2004 - NEJM - HSV-2 Transmission Study',
@@ -212,7 +212,7 @@ const SOURCES = {
             }
         }
     },
-    
+
     hsv2_condom_effectiveness: {
         id: 'hsv2_condom_effectiveness',
         name: 'Martin et al. 2009 - HSV-2 Condom Effectiveness',
@@ -256,7 +256,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // HSV-2 asymptomatic transmission
     hsv2_cdc_asymptomatic: {
         id: 'hsv2_cdc_asymptomatic',
@@ -275,7 +275,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // PRIMARY SOURCE - Direct per-act measurements from Magaret 2016
     hsv2_magaret_2016: {
         id: 'hsv2_magaret_2016',
@@ -324,7 +324,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // BACKUP SOURCE - Derived per-act rate (less reliable than Magaret 2016)
     hsv2_per_act_derived: {
         id: 'hsv2_per_act_derived',
@@ -382,11 +382,11 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // ===========================================
     // CHLAMYDIA SOURCES
     // ===========================================
-    
+
     chlamydia_asymptomatic: {
         id: 'chlamydia_asymptomatic',
         name: 'Finnish Student Health Service - Chlamydia Symptoms',
@@ -405,7 +405,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     chlamydia_price_2021: {
         id: 'chlamydia_price_2021',
         name: 'Price et al. 2021 - BMJ STI - Chlamydia Per-Partnership Transmission',
@@ -415,7 +415,7 @@ const SOURCES = {
         type: 'abstract',
         notes: 'Per-PARTNERSHIP rates - see chlamydia_ncbi_per_act for per-act rates'
     },
-    
+
     chlamydia_ncbi_per_act: {
         id: 'chlamydia_ncbi_per_act',
         name: 'NCBI Book - Chlamydia Per-Act Transmission',
@@ -456,11 +456,11 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // ===========================================
     // SYPHILIS SOURCES
     // ===========================================
-    
+
     syphilis_ashm_per_act: {
         id: 'syphilis_ashm_per_act',
         name: 'ASHM Contact Tracing Guidelines - Syphilis Per-Act Transmission',
@@ -500,7 +500,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     syphilis_schober_1983: {
         id: 'syphilis_schober_1983',
         name: 'Schober et al. 1983 - How Infectious is Syphilis?',
@@ -510,11 +510,11 @@ const SOURCES = {
         type: 'abstract',
         notes: 'Per-PARTNERSHIP rate - see syphilis_ashm_per_act for per-act rates'
     },
-    
+
     // ===========================================
     // GONORRHEA SOURCES
     // ===========================================
-    
+
     // PRIMARY SOURCE - Direct per-act measurements
     gonorrhea_kirkcaldy_2019: {
         id: 'gonorrhea_kirkcaldy_2019',
@@ -551,7 +551,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // Gonorrhea antibiotic resistance
     gonorrhea_resistance: {
         id: 'gonorrhea_resistance',
@@ -570,7 +570,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // BACKUP SOURCE - Derived estimate (less reliable than Kirkcaldy 2019)
     gonorrhea_ncbi_book: {
         id: 'gonorrhea_ncbi_book',
@@ -621,7 +621,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // ===========================================
     // HPV SOURCES
     // ===========================================
@@ -681,7 +681,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     hpv_burchell_2013: {
         id: 'hpv_burchell_2013',
         name: 'Burchell et al. 2013 - HPV Transmission in Couples',
@@ -718,7 +718,7 @@ const SOURCES = {
             warnings: ['This is incidence over time, not per-act probability', 'HPV is extremely common - most people will acquire it']
         }
     },
-    
+
     hpv_obgyn_high_estimate: {
         id: 'hpv_obgyn_high_estimate',
         name: 'Contemporary OB/GYN - HPV High Transmissibility',
@@ -741,7 +741,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     hpv_lifetime_chesson: {
         id: 'hpv_lifetime_chesson',
         name: 'Chesson et al. 2014 - HPV Lifetime Probability',
@@ -778,11 +778,11 @@ const SOURCES = {
             warnings: ['This is LIFETIME probability, not per-act or per-partnership', 'Most sexually active people will acquire HPV at some point']
         }
     },
-    
+
     // ===========================================
     // CONDOM EFFECTIVENESS SOURCES
     // ===========================================
-    
+
     syphilis_condom_effectiveness: {
         id: 'syphilis_condom_effectiveness',
         name: 'PMC Review - Condom Effectiveness for Syphilis',
@@ -822,7 +822,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     hpv_condom_effectiveness: {
         id: 'hpv_condom_effectiveness',
         name: 'MDedge - Condoms Prevent HPV Transmission Study',
@@ -854,7 +854,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     gonorrhea_condom_effectiveness: {
         id: 'gonorrhea_condom_effectiveness',
         name: 'Crosby et al. 2004 - JAMA Pediatrics - Condom Effectiveness for Gonorrhea',
@@ -884,7 +884,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     chlamydia_condom_effectiveness: {
         id: 'chlamydia_condom_effectiveness',
         name: 'Crosby et al. 2004 - JAMA Pediatrics - Condom Effectiveness for Chlamydia',
@@ -914,11 +914,11 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // ===========================================
     // TESTING WINDOW PERIOD SOURCES
     // ===========================================
-    
+
     // Chlamydia/Gonorrhea window period
     chlamydia_gonorrhea_window_nhs: {
         id: 'chlamydia_gonorrhea_window_nhs',
@@ -938,7 +938,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // Syphilis window period - using NHS source (same as chlamydia/gonorrhea)
     syphilis_window_nhs: {
         id: 'syphilis_window_nhs',
@@ -957,7 +957,7 @@ const SOURCES = {
             warnings: ['NHS also notes: "in some circumstance you also need a test at 3 months"']
         }
     },
-    
+
     // Herpes window period - antibody test
     hsv_window_cdc: {
         id: 'hsv_window_cdc',
@@ -976,7 +976,7 @@ const SOURCES = {
             warnings: ['This is for antibody blood tests; swab of active sore can detect immediately']
         }
     },
-    
+
     // HPV testing info
     hpv_testing_cdc: {
         id: 'hpv_testing_cdc',
@@ -996,7 +996,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // CDC recommendation against routine herpes screening
     hsv_no_routine_screening_cdc: {
         id: 'hsv_no_routine_screening_cdc',
@@ -1015,7 +1015,7 @@ const SOURCES = {
             warnings: ['Testing IS recommended if you have symptoms']
         }
     },
-    
+
     hiv_window_period_cdc: {
         id: 'hiv_window_period_cdc',
         name: 'CDC - HIV Testing Window Periods',
@@ -1064,11 +1064,11 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // ===========================================
     // HEPATITIS B SOURCES - VERIFIED ✓
     // ===========================================
-    
+
     // Hepatitis B chronic by age
     hepb_chronic_by_age: {
         id: 'hepb_chronic_by_age',
@@ -1088,7 +1088,7 @@ const SOURCES = {
             warnings: ['This is why perinatal vaccination is critical']
         }
     },
-    
+
     // Hepatitis B condom effectiveness
     hepb_condom_effectiveness: {
         id: 'hepb_condom_effectiveness',
@@ -1108,11 +1108,11 @@ const SOURCES = {
             warnings: ['HBV is highly infectious — vaccination is the primary prevention']
         }
     },
-    
+
     // ===========================================
     // TRICHOMONIASIS SOURCES - VERIFIED ✓
     // ===========================================
-    
+
     // Per-act transmission (unknown)
     trich_ashm_per_act: {
         id: 'trich_ashm_per_act',
@@ -1131,7 +1131,7 @@ const SOURCES = {
             warnings: ['Per-act rate not quantified in medical literature', 'Believed to transmit readily during vaginal sex']
         }
     },
-    
+
     // CDC prevalence and symptoms
     trich_cdc_prevalence: {
         id: 'trich_cdc_prevalence',
@@ -1152,7 +1152,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // Asymptomatic rate
     trich_cdc_asymptomatic: {
         id: 'trich_cdc_asymptomatic',
@@ -1171,7 +1171,7 @@ const SOURCES = {
             warnings: ['Untreated infections can persist for months to years']
         }
     },
-    
+
     // WHO global incidence
     trich_who_global: {
         id: 'trich_who_global',
@@ -1190,7 +1190,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // Trichomoniasis HIV risk
     trich_hiv_risk: {
         id: 'trich_hiv_risk',
@@ -1209,7 +1209,7 @@ const SOURCES = {
             warnings: []
         }
     },
-    
+
     // Trichomoniasis condom effectiveness
     trich_condom_effectiveness: {
         id: 'trich_condom_effectiveness',
@@ -1230,7 +1230,7 @@ const SOURCES = {
             warnings: ['Condom effectiveness for trichomoniasis is controversial', 'Studies show widely varying results (30% to >90%)']
         }
     },
-    
+
     // Trichomoniasis testing and window period
     trich_ashm_testing: {
         id: 'trich_ashm_testing',
@@ -1250,11 +1250,11 @@ const SOURCES = {
             warnings: ['Window period not established in medical literature']
         }
     },
-    
+
     // ===========================================
     // DOXYPEP SOURCES - PENDING VERIFICATION
     // ===========================================
-    
+
     // DoxyPEP - NEJM 2023 trial results
     doxypep_nejm_2023: {
         id: 'doxypep_nejm_2023',
@@ -1287,11 +1287,67 @@ const SOURCES = {
             ]
         }
     },
-    
+
+    // DoxyPEP - CDC 2024 clinical guidelines (who is recommended)
+    doxypep_cdc_2024_recommendation: {
+        id: 'doxypep_cdc_2024_recommendation',
+        name: 'CDC MMWR 2024 - DoxyPEP Recommendations',
+        url: 'https://www.cdc.gov/mmwr/volumes/73/rr/rr7302a1.htm#:~:text=CDC%20recommends%20that%20MSM%20and%20TGW%20who%20have%20had%20a%20bacterial%20STI%20(specifically%20syphilis%2C%20chlamydia%2C%20or%20gonorrhea)%20diagnosed%20in%20the%20past%2012%20months%20should%20receive%20counseling%20that%20doxy%20PEP%20can%20be%20used%20as%20postexposure%20prophylaxis%20to%20prevent%20these%20infections.',
+        quote: 'CDC recommends that MSM and TGW who have had a bacterial STI (specifically syphilis, chlamydia, or gonorrhea) diagnosed in the past 12 months should receive counseling that doxy PEP can be used as postexposure prophylaxis to prevent these infections.',
+        verifiedDate: null,
+        type: 'guideline',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'population', value: 'MSM and TGW with STI in past 12 months', source: 'quote', highlight: 'MSM and TGW ... past 12 months' }
+            ],
+            steps: ['CDC recommends DoxyPEP counseling for MSM/TGW with a bacterial STI in the last 12 months'],
+            result: { name: 'recommended_population', value: 'MSM and TGW with recent STI' },
+            warnings: []
+        }
+    },
+
+    doxypep_cdc_2024_other_populations: {
+        id: 'doxypep_cdc_2024_other_populations',
+        name: 'CDC MMWR 2024 - DoxyPEP Other Populations',
+        url: 'https://www.cdc.gov/mmwr/volumes/73/rr/rr7302a1.htm#:~:text=clinical%20data%20to%20support%20doxy%20PEP%20in%20other%20populations%20(i.e.%2C%20cisgender%20women%2C%20cisgender%20heterosexual%20men%2C%20transgender%20men%2C%20and%20other%20queer%20and%20nonbinary%20persons%20assigned%20female%20at%20birth)%20are%20limited.&text=As%20a%20result%2C%20providers%20should%20use%20their%20clinical%20judgement%20and%20shared%20decision-making%20to%20inform%20use%20of%20doxy%20PEP%20with%20populations%20that%20are%20not%20part%20of%20CDC%20recommendations.',
+        quote: 'clinical data to support doxy PEP in other populations (i.e., cisgender women, cisgender heterosexual men, transgender men, and other queer and nonbinary persons assigned female at birth) are limited. ... As a result, providers should use their clinical judgement and shared decision-making to inform use of doxy PEP with populations that are not part of CDC recommendations.',
+        verifiedDate: null,
+        type: 'guideline',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'evidence_limitations', value: 'clinical data ... are limited', source: 'quote', highlight: 'clinical data ... are limited' }
+            ],
+            steps: ['CDC notes limited data for populations outside MSM/TGW and recommends clinical judgment and shared decision-making'],
+            result: { name: 'evidence_status_other_populations', value: 'limited data' },
+            warnings: []
+        }
+    },
+
+    doxypep_cdc_2024_ciswomen_trial: {
+        id: 'doxypep_cdc_2024_ciswomen_trial',
+        name: 'CDC MMWR 2024 - DoxyPEP Trial in Cisgender Women',
+        url: 'https://www.cdc.gov/mmwr/volumes/73/rr/rr7302a1.htm#:~:text=The%20only%20trial%20conducted%20among%20cisgender%20women%20was%20an%20open-label%201:1%20randomized%20trial%20of%20doxycycline%20200%20mg%20within%2072%20hours%20of%20sex%20versus%20standard%20of%20care&text=It%20found%20no%20significant%20reduction%20in%20bacterial%20STIs&text=hair%20studies%20found%20that%20doxycycline%20was%20detected%20in%20only%2029%25%20of%20participants%20in%20the%20doxycycline%20arm%2C%20suggesting%20that%20nonadherence%20might%20have%20been%20the%20reason%20for%20lack%20of%20efficacy',
+        quote: 'The only trial conducted among cisgender women was an open-label 1:1 randomized trial of doxycycline 200 mg within 72 hours of sex versus standard of care ... It found no significant reduction in bacterial STIs ... hair studies found that doxycycline was detected in only 29% of participants in the doxycycline arm, suggesting that nonadherence might have been the reason for lack of efficacy',
+        verifiedDate: null,
+        type: 'guideline',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'ciswomen_trial_result', value: 'no significant reduction', source: 'quote', highlight: 'no significant reduction' },
+                { name: 'adherence_marker', value: 'doxycycline detected in only 29%', source: 'quote', highlight: 'detected in only 29%' }
+            ],
+            steps: ['CDC reports no significant reduction in cisgender women trial and notes low adherence as a possible reason'],
+            result: { name: 'ciswomen_evidence', value: 'no significant reduction; adherence concerns' },
+            warnings: []
+        }
+    },
+
     // ===========================================
     // HPV VACCINE SOURCES - VERIFIED
     // ===========================================
-    
+
     hpv_vaccine_cdc_impact: {
         id: 'hpv_vaccine_cdc_impact',
         name: 'CDC - HPV Vaccination Impact',
@@ -1317,11 +1373,11 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // ===========================================
     // HEPATITIS B VACCINE SOURCES - VERIFIED
     // ===========================================
-    
+
     hepb_vaccine_who: {
         id: 'hepb_vaccine_who',
         name: 'WHO - Hepatitis B Vaccine Effectiveness',
@@ -1347,11 +1403,11 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // ===========================================
     // INJECTABLE PREP SOURCES - VERIFIED
     // ===========================================
-    
+
     cabotegravir_hptn083: {
         id: 'cabotegravir_hptn083',
         name: 'NEJM - Cabotegravir PrEP HPTN 083 Trial',
@@ -1382,7 +1438,7 @@ const SOURCES = {
             ]
         }
     },
-    
+
     lenacapavir_purpose1: {
         id: 'lenacapavir_purpose1',
         name: 'NEJM - Lenacapavir PURPOSE 1 Trial (Women)',
@@ -1413,11 +1469,11 @@ const SOURCES = {
             ]
         }
     },
-    
+
     // ===========================================
     // HEPATITIS C SOURCES - VERIFIED ✓
     // ===========================================
-    
+
     // Sexual transmission is negligible
     hepc_sexual_negligible: {
         id: 'hepc_sexual_negligible',
