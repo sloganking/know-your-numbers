@@ -197,7 +197,24 @@ The remaining ⚠️-flagged figures — syphilis latent-stage "Low", trichomoni
 
 *Add items here when you notice potential data issues that need research:*
 
-- [ ] (none currently)
+### Self-audit questions that have caught real problems (run these on every number)
+1. **Cited?** Does every displayed number link to a source with the exact quoted text? (caught: HSV-1 67%, HPV 90%, Hep B window, Hep C 1-in-190k)
+2. **Precision vs certainty.** Does the number's decimal precision oversell how solid it is? (caught: HPV/HSV per-act "0.410%" derived from assumed frequency → now flagged `derived`)
+3. **Conditional framing.** Will a naive reader know what the number is conditional on? (caught: calculator read as general risk, not "partner already has it")
+4. **Scope creep.** Does the tool silently invite misuse beyond what the source measured? (caught: vaginal-only applied to anal/oral)
+5. **Direction.** Is M→F vs F→M a real measurement or undifferentiated/copied? (open: chlamydia, syphilis are undifferentiated)
+6. **Stage/subgroup dependence.** Does the rate only hold for a stage or subgroup? (open: syphilis 20% is EARLY-stage only; Hep B varies with viral load; DoxyPEP is MSM/TGW)
+7. **Currency.** Is the statistic the current published figure? (caught: HSV-1 67% was 2012; 64% is 2020)
+8. **Internal consistency.** Do calculator, STI profile cards, and prose agree? (caught: gonorrhea 22.8% vs 50/20)
+9. **Derivation double-count.** A per-act rate derived from an assumed frequency, then multiplied by the user's chosen frequency, embeds an assumption twice. (open: HPV, HSV)
+
+### Data-quality upgrade targets (needs a dedicated web-research cycle — NOT a launch blocker; all currently flagged honestly)
+- [ ] **Syphilis** — currently `undifferentiated` (no M→F vs F→M) and the >20% is EARLY-stage only. Find direction-specific per-act rates if they exist; decide whether to explicitly scope the calculator to early syphilis or model stage decay. Current standard is weakest here.
+- [ ] **Chlamydia** — `undifferentiated` midpoint of 6–16.7% (NCBI). Look for direction-specific per-act estimates.
+- [ ] **HPV / HSV-2** — per-act values are `derived` from per-person-time studies using an assumed ~2×/week frequency. Look for direct per-act estimates to remove the assumption (may not exist).
+- [ ] **Expansion** — anal and oral per-act rates (currently out of scope; biggest audience gap).
+- **"Good" = ** direct per-act probability, direction-specific where biology differs, from a primary source or public-health body, with a quotable sentence that passes `test-sources.js`. If it doesn't exist, keep the honest flag rather than inventing precision.
+- **Note:** run this as a FRESH session (clean context) or a delegated research subagent — a large multi-search scour will exhaust an almost-full context mid-way.
 
 ---
 
