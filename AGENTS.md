@@ -51,6 +51,11 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
+## [2026-07-03] Added "Just Exposed?" post-exposure section; reverted syntax highlighting
+- Added a prominent time-sensitive section (`#exposed`, right after the hero, with an urgent nav link): HIV PEP within 72h, DoxyPEP for bacterial STIs within 72h (MSM/TGW caveat), emergency contraception within 5 days, and non-consensual guidance (RAINN hotline + ER can treat and collect evidence in one visit). Points to the Testing Guide window periods for follow-up.
+- Added two sources to `sources.js`: `hiv_pep_cdc` (CDC HIV PEP, "within 72 hours") and `emergency_contraception_who` (WHO, ">95% within 5 days"). Both auto-verified by `test-sources.js` (now 52 passing). DoxyPEP claim reuses existing `doxypep_nejm_2023`.
+- Reverted the Prism.js syntax highlighting added earlier this session (author found it distracting); methodology code blocks are back to plain mono, no CDN dependency.
+
 ## [2026-07-03] Syntax highlighting, Martian-language wording pass, FAQ
 - Added Prism.js (tomorrow theme, JS grammar) via CDN for the two methodology code blocks; added `code[class*="language-"]` overrides in `styles.css` so it fits the dark theme.
 - Reworded the mission section, principles, and HPV "Key Context" to remove non-verifiable claims stated as fact (e.g. "the medical establishment has largely planned for [HPV] to spread"); replaced with observable facts (no general HPV test; CDC doesn't recommend asymptomatic herpes testing; ~90% HPV clearance) and reports about the author's own experience/wants. Keeps first-person voice; removes disputable assertions.

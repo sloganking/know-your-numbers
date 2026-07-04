@@ -1376,14 +1376,103 @@ input[type="range"]::-moz-range-thumb {
     line-height: 1.6;
 }
 
-/* Prism syntax highlighting - align with dark theme */
-.code-block pre[class*="language-"],
-.code-block code[class*="language-"] {
-    background: transparent;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+/* Just Exposed? Section */
+.nav-urgent {
+    color: var(--danger) !important;
+    font-weight: 600;
+}
+
+.nav-urgent:hover {
+    color: #f87171 !important;
+}
+
+.exposed-section {
+    background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(239, 68, 68, 0.06), transparent),
+        var(--bg-primary);
+}
+
+.section-tag.urgent {
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.exposed-banner {
+    max-width: 900px;
+    margin: 0 auto 2rem;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    color: var(--text-primary);
     line-height: 1.6;
-    text-shadow: none;
+}
+
+.exposed-banner strong {
+    color: var(--danger);
+}
+
+.exposed-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+@media (min-width: 700px) {
+    .exposed-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.exposed-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+}
+
+.exposed-card.urgent-card {
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.exposed-time {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-primary);
+    background: var(--accent-glow);
+    border-radius: var(--radius-sm);
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.urgent-card .exposed-time {
+    color: var(--danger);
+    background: rgba(239, 68, 68, 0.12);
+}
+
+.exposed-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.6rem;
+    color: var(--text-primary);
+}
+
+.exposed-card p {
+    line-height: 1.6;
+}
+
+.exposed-footnote {
+    max-width: 900px;
+    margin: 2rem auto 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.95rem;
 }
 
 /* FAQ Section */

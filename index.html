@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -27,6 +26,7 @@
             <span class="nav-toggle-bar"></span>
         </button>
         <div class="nav-links">
+            <a href="#exposed" class="nav-urgent">Just Exposed?</a>
             <a href="#mission">Why This Exists</a>
             <a href="#calculator">Calculator</a>
             <a href="#testing">Testing Guide</a>
@@ -68,6 +68,69 @@
             </div>
         </div>
     </header>
+
+    <section id="exposed" class="section exposed-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag urgent">Time-Sensitive</span>
+                <h2>Think You Were Just Exposed?</h2>
+                <p class="section-desc">
+                    If a recent encounter may have exposed you to an STI — including a non-consensual one —
+                    some of the most effective options only work within a short window. The single most useful
+                    thing you can do is get seen quickly.
+                </p>
+            </div>
+
+            <div class="exposed-banner">
+                <strong>⏱ Sooner is better.</strong> Go to an emergency room, urgent care, or sexual health
+                clinic. You do not need to know exactly what you were exposed to before you go — they can assess
+                and start preventive treatment.
+            </div>
+
+            <div class="exposed-grid">
+                <article class="exposed-card">
+                    <span class="exposed-time">Within 72 hours</span>
+                    <h3>To prevent HIV: PEP</h3>
+                    <p>
+                        <span class="citable" data-source="hiv_pep_cdc">PEP (post-exposure prophylaxis) must be started within 72 hours of a possible exposure<span class="cite-tooltip"><span class="cite-tooltip-source">CDC — HIV PEP</span><span class="cite-tooltip-quote">"PEP must be started within 72 hours (3 days) after a recent possible exposure to HIV"</span><a href="https://www.cdc.gov/hiv/prevention/pep.html#:~:text=PEP%20must%20be%20started%20within%2072%20hours%20(3%20days)%20after%20a%20recent%20possible%20exposure%20to%20HIV" target="_blank" class="cite-tooltip-link">View Source →</a></span></span>, and the sooner the better. It's a 28-day course of HIV medicine, started at an ER, urgent care, or sexual health clinic.
+                    </p>
+                </article>
+
+                <article class="exposed-card">
+                    <span class="exposed-time">Within 72 hours</span>
+                    <h3>To prevent bacterial STIs: DoxyPEP</h3>
+                    <p>
+                        A single dose of doxycycline taken after sex <span class="citable" data-source="doxypep_nejm_2023">reduced bacterial STIs (chlamydia, gonorrhea, syphilis) by about two-thirds in trials<span class="cite-tooltip"><span class="cite-tooltip-source">NEJM — DoxyPEP Trial (Luetkemeyer 2023)</span><span class="cite-tooltip-quote">"Doxycycline taken after condomless sex reduced the incidence of sexually transmitted infections by about two thirds"</span><span class="cite-tooltip-warning">⚠️ CDC recommends DoxyPEP specifically for MSM and transgender women with a bacterial STI in the past 12 months; evidence in other groups is limited. Ask a provider.</span><a href="https://pubmed.ncbi.nlm.nih.gov/36477032/" target="_blank" class="cite-tooltip-link">View Source →</a></span></span>. Ask a provider whether it's appropriate for you.
+                    </p>
+                </article>
+
+                <article class="exposed-card">
+                    <span class="exposed-time">Within 5 days</span>
+                    <h3>To prevent pregnancy</h3>
+                    <p>
+                        <span class="citable" data-source="emergency_contraception_who">Emergency contraception can prevent over 95% of pregnancies when taken within 5 days<span class="cite-tooltip"><span class="cite-tooltip-source">WHO — Emergency Contraception</span><span class="cite-tooltip-quote">"Emergency contraception (EC) can prevent up to over 95% of pregnancies when taken within 5 days after intercourse"</span><a href="https://www.who.int/news-room/fact-sheets/detail/emergency-contraception#:~:text=Emergency%20contraception%20(EC)%20can%20prevent%20up%20to%20over%2095%25%20of%20pregnancies%20when%20taken%20within%205%20days%20after%20intercourse" target="_blank" class="cite-tooltip-link">View Source →</a></span></span> — more effective the sooner it's taken. Some options are available over the counter without a prescription.
+                    </p>
+                </article>
+
+                <article class="exposed-card urgent-card">
+                    <span class="exposed-time">Right now</span>
+                    <h3>If it was non-consensual</h3>
+                    <p>
+                        You can call the National Sexual Assault Hotline at
+                        <a href="tel:18006564673">1-800-656-4673</a> (<a href="https://www.rainn.org" target="_blank">RAINN</a>),
+                        free and confidential, 24/7. An emergency room can start PEP and emergency contraception
+                        <em>and</em> collect forensic evidence in the same visit — you don't have to choose, and you
+                        don't have to decide about reporting to get medical care.
+                    </p>
+                </article>
+            </div>
+
+            <p class="exposed-footnote">
+                After the immediate window, you'll still want to get tested — but not the next day.
+                See <a href="#testing">window periods</a> for when each test becomes accurate.
+            </p>
+        </div>
+    </section>
 
     <section id="mission" class="section mission-section">
         <div class="container">
@@ -1010,7 +1073,7 @@
                     
                     <div class="code-block">
                         <h4>JavaScript Implementation</h4>
-<pre><code class="language-javascript">function calculateCumulativeRisk(perActRisk, numberOfEncounters) {
+<pre><code>function calculateCumulativeRisk(perActRisk, numberOfEncounters) {
     // Probability of NOT being infected after all encounters
     const probNotInfected = Math.pow(1 - perActRisk, numberOfEncounters);
     
@@ -1033,7 +1096,7 @@ calculateCumulativeRisk(0.114, 8);  // Returns: 0.620 (62.0%)</code></pre>
                         <p>\[ r_{protected} = r_{unprotected} \times (1 - e_{condom}) \]</p>
                     </div>
                     <div class="code-block">
-<pre><code class="language-javascript">function adjustForCondom(baseRisk, condomEffectiveness) {
+<pre><code>function adjustForCondom(baseRisk, condomEffectiveness) {
     return baseRisk * (1 - condomEffectiveness);
 }
 
@@ -1189,8 +1252,5 @@ adjustForCondom(0.0008, 0.80);  // Returns: 0.00016 (0.016%)</code></pre>
     </footer>
 
     <script src="app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 </body>
 </html>

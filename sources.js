@@ -1494,6 +1494,47 @@ const SOURCES = {
             result: { name: 'per_act_transmission', value: '~0.0005% (1 in 190,000)' },
             warnings: ['This is for monogamous heterosexual couples', 'Risk may be higher with blood exposure or HIV co-infection']
         }
+    },
+
+    // ===========================================
+    // POST-EXPOSURE / EMERGENCY SOURCES - VERIFIED ✓
+    // ===========================================
+
+    hiv_pep_cdc: {
+        id: 'hiv_pep_cdc',
+        name: 'CDC - HIV Post-Exposure Prophylaxis (PEP)',
+        url: 'https://www.cdc.gov/hiv/prevention/pep.html#:~:text=PEP%20must%20be%20started%20within%2072%20hours%20(3%20days)%20after%20a%20recent%20possible%20exposure%20to%20HIV',
+        quote: 'PEP must be started within 72 hours (3 days) after a recent possible exposure to HIV',
+        verifiedDate: '2026-07-03',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'pep_window', value: '72 hours', source: 'quote', highlight: 'within 72 hours (3 days)' }
+            ],
+            steps: ['From quote: HIV PEP must be started within 72 hours of a possible exposure'],
+            result: { name: 'pep_time_window', value: 'Within 72 hours (sooner is better)' },
+            warnings: ['The sooner PEP is started, the better — every hour counts', 'Taken daily for 28 days', 'Started at an ER, urgent care, or sexual health clinic']
+        }
+    },
+
+    emergency_contraception_who: {
+        id: 'emergency_contraception_who',
+        name: 'WHO - Emergency Contraception',
+        url: 'https://www.who.int/news-room/fact-sheets/detail/emergency-contraception#:~:text=Emergency%20contraception%20(EC)%20can%20prevent%20up%20to%20over%2095%25%20of%20pregnancies%20when%20taken%20within%205%20days%20after%20intercourse',
+        quote: 'Emergency contraception (EC) can prevent up to over 95% of pregnancies when taken within 5 days after intercourse',
+        verifiedDate: '2026-07-03',
+        type: 'factsheet',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'ec_effectiveness', value: '>95%', source: 'quote', highlight: 'up to over 95% of pregnancies' },
+                { name: 'ec_window', value: '5 days', source: 'quote', highlight: 'within 5 days after intercourse' }
+            ],
+            steps: ['From quote: emergency contraception can prevent >95% of pregnancies when taken within 5 days of intercourse'],
+            result: { name: 'ec_time_window', value: 'Within 5 days (more effective the sooner)' },
+            warnings: ['More effective the sooner it is taken', 'Some options are available without a prescription']
+        }
     }
 };
 
