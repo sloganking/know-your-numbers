@@ -325,6 +325,8 @@ a:hover {
         grid-template-columns: 1.2fr 1fr;
         gap: 4rem;
         align-items: center;
+        padding-left: max(1.5rem, calc((100% - var(--container-max)) / 2));
+        padding-right: max(1.5rem, calc((100% - var(--container-max)) / 2));
     }
     
     .hero-visual {
@@ -1390,6 +1392,70 @@ input[type="range"]::-moz-range-thumb {
     background:
         radial-gradient(ellipse 70% 50% at 50% 0%, rgba(239, 68, 68, 0.06), transparent),
         var(--bg-primary);
+}
+
+/* Compact triage bar under the hero (links down to #exposed) */
+.exposed-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: min(1100px, calc(100% - 3rem));
+    margin: 1.5rem auto;
+    padding: 0.85rem 1.25rem;
+    background: rgba(239, 68, 68, 0.09);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.exposed-bar:hover {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.5);
+    text-decoration: none;
+}
+
+.exposed-bar-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.exposed-bar-text {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.exposed-bar-text strong {
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.exposed-bar-cta {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--danger);
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .exposed-bar {
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+    }
+
+    .exposed-bar-cta {
+        width: 100%;
+    }
+}
+
+.exposed-card-note {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
 }
 
 .section-tag.urgent {

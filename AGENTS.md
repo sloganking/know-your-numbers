@@ -51,6 +51,10 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
+## [2026-07-03] Moved "Just Exposed?" below the fold; slim triage bar up top
+- Replaced the full post-exposure section under the hero with a compact red triage bar (`.exposed-bar`) that links down to the full `#exposed` section, which now sits after the Testing Guide. Keeps it unmissable without making the landing feel like an emergency page.
+- Added a U.S. scope note to the non-consensual card (RAINN is U.S.-only) with an "outside the U.S." pointer.
+
 ## [2026-07-03] Added "Just Exposed?" post-exposure section; reverted syntax highlighting
 - Added a prominent time-sensitive section (`#exposed`, right after the hero, with an urgent nav link): HIV PEP within 72h, DoxyPEP for bacterial STIs within 72h (MSM/TGW caveat), emergency contraception within 5 days, and non-consensual guidance (RAINN hotline + ER can treat and collect evidence in one visit). Points to the Testing Guide window periods for follow-up.
 - Added two sources to `sources.js`: `hiv_pep_cdc` (CDC HIV PEP, "within 72 hours") and `emergency_contraception_who` (WHO, ">95% within 5 days"). Both auto-verified by `test-sources.js` (now 52 passing). DoxyPEP claim reuses existing `doxypep_nejm_2023`.
