@@ -51,6 +51,11 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
+## [2026-07-03] Fixed page/calculator consistency bugs
+- Gonorrhea STI Profiles card repointed from `gonorrhea_ncbi_book` (22.8%, 2× chlamydia) to `gonorrhea_kirkcaldy_2019` (50% M→F / 20% F→M) so the card matches the calculator's `STI_DATA`.
+- Hero stat "20 Studies Cited" → "50 Sources Cited" (matches `sources.js`); fixed broken markup indentation on that card.
+- Methodology worked example corrected from 12.5% to the site's actual chlamydia rate 11.4% (result 62.0%). Details in `corrections.md`.
+
 ## [2026-07-03] Added `index.md` — content index / navigation layer
 - Created `index.md`: current file map, catalog of all 6 calculator STIs (rates, data-quality, primary source, condom eff., preventatives), and a full catalog of every source (50 in `sources.js` + 1 in `sources-backup.js`) grouped by STI/topic with measurement basis (per-act vs per-partnership vs incidence vs lifetime vs effectiveness) and auto/manual verification status.
 

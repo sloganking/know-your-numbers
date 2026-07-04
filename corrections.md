@@ -160,6 +160,21 @@ Confirmed the quote is live on the page, then added `manuallyVerified: true` wit
 
 ---
 
+## Page/Data Consistency Fixes (index.html vs calculator)
+
+**Date:** 2026-07-03  
+**Issue:** The static STI Profiles page contradicted the calculator and itself in several spots
+
+### Fixes
+
+1. **Gonorrhea rates** — the STI Profiles card showed **22.8% (both directions)** derived from `gonorrhea_ncbi_book` (2× chlamydia), while the calculator (`STI_DATA`) uses the direct per-act measurements from Kirkcaldy et al. 2019 (`gonorrhea_kirkcaldy_2019`): **50% M→F, 20% F→M**. Repointed the card to Kirkcaldy so the page and calculator agree, and updated the rate note. (`gonorrhea_ncbi_book` remains in `sources.js` as the per-partnership/relation source.)
+2. **Hero stat** — "20 Studies Cited" was stale (there are 50 sources in `sources.js`). Updated to "50 Sources Cited" and fixed broken indentation on that stat card.
+3. **Methodology worked example** — used 12.5% for chlamydia while the site's rate is 11.4%. Updated the example to `calculateCumulativeRisk(0.114, 8)` → 0.620 (62.0%).
+
+No source quotes changed; `node test-sources.js` and `node test-consistency.js` still pass.
+
+---
+
 ## Pending Investigations
 
 *Add items here when you notice potential data issues that need research:*
