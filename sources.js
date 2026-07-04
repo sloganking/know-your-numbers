@@ -1535,6 +1535,84 @@ const SOURCES = {
             result: { name: 'ec_time_window', value: 'Within 5 days (more effective the sooner)' },
             warnings: ['More effective the sooner it is taken', 'Some options are available without a prescription']
         }
+    },
+
+    // ===========================================
+    // LAUNCH-HARDENING SOURCES (2026-07-03) - VERIFIED ✓
+    // Replacing previously uncited/unverified prose figures
+    // ===========================================
+
+    hsv1_prevalence_who: {
+        id: 'hsv1_prevalence_who',
+        name: 'WHO - Herpes Simplex Virus Fact Sheet',
+        url: 'https://www.who.int/news-room/fact-sheets/detail/herpes-simplex-virus#:~:text=under%20age%2050%20(64%25)%20globally%20have%20herpes%20simplex%20virus%20type%201',
+        quote: 'An estimated 3.8 billion people under age 50 (64%) globally have herpes simplex virus type 1 (HSV-1) infection, the main cause of oral herpes.',
+        verifiedDate: '2026-07-03',
+        type: 'factsheet',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hsv1_global_prevalence', value: '64%', source: 'quote', highlight: 'under age 50 (64%) globally have herpes simplex virus type 1' }
+            ],
+            steps: ['From quote: an estimated 64% of people under age 50 globally have HSV-1'],
+            result: { name: 'hsv1_prevalence', value: '~64% of people under 50 globally' },
+            warnings: ['Most HSV-1 is acquired non-sexually in childhood and causes oral herpes']
+        }
+    },
+
+    hpv_clearance_cdc: {
+        id: 'hpv_clearance_cdc',
+        name: 'CDC - About Genital HPV Infection (Clearance)',
+        url: 'https://www.cdc.gov/sti/about/about-genital-hpv-infection.html#:~:text=In%20most%20cases%20(9%20out%20of%2010)%2C%20HPV%20goes%20away%20on%20its%20own%20within%20two%20years',
+        quote: 'In most cases (9 out of 10), HPV goes away on its own within two years without health problems.',
+        verifiedDate: '2026-07-03',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hpv_clearance_rate', value: '9 out of 10', source: 'quote', highlight: 'In most cases (9 out of 10), HPV goes away on its own within two years' }
+            ],
+            steps: ['From quote: in most cases (9 out of 10 = ~90%), HPV clears on its own within two years'],
+            result: { name: 'hpv_two_year_clearance', value: '~90% clear within 2 years' },
+            warnings: ['There is no way to know in advance which infections will clear and which will persist']
+        }
+    },
+
+    hepb_window_hbf: {
+        id: 'hepb_window_hbf',
+        name: 'Hepatitis B Foundation - Understanding Your Test Results',
+        url: 'https://www.hepb.org/prevention-and-diagnosis/diagnosis/understanding-your-test-results#:~:text=first%20serologic%20marker%20to%20appear&text=can%20be%20detected%20as%20early%20as%201%20week%20and%20as%20late%20as%209%20weeks',
+        quote: 'HBsAg (hepatitis B surface antigen) is the first serologic marker to appear in a new acute infection ... can be detected as early as 1 week and as late as 9 weeks (range: 6-60 days), with an average of one month after exposure to the hepatitis B virus',
+        verifiedDate: '2026-07-03',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hbsag_window_avg', value: '~1 month (~4 weeks)', source: 'quote', highlight: 'with an average of one month after exposure' },
+                { name: 'hbsag_window_range', value: '1 to 9 weeks', source: 'quote', highlight: 'as early as 1 week and as late as 9 weeks' }
+            ],
+            steps: ['From quote: HBsAg detectable on average ~1 month (~4 weeks) after exposure', 'From quote: range is 1 to 9 weeks'],
+            result: { name: 'hepb_window_period', value: '~4 weeks average (range 1-9 weeks)' },
+            warnings: ['HBsAg is the earliest marker; testing too early can miss infection']
+        }
+    },
+
+    hepb_infectious_ncbi: {
+        id: 'hepb_infectious_ncbi',
+        name: 'National Academies / CDC (NCBI Bookshelf) - HBV Infectiousness',
+        url: 'https://www.ncbi.nlm.nih.gov/books/NBK368066/#:~:text=HBV%20is%20a%20highly%20infectious%20virus%2C%2050%20to%20100%20times%20more%20infectious%20than%20HIV',
+        quote: 'HBV is a highly infectious virus, 50 to 100 times more infectious than HIV',
+        verifiedDate: '2026-07-03',
+        type: 'webpage',
+        isDerived: false,
+        derivation: {
+            variables: [
+                { name: 'hbv_relative_infectiousness', value: '50-100x HIV', source: 'quote', highlight: '50 to 100 times more infectious than HIV' }
+            ],
+            steps: ['From quote: HBV is 50 to 100 times more infectious than HIV'],
+            result: { name: 'hepb_infectiousness', value: '50-100x more infectious than HIV' },
+            warnings: ['Per-act sexual transmission probability varies widely with the infected partner\'s viral load (HBeAg status)']
+        }
     }
 };
 

@@ -175,6 +175,24 @@ No source quotes changed; `node test-sources.js` and `node test-consistency.js` 
 
 ---
 
+## Launch-Hardening: Citing Previously Uncited Prose Numbers
+
+**Date:** 2026-07-03  
+**Issue:** A few specific figures were stated as fact in prose with no citation and no uncertainty flag — quietly breaking the site's "every number links to a source" promise (as opposed to the numbers that *were* honestly flagged as unverified, which are consistent with the "Honest Uncertainty" principle).
+
+### Fixes (all now sourced with `#:~:text=` fragments; `test-sources.js` passes at 56)
+
+1. **HSV-1 global prevalence** — prose said "~67% of people globally" (uncited, and stale: 67% was WHO's 2012 estimate). Updated to "~64% of people under 50 globally" citing the current WHO Herpes Simplex Virus fact sheet (2020 data: 3.8 billion / 64%). New source `hsv1_prevalence_who`.
+2. **HPV 2-year clearance** — "90% of infections clear within 2 years" appeared twice (quick-fact + Key Context), uncited. Both now cite CDC "About Genital HPV Infection": "In most cases (9 out of 10), HPV goes away on its own within two years." New source `hpv_clearance_cdc`.
+3. **Hepatitis B window period** — table row was `citable-unverified` ("CDC/Medical Sources", ⚠️ not verified). Now cites the Hepatitis B Foundation ("as early as 1 week and as late as 9 weeks ... average of one month"). New source `hepb_window_hbf`. (First tried UW HepatitisB.uw.edu and NIH clinicalinfo.hiv.gov — the former's text isn't in the fetched HTML, the latter returns 403 to the test.)
+4. **Hepatitis B "more infectious than HIV" + per-partnership 25–44%** — the quick-fact stated the uncited "25-44%", and the rate cell showed an unverified "25–44%" attributed to "Multiple Sources" (with an internal 25-44 vs 18-44 inconsistency). Replaced both with the citable, quantified fact "50–100× more infectious than HIV" (National Academies/CDC via NCBI Bookshelf NBK368066). The rate cell keeps the ⚠️ note that a precise per-act probability isn't reliably quantified (viral-load dependent). New source `hepb_infectious_ncbi`. Removed the unsourceable per-partnership range rather than dressing it up.
+5. **Hep C "~1 in 190,000 per contact"** — the number was correct and a matching source (`hepc_sexual_negligible`, AIDSmap) already existed and passed tests, but the prose wasn't linked. Wrapped it in a citable span (added a `#:~:text=` fragment to the link).
+
+### Not changed (intentionally)
+The remaining ⚠️-flagged figures — syphilis latent-stage "Low", trichomoniasis "Unknown" per-act — are left as-is. They are explicitly flagged as unverified/unknown, which is consistent with the "Honest Uncertainty" principle rather than a broken promise.
+
+---
+
 ## Pending Investigations
 
 *Add items here when you notice potential data issues that need research:*
@@ -191,4 +209,9 @@ No source quotes changed; `node test-sources.js` and `node test-consistency.js` 
 | 2026-01-20 | N/A | Restored text fragments in citation URLs | Repository policy requires `#:~:text=` on all citation URLs |
 | 2026-07-03 | Chlamydia | Replaced dead `yths.fi` asymptomatic source with ECDC factsheet | Finnish site reorganized; ECDC states same fact verbatim and is higher-authority |
 | 2026-07-03 | HPV | Marked Contemporary OB/GYN source `manuallyVerified` | Site returns HTTP 403 to bots; quote confirmed live on page |
+| 2026-07-03 | HSV-1 | Cited + updated prevalence 67% → ~64% (WHO fact sheet) | Was uncited and stale (67% = 2012 estimate); current WHO data is 64% (2020) |
+| 2026-07-03 | HPV | Cited "90% clear within 2 years" (CDC) | Was stated as fact in prose with no source |
+| 2026-07-03 | Hep B | Cited window period ~4 wk / 1–9 wk (Hepatitis B Foundation) | Was flagged unverified with no link |
+| 2026-07-03 | Hep B | Replaced uncited "25–44%" with cited "50–100× more infectious than HIV" (NCBI NBK368066) | Per-partnership range wasn't cleanly sourceable; per-act stays flagged as not quantified |
+| 2026-07-03 | Hep C | Linked existing AIDSmap source to the "1 in 190,000" prose | Number was correct/verified but not wired to its source in the HTML |
 

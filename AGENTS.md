@@ -51,6 +51,14 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
+## [2026-07-03] Launch-hardening: cited previously uncited prose numbers
+- Added 4 sources (`hsv1_prevalence_who`, `hpv_clearance_cdc`, `hepb_window_hbf`, `hepb_infectious_ncbi`) and linked an existing one (`hepc_sexual_negligible`) to prose that had stated figures as fact with no citation. Now 56 sources, all passing `test-sources.js`.
+- HSV-1 prevalence corrected 67% → ~64% (current WHO fact sheet; 67% was the 2012 estimate). HPV "90% clear in 2 years" cited to CDC. Hep B window period now cites the Hepatitis B Foundation (dropped the `citable-unverified` flag). Hep B "25–44%" (uncited "Multiple Sources", with a 25-44 vs 18-44 self-inconsistency) replaced by the citable "50–100× more infectious than HIV" (NCBI NBK368066); the per-act cell keeps its ⚠️ "not reliably quantified" note.
+- Left the honestly ⚠️-flagged figures (syphilis latent "Low", trichomoniasis "Unknown") unchanged — consistent with the Honest Uncertainty principle. See `corrections.md` for details.
+
+## [2026-07-03] Hero width + triage-bar polish (1440p)
+- Constrained the hero grid to `--container-max` via side padding (`max(1.5rem, (100% - container)/2)`) so hero content aligns with the rest of the page on wide monitors while the background glow still spans full width.
+
 ## [2026-07-03] Moved "Just Exposed?" below the fold; slim triage bar up top
 - Replaced the full post-exposure section under the hero with a compact red triage bar (`.exposed-bar`) that links down to the full `#exposed` section, which now sits after the Testing Guide. Keeps it unmissable without making the landing feel like an emergency page.
 - Added a U.S. scope note to the non-consensual card (RAINN is U.S.-only) with an "outside the U.S." pointer.
