@@ -51,7 +51,10 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
-*(Start the log here on your first change.)*
+## [2026-07-03] Health-check repairs after 5-month gap: fixed 2 broken citations
+- Replaced dead `chlamydia_asymptomatic` source (Finnish `yths.fi`, site reorganized) with the ECDC chlamydia factsheet, which states the same asymptomatic-rate fact verbatim; updated the tooltip in `index.html`. Details in `corrections.md`.
+- Marked `hpv_obgyn_high_estimate` (Contemporary OB/GYN) as `manuallyVerified` — the site returns HTTP 403 to automated requests but the quote is live on the page. Details in `corrections.md`.
+- `node test-sources.js` and `node test-sources.js --include-backup` now pass with 0 errors; `node test-consistency.js` passes clean.
 
 ## Commit discipline
 

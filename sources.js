@@ -389,19 +389,19 @@ const SOURCES = {
 
     chlamydia_asymptomatic: {
         id: 'chlamydia_asymptomatic',
-        name: 'Finnish Student Health Service - Chlamydia Symptoms',
-        url: 'https://www.yths.fi/en/health-information-resource/chlamydia/',
-        quote: 'Chlamydia is often symptomless: about 50% of men and 70% of women have no symptoms',
-        verifiedDate: '2026-01-16',
+        name: 'ECDC - Chlamydia Factsheet - Asymptomatic Rates',
+        url: 'https://www.ecdc.europa.eu/en/chlamydia/facts#:~:text=At%20least%2070%25%20of%20genital%20C.%20trachomatis%20infections%20in%20women%20and%2050%25%20in%20men%20are%20asymptomatic%20at%20the%20time%20of%20diagnosis',
+        quote: 'At least 70% of genital C. trachomatis infections in women and 50% in men are asymptomatic at the time of diagnosis',
+        verifiedDate: '2026-07-03',
         type: 'webpage',
         isDerived: false,
         derivation: {
             variables: [
-                { name: 'men_asymptomatic', value: '50%', source: 'quote', highlight: '50% of men' },
-                { name: 'women_asymptomatic', value: '70%', source: 'quote', highlight: '70% of women' }
+                { name: 'women_asymptomatic', value: '≥70%', source: 'quote', highlight: '70% of genital C. trachomatis infections in women' },
+                { name: 'men_asymptomatic', value: '50%', source: 'quote', highlight: '50% in men' }
             ],
-            steps: ['From quote: ~50% of men have no symptoms', 'From quote: ~70% of women have no symptoms'],
-            result: { name: 'asymptomatic_rate', value: '50% men, 70% women' },
+            steps: ['From quote: at least 70% of infections in women are asymptomatic at diagnosis', 'From quote: 50% in men are asymptomatic at diagnosis'],
+            result: { name: 'asymptomatic_rate', value: '≥70% women, 50% men' },
             warnings: []
         }
     },
@@ -722,9 +722,11 @@ const SOURCES = {
     hpv_obgyn_high_estimate: {
         id: 'hpv_obgyn_high_estimate',
         name: 'Contemporary OB/GYN - HPV High Transmissibility',
-        url: 'https://www.contemporaryobgyn.net/view/hpv-answering-your-worried-patientss-questions',
+        url: 'https://www.contemporaryobgyn.net/view/hpv-answering-your-worried-patientss-questions#:~:text=transmissibility%20of%20HPV%20(as%20estimated%20by%20computer%20simulation%20studies%20on%20university%20students)%20is%2040%25%20per%20coital%20act',
         quote: 'transmissibility of HPV (as estimated by computer simulation studies on university students) is 40% per coital act',
-        verifiedDate: '2026-01-16',
+        verifiedDate: '2026-07-03',
+        manuallyVerified: true,
+        manualVerificationNote: 'contemporaryobgyn.net returns HTTP 403 to automated requests (bot protection); quote confirmed live on the page 2026-07-03.',
         type: 'webpage',
         isDerived: false,
         derivation: {

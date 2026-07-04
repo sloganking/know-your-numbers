@@ -123,6 +123,43 @@ If a URL already contains a fragment, keep it and add the quote-based fragment v
 
 ---
 
+## Dead-Link Repair: Chlamydia Asymptomatic Source (Finnish → ECDC)
+
+**Date:** 2026-07-03  
+**Issue:** After a ~5-month gap, `node test-sources.js` reported the `chlamydia_asymptomatic` source as an error ("Invalid URL")
+
+### The Problem
+
+The source `chlamydia_asymptomatic` linked to the Finnish Student Health Service (`yths.fi`), which reorganized its site; the chlamydia page (and its quoted text) is no longer reachable. This source is displayed in `index.html` as a supporting education fact ("~70% of women and 50% of men have no symptoms") but is **not** used in any transmission-risk calculation.
+
+### The Fix
+
+Replaced it in-place (kept the `chlamydia_asymptomatic` key so the `data-source` reference in `index.html` still resolves) with the **ECDC chlamydia factsheet**, which states the same fact verbatim and is a higher-authority source:
+
+> "At least 70% of genital C. trachomatis infections in women and 50% in men are asymptomatic at the time of diagnosis"
+
+- New URL: `https://www.ecdc.europa.eu/en/chlamydia/facts` (with `#:~:text=` fragment)
+- Updated the tooltip in `index.html` to match.
+- Not a duplicate of any existing source (no other source covers asymptomatic rates).
+- `node test-sources.js` now passes for this source.
+
+---
+
+## Bot-Blocked Source Marked Manually Verified: Contemporary OB/GYN (HPV)
+
+**Date:** 2026-07-03  
+**Issue:** `hpv_obgyn_high_estimate` reported an HTTP 403 error in the automated test
+
+### The Problem
+
+`contemporaryobgyn.net` returns HTTP 403 to automated requests (bot protection), so the test could not fetch the page — but the quoted text ("...transmissibility of HPV ... is 40% per coital act") is still live on the page. This is the same situation as the JAMA / CDC / WHO / PubMed sources already flagged `manuallyVerified`. Note: this source is defined but **not currently displayed** anywhere in the UI.
+
+### The Fix
+
+Confirmed the quote is live on the page, then added `manuallyVerified: true` with a `manualVerificationNote` explaining the 403, matching the existing convention. The test now skips automated fetch for it (⊘ MANUALLY VERIFIED) instead of erroring.
+
+---
+
 ## Pending Investigations
 
 *Add items here when you notice potential data issues that need research:*
@@ -137,4 +174,6 @@ If a URL already contains a fragment, keep it and add the quote-based fragment v
 |------|-----|--------|--------|
 | 2026-01-20 | HSV-2 | Changed per-act rate from 2.85% to 0.053% | Was using shedding-only rate; now using overall average derived from Corey 2004 |
 | 2026-01-20 | N/A | Restored text fragments in citation URLs | Repository policy requires `#:~:text=` on all citation URLs |
+| 2026-07-03 | Chlamydia | Replaced dead `yths.fi` asymptomatic source with ECDC factsheet | Finnish site reorganized; ECDC states same fact verbatim and is higher-authority |
+| 2026-07-03 | HPV | Marked Contemporary OB/GYN source `manuallyVerified` | Site returns HTTP 403 to bots; quote confirmed live on page |
 
