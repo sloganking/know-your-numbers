@@ -24,11 +24,13 @@ const STI_DATA = {
         rates: {
             mtf: {
                 value: 0.0008,  // 8 per 10,000 = 0.08% receptive vaginal
-                sourceId: 'hiv_cdc_risk_estimates'
+                sourceId: 'hiv_cdc_risk_estimates',
+                dataQuality: 'direct'
             },
             ftm: {
                 value: 0.0004,  // 4 per 10,000 = 0.04% insertive vaginal
-                sourceId: 'hiv_cdc_risk_estimates'
+                sourceId: 'hiv_cdc_risk_estimates',
+                dataQuality: 'direct'
             }
         },
         condomEffectiveness: {
@@ -94,13 +96,15 @@ const STI_DATA = {
                 value: 0.00053,  // 0.053% per act (derived from 8-month study)
                 sourceId: 'hsv2_per_act_derived',
                 isDerived: true,
-                note: 'Derived: 3.6% over 8 months → ~0.053% per act (assumes 2x/week)'
+                note: 'Derived: 3.6% over 8 months → ~0.053% per act (assumes 2x/week)',
+                dataQuality: 'direct'
             },
             ftm: {
                 value: 0.00053,  // Using same rate; F→M likely similar or lower
                 sourceId: 'hsv2_per_act_derived',
                 isDerived: true,
-                note: 'F→M rate not directly stated; using M→F as estimate'
+                note: 'F→M rate not directly stated; using M→F as estimate',
+                dataQuality: 'inferred'
             }
         },
         condomEffectiveness: {
@@ -140,13 +144,15 @@ const STI_DATA = {
                 value: 0.0041,  // ~0.41% per act (assumes 2x/week)
                 sourceId: 'hpv_hitch_2021',
                 isDerived: true,
-                note: 'Derived from 3.5 per 100 person-months with assumed frequency'
+                note: 'Derived from 3.5 per 100 person-months with assumed frequency',
+                dataQuality: 'direct'
             },
             ftm: {
                 value: 0.0066,  // ~0.66% per act (assumes 2x/week)
                 sourceId: 'hpv_hitch_2021',
                 isDerived: true,
-                note: 'Derived from 5.6 per 100 person-months with assumed frequency'
+                note: 'Derived from 5.6 per 100 person-months with assumed frequency',
+                dataQuality: 'direct'
             }
         },
         condomEffectiveness: {
@@ -183,13 +189,15 @@ const STI_DATA = {
                 value: 0.114,  // ~11% per act (range 6-17%)
                 sourceId: 'chlamydia_ncbi_per_act',
                 isDerived: true,
-                note: 'Midpoint of 6-16.7% range'
+                note: 'Midpoint of 6-16.7% range',
+                dataQuality: 'undifferentiated'
             },
             ftm: {
                 value: 0.114,  // Same rate (study didn't distinguish direction)
                 sourceId: 'chlamydia_ncbi_per_act',
                 isDerived: true,
-                note: 'Midpoint of 6-16.7% range (no M→F vs F→M distinction)'
+                note: 'Midpoint of 6-16.7% range (no M→F vs F→M distinction)',
+                dataQuality: 'undifferentiated'
             }
         },
         condomEffectiveness: {
@@ -226,13 +234,15 @@ const STI_DATA = {
                 value: 0.50,  // 50% per act (DIRECT measurement)
                 sourceId: 'gonorrhea_kirkcaldy_2019',
                 isDerived: false,
-                note: 'Direct estimate: ~50% penile-to-vaginal per act'
+                note: 'Direct estimate: ~50% penile-to-vaginal per act',
+                dataQuality: 'direct'
             },
             ftm: {
                 value: 0.20,  // 20% per act (DIRECT measurement)
                 sourceId: 'gonorrhea_kirkcaldy_2019',
                 isDerived: false,
-                note: 'Direct estimate: ~20% vaginal-to-penile per act'
+                note: 'Direct estimate: ~20% vaginal-to-penile per act',
+                dataQuality: 'direct'
             }
         },
         condomEffectiveness: {
@@ -269,13 +279,15 @@ const STI_DATA = {
                 value: 0.20,  // >20% per act for early syphilis
                 sourceId: 'syphilis_ashm_per_act',
                 isDerived: false,
-                note: '>20% per act for early syphilis (primary, secondary, early latent)'
+                note: '>20% per act for early syphilis (primary, secondary, early latent)',
+                dataQuality: 'undifferentiated'
             },
             ftm: {
                 value: 0.20,  // Same rate (source doesn't distinguish direction)
                 sourceId: 'syphilis_ashm_per_act',
                 isDerived: false,
-                note: '>20% per act for early syphilis (no M→F vs F→M distinction)'
+                note: '>20% per act for early syphilis (no M→F vs F→M distinction)',
+                dataQuality: 'undifferentiated'
             }
         },
         condomEffectiveness: {
@@ -301,6 +313,126 @@ const STI_DATA = {
         notes: 'Per-act rate >20% for EARLY syphilis. Condoms 50-71% effective (can transmit through uncovered sores). Curable with antibiotics.'
     }
 };
+
+// ============================================
+// DATA CONSISTENCY & VALIDATION
+// ============================================
+
+const DIRECTION_KEYS = ['mtf', 'ftm'];
+const DIRECTION_LABELS = {
+    mtf: 'Male → Female',
+    ftm: 'Female → Male'
+};
+
+const RATE_QUALITY_VALUES = new Set([
+    'direct',
+    'undifferentiated',
+    'inferred',
+    'missing'
+]);
+
+function getDirectionLabel(direction) {
+    return DIRECTION_LABELS[direction] || direction;
+}
+
+function getOppositeDirection(direction) {
+    if (direction === 'mtf') return 'ftm';
+    if (direction === 'ftm') return 'mtf';
+    return null;
+}
+
+function validateAndNormalizeStiData(data) {
+    const summary = {
+        errors: [],
+        warnings: [],
+        bySti: {}
+    };
+
+    Object.entries(data).forEach(([stiKey, stiData]) => {
+        const issues = { errors: [], warnings: [] };
+
+        if (!stiData || typeof stiData !== 'object') {
+            issues.errors.push('STI entry is not an object.');
+            summary.bySti[stiKey] = issues;
+            summary.errors.push(`${stiKey}: STI entry is not an object.`);
+            return;
+        }
+
+        if (!stiData.rates || typeof stiData.rates !== 'object') {
+            issues.errors.push('Missing rates object.');
+        } else {
+            DIRECTION_KEYS.forEach(direction => {
+                const rate = stiData.rates[direction];
+
+                if (rate === undefined) {
+                    stiData.rates[direction] = {
+                        value: null,
+                        sourceId: null,
+                        dataQuality: 'missing',
+                        note: 'No data for this direction.'
+                    };
+                    issues.warnings.push(`Missing ${direction} rate; inserted placeholder.`);
+                    return;
+                }
+
+                if (typeof rate === 'number') {
+                    stiData.rates[direction] = {
+                        value: rate,
+                        sourceId: null,
+                        dataQuality: 'missing',
+                        note: 'Legacy rate format; update to object.'
+                    };
+                    issues.errors.push(`Legacy rate format for ${direction}.`);
+                    return;
+                }
+
+                if (typeof rate !== 'object') {
+                    issues.errors.push(`Invalid ${direction} rate type.`);
+                    return;
+                }
+
+                if (rate.value === undefined || rate.value === null) {
+                    rate.value = null;
+                    rate.dataQuality = rate.dataQuality || 'missing';
+                    issues.warnings.push(`Missing value for ${direction} rate.`);
+                } else if (typeof rate.value !== 'number' || !Number.isFinite(rate.value)) {
+                    issues.errors.push(`Invalid number for ${direction} rate.`);
+                    rate.value = null;
+                } else if (rate.value < 0 || rate.value > 1) {
+                    issues.errors.push(`Out-of-range value for ${direction} rate.`);
+                }
+
+                if (!rate.dataQuality || !RATE_QUALITY_VALUES.has(rate.dataQuality)) {
+                    issues.errors.push(`Missing or invalid dataQuality for ${direction} rate.`);
+                }
+            });
+        }
+
+        if (issues.errors.length > 0) {
+            const validationNote = `Data validation failed: ${issues.errors.join(' | ')}`;
+            stiData.verified = false;
+            stiData.verificationNote = stiData.verificationNote
+                ? `${stiData.verificationNote} — ${validationNote}`
+                : validationNote;
+        }
+
+        stiData.validationIssues = issues;
+        summary.bySti[stiKey] = issues;
+        summary.errors.push(...issues.errors.map(err => `${stiKey}: ${err}`));
+        summary.warnings.push(...issues.warnings.map(warn => `${stiKey}: ${warn}`));
+    });
+
+    if (summary.errors.length > 0) {
+        console.error('STI_DATA validation errors:', summary.errors);
+    }
+    if (summary.warnings.length > 0) {
+        console.warn('STI_DATA validation warnings:', summary.warnings);
+    }
+
+    return summary;
+}
+
+const STI_DATA_VALIDATION = validateAndNormalizeStiData(STI_DATA);
 
 // ============================================
 // CITABLE NUMBERS SYSTEM
@@ -493,6 +625,58 @@ function getSourceInfo(stiKey, rateType, direction = null) {
         }
     }
     return null;
+}
+
+function getDirectionalRate(stiData, direction) {
+    if (!stiData || !stiData.rates) {
+        return { value: null, dataQuality: 'missing', note: 'No data for this direction.' };
+    }
+
+    const rateData = stiData.rates[direction];
+    if (!rateData || rateData.value === null || rateData.value === undefined) {
+        return {
+            value: null,
+            dataQuality: 'missing',
+            note: rateData && rateData.note ? rateData.note : 'No data for this direction.'
+        };
+    }
+
+    if (typeof rateData.value !== 'number' || !Number.isFinite(rateData.value)) {
+        return { value: null, dataQuality: 'missing', note: 'Invalid rate value.' };
+    }
+
+    return rateData;
+}
+
+function getRateQualityNote(rateData, direction) {
+    if (!rateData || !rateData.dataQuality || rateData.dataQuality === 'direct') {
+        return null;
+    }
+
+    const directionLabel = getDirectionLabel(direction);
+    const oppositeDirection = getOppositeDirection(direction);
+    const oppositeLabel = oppositeDirection ? getDirectionLabel(oppositeDirection) : 'the opposite direction';
+
+    if (rateData.dataQuality === 'undifferentiated') {
+        return `Source does not distinguish ${directionLabel} vs ${oppositeLabel}; the same rate is applied to both directions.`;
+    }
+
+    if (rateData.dataQuality === 'inferred') {
+        return `No direct ${directionLabel} transmission rate in the source; using the ${oppositeLabel} rate as an estimate.`;
+    }
+
+    if (rateData.dataQuality === 'missing') {
+        return `No ${directionLabel} transmission rate is available in the sources.`;
+    }
+
+    return null;
+}
+
+function getRateQualityBadge(rateData, direction) {
+    const note = getRateQualityNote(rateData, direction);
+    if (!note || rateData.dataQuality === 'missing') return '';
+    const safeNote = note.replace(/"/g, '&quot;');
+    return `<span class="rate-quality rate-quality-warning" title="${safeNote}">⚠</span>`;
 }
 
 // ============================================
@@ -755,17 +939,21 @@ class RiskCalculator {
         const months = parseInt(this.durationInput.value);
 
         const stiData = STI_DATA[sti];
+        if (!stiData) return;
+        const rateData = getDirectionalRate(stiData, direction);
 
         // Check if this STI has verified data
-        if (!stiData.verified || !stiData.rates[direction].value) {
+        if (!stiData.verified) {
             this.showUnverifiedMessage(stiData);
             return;
         }
 
-        // Handle both old format (number) and new format (object with value)
-        const baseRate = typeof stiData.rates[direction] === 'object'
-            ? stiData.rates[direction].value
-            : stiData.rates[direction];
+        if (rateData.value === null) {
+            this.showMissingDirectionMessage(stiData, direction, rateData.note);
+            return;
+        }
+
+        const baseRate = rateData.value;
 
         // Get direction-specific condom effectiveness if available
         let condomEff;
@@ -806,18 +994,19 @@ class RiskCalculator {
         const withBothRate = hasPreventatives ? adjustForCondom(withCondomRate, combinedPreventativeEff) : null;
 
         // Update rate display with citable sources
-        const rateSourceId = typeof stiData.rates[direction] === 'object'
-            ? stiData.rates[direction].sourceId
-            : null;
+        const rateSourceId = rateData.sourceId || null;
         // condomSourceId already defined above with direction-specific logic
+
+        const rateQualityBadge = getRateQualityBadge(rateData, direction);
+        const rateQualitySuffix = rateQualityBadge ? ` ${rateQualityBadge}` : '';
 
         if (rateSourceId && window.SOURCES && window.SOURCES[rateSourceId]) {
             this.perActRate.innerHTML = createCitableNumber(
                 `${(baseRate * 100).toFixed(3)}%`,
                 rateSourceId
-            );
+            ) + rateQualitySuffix;
         } else {
-            this.perActRate.textContent = `${(baseRate * 100).toFixed(3)}%`;
+            this.perActRate.innerHTML = `${(baseRate * 100).toFixed(3)}%${rateQualitySuffix}`;
         }
 
         // Check if condom data is verified
@@ -907,7 +1096,7 @@ class RiskCalculator {
             stiData, baseRate, withCondomRate, totalEncounters,
             finalRiskUnprotected, finalRiskCondom, finalRiskPreventative, finalRiskBoth,
             hasVerifiedCondomData, hasPreventatives,
-            combinedPreventativeEff, preventativeLabel, months
+            combinedPreventativeEff, preventativeLabel, months, rateData, direction
         );
     }
 
@@ -916,6 +1105,44 @@ class RiskCalculator {
         if (risk < 0.20) return '#f59e0b';      // Moderate - amber
         if (risk < 0.50) return '#f97316';      // High - orange
         return '#ef4444';                        // Very high - red
+    }
+
+    showMissingDirectionMessage(stiData, direction, reason) {
+        // Clear the chart
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+
+        const directionLabel = getDirectionLabel(direction);
+        const detailMessage = reason
+            ? reason.replace('this direction', directionLabel)
+            : `No verified ${directionLabel} transmission rate in the sources.`;
+
+        // Show unavailable message in chart area
+        const ctx = this.chartCanvas.getContext('2d');
+        ctx.clearRect(0, 0, this.chartCanvas.width, this.chartCanvas.height);
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '16px Outfit, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`No data for ${directionLabel}`, this.chartCanvas.width / 2, this.chartCanvas.height / 2 - 20);
+        ctx.font = '13px Outfit, sans-serif';
+        ctx.fillText(detailMessage, this.chartCanvas.width / 2, this.chartCanvas.height / 2 + 10);
+
+        // Update rate displays
+        this.perActRate.innerHTML = `<span class="rate-no-data">No data for ${directionLabel}</span>`;
+        this.adjustedRate.innerHTML = `<span class="rate-no-data">No data for ${directionLabel}</span>`;
+        this.rateReduction.textContent = '';
+
+        // Update result
+        this.resultProbability.textContent = 'N/A';
+        this.resultProbability.style.color = '#6b7280';
+        this.resultExplanation.innerHTML = `
+            <strong style="color: #f59e0b;">⚠ Data not available for ${directionLabel}</strong><br>
+            We do not have a ${directionLabel} transmission rate for ${stiData.name} yet.
+            <br><br>
+            <em>${detailMessage}</em>
+        `;
     }
 
     showUnverifiedMessage(stiData) {
@@ -954,7 +1181,8 @@ class RiskCalculator {
 
     generateExplanation(stiData, baseRate, withCondomRate, encounters,
         riskUnprotected, riskCondom, riskPreventative, riskBoth,
-        hasCondomData, hasPreventativeData, preventativeEff, preventativeLabel, months) {
+        hasCondomData, hasPreventativeData, preventativeEff, preventativeLabel, months,
+        rateData, direction) {
         const unprotectedPercent = (riskUnprotected * 100).toFixed(1);
 
         const getRiskLevel = (risk) => {
@@ -991,6 +1219,11 @@ class RiskCalculator {
 
         if (stiData.notes) {
             html += `<br><br><em>Note: ${stiData.notes}</em>`;
+        }
+
+        const rateQualityNote = getRateQualityNote(rateData, direction);
+        if (rateQualityNote) {
+            html += `<br><br><em>⚠ ${rateQualityNote}</em>`;
         }
 
         return html;
@@ -1333,29 +1566,43 @@ function initMobileTooltips() {
 // INITIALIZE
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize calculator
-    const calculator = new RiskCalculator();
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize calculator
+        const calculator = new RiskCalculator();
 
-    // Initialize smooth scrolling
-    initSmoothScrolling();
+        // Initialize smooth scrolling
+        initSmoothScrolling();
 
-    // Initialize mobile navigation
-    initMobileNav();
+        // Initialize mobile navigation
+        initMobileNav();
 
-    // Initialize mobile tooltips
-    initMobileTooltips();
+        // Initialize mobile tooltips
+        initMobileTooltips();
 
-    // Log data sources for transparency
-    console.log('📊 Know Your Numbers - STI Risk Calculator');
-    console.log('Data sources:', Object.entries(STI_DATA).map(([key, data]) => ({
-        sti: data.name,
-        source: data.source,
-        url: data.sourceUrl
-    })));
-});
+        // Log data sources for transparency
+        console.log('📊 Know Your Numbers - STI Risk Calculator');
+        console.log('Data sources:', Object.entries(STI_DATA).map(([key, data]) => ({
+            sti: data.name,
+            source: data.source,
+            url: data.sourceUrl
+        })));
+    });
+}
 
 // Export for testing/debugging
-window.STI_DATA = STI_DATA;
-window.calculateCumulativeRisk = calculateCumulativeRisk;
-window.adjustForCondom = adjustForCondom;
+if (typeof window !== 'undefined') {
+    window.STI_DATA = STI_DATA;
+    window.STI_DATA_VALIDATION = STI_DATA_VALIDATION;
+    window.calculateCumulativeRisk = calculateCumulativeRisk;
+    window.adjustForCondom = adjustForCondom;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        STI_DATA,
+        STI_DATA_VALIDATION,
+        validateAndNormalizeStiData,
+        DIRECTION_LABELS
+    };
+}

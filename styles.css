@@ -795,6 +795,18 @@ input[type="range"]::-moz-range-thumb {
     gap: 0.5rem;
 }
 
+.rate-quality {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #f59e0b;
+    display: inline-flex;
+    align-items: center;
+}
+
+.rate-quality-warning {
+    cursor: help;
+}
+
 .rate-reduction {
     font-size: 0.75rem;
     color: #10b981;
