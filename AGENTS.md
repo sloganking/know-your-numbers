@@ -51,6 +51,11 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
+## [2026-07-03] Syntax highlighting, Martian-language wording pass, FAQ
+- Added Prism.js (tomorrow theme, JS grammar) via CDN for the two methodology code blocks; added `code[class*="language-"]` overrides in `styles.css` so it fits the dark theme.
+- Reworded the mission section, principles, and HPV "Key Context" to remove non-verifiable claims stated as fact (e.g. "the medical establishment has largely planned for [HPV] to spread"); replaced with observable facts (no general HPV test; CDC doesn't recommend asymptomatic herpes testing; ~90% HPV clearance) and reports about the author's own experience/wants. Keeps first-person voice; removes disputable assertions.
+- Added an FAQ section (`#faq`, nav + footer links, styled `<details>` accordion in `styles.css`): sourcing method (AI-assisted + reproducible `test-sources.js` verification), how to check the numbers, vaginal-only scope, why some STIs have no calculator, and not-medical-advice.
+
 ## [2026-07-03] Fixed page/calculator consistency bugs
 - Gonorrhea STI Profiles card repointed from `gonorrhea_ncbi_book` (22.8%, 2× chlamydia) to `gonorrhea_kirkcaldy_2019` (50% M→F / 20% F→M) so the card matches the calculator's `STI_DATA`.
 - Hero stat "20 Studies Cited" → "50 Sources Cited" (matches `sources.js`); fixed broken markup indentation on that card.

@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,6 +32,7 @@
             <a href="#testing">Testing Guide</a>
             <a href="#stis">STI Data</a>
             <a href="#methodology">Methodology</a>
+            <a href="#faq">FAQ</a>
         </div>
     </nav>
 
@@ -76,24 +78,26 @@
             <div class="mission-content">
                 <div class="mission-text">
                     <p class="lead">
-                        I'm frustrated. Every time I ask a doctor about STI transmission probabilities, 
-                        I get the same non-answers: "Use a condom and you'll be fine" or "Don't worry about it."
+                        I'm frustrated. When I've asked doctors for STI transmission probabilities, what I got back 
+                        was "use a condom and you'll be fine" or "don't worry about it" — not a number.
                     </p>
                     <p>
-                        That's not good enough. If I have a partner with an STI, I want to know the <em>actual numbers</em>. 
-                        What's my probability of transmission per encounter? How does that change with condom use? 
-                        What if we're together for a year versus a month?
+                        I wanted the actual numbers. If I have a partner with an STI, what's my probability of 
+                        transmission per encounter? How does that change with a condom? What if we're together 
+                        for a year versus a month?
                     </p>
                     <p>
-                        Doctors seem to operate on a culture of managed information — deciding what you 
-                        "need to know" rather than giving you the data to make your own informed decisions. 
-                        With HPV, for example, the medical establishment has largely planned for it to spread 
-                        through the population rather than helping individuals understand and manage their risk.
+                        Which STIs get tested — and whether you're ever told a per-act probability — is usually 
+                        decided by the provider or the screening guidelines, not by you. Some of these numbers are 
+                        also just hard to find: they're scattered across individual studies, and no one hands them 
+                        to you. Two examples documented on this page: there is no general test for your "HPV status," 
+                        and the CDC does not recommend herpes testing for people without symptoms. Whatever the 
+                        reasons, a lot of this information isn't offered by default — you have to go get it.
                     </p>
                     <p>
-                        <strong>This site changes that.</strong> Every number here comes from peer-reviewed studies. 
-                        Every calculation is transparent. You can see the equations, adjust the variables, 
-                        and understand exactly how your risk is computed.
+                        <strong>So I built the version I wanted.</strong> Every number here links to a named source — 
+                        a study or a public-health body — with the exact quoted text it comes from. Every calculation 
+                        is shown. You can see the equations, adjust the variables, and check exactly how your risk is computed.
                     </p>
                     <p class="disclaimer">
                         <strong>Disclaimer:</strong> This is not medical advice. This is mathematical modeling 
@@ -107,7 +111,7 @@
                             <span class="principle-icon">📚</span>
                             <div>
                                 <strong>Cite Everything</strong>
-                                <p>Every transmission rate links to its source study</p>
+                                <p>Every transmission rate links to its source, with the exact quote</p>
                             </div>
                         </li>
                         <li>
@@ -128,7 +132,7 @@
                             <span class="principle-icon">⚠️</span>
                             <div>
                                 <strong>Honest Uncertainty</strong>
-                                <p>We show confidence intervals, not false precision</p>
+                                <p>Ranges, assumptions, and derived or unverified numbers are flagged, not hidden</p>
                             </div>
                         </li>
                     </ul>
@@ -604,9 +608,10 @@
                         <summary>Key Context</summary>
                         <div class="details-content">
                             <p>
-                                HPV is unique because it's so common that "preventing" it may be unrealistic for 
-                                sexually active adults who aren't vaccinated. The medical establishment's approach 
-                                has largely been to expect exposure and rely on the immune system to clear it.
+                                HPV is common enough that for unvaccinated, sexually active adults, avoiding it entirely 
+                                is unlikely: most people acquire it at some point, and about 90% of infections clear within 
+                                two years. There is no general test for HPV "status," and standard guidance centers on 
+                                vaccination and cervical screening rather than on preventing each exposure.
                             </p>
                             <p>
                                 <strong>The key questions:</strong> (1) Are you vaccinated? (2) Are you getting regular 
@@ -1005,7 +1010,7 @@
                     
                     <div class="code-block">
                         <h4>JavaScript Implementation</h4>
-<pre><code>function calculateCumulativeRisk(perActRisk, numberOfEncounters) {
+<pre><code class="language-javascript">function calculateCumulativeRisk(perActRisk, numberOfEncounters) {
     // Probability of NOT being infected after all encounters
     const probNotInfected = Math.pow(1 - perActRisk, numberOfEncounters);
     
@@ -1028,7 +1033,7 @@ calculateCumulativeRisk(0.114, 8);  // Returns: 0.620 (62.0%)</code></pre>
                         <p>\[ r_{protected} = r_{unprotected} \times (1 - e_{condom}) \]</p>
                     </div>
                     <div class="code-block">
-<pre><code>function adjustForCondom(baseRisk, condomEffectiveness) {
+<pre><code class="language-javascript">function adjustForCondom(baseRisk, condomEffectiveness) {
     return baseRisk * (1 - condomEffectiveness);
 }
 
@@ -1066,6 +1071,83 @@ adjustForCondom(0.0008, 0.80);  // Returns: 0.00016 (0.016%)</code></pre>
         </div>
     </section>
 
+    <section id="faq" class="section faq-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Questions</span>
+                <h2>FAQ</h2>
+                <p class="section-desc">
+                    How the numbers were sourced, what's covered, and how to check the work.
+                </p>
+            </div>
+
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary>How did you find these numbers, and why were they so hard to find?</summary>
+                    <div class="faq-answer">
+                        <p>
+                            Per-act transmission numbers are scattered across individual studies and public-health
+                            documents — there is no single place that lists them side by side. I gathered the sources
+                            with AI assistance, and for each number I recorded the exact quote it comes from plus a link
+                            that highlights that quote on the source page.
+                        </p>
+                        <p>
+                            A script in the open-source repo (<code>test-sources.js</code>) then fetches each page and
+                            checks that the quoted text is still there. You can run it yourself. AI helped find and
+                            transcribe the sources; the verification is mechanical and reproducible.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Can I trust these numbers?</summary>
+                    <div class="faq-answer">
+                        <p>
+                            You don't have to — you can check them. Every figure links to its source with the exact
+                            quoted sentence, and derived numbers show the arithmetic that produced them. If a source
+                            ever stops matching its quote, the test suite flags it. The whole project is MIT-licensed
+                            and open source, so anyone can inspect, dispute, or improve any number.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Why can I only choose vaginal sex, male ↔ female?</summary>
+                    <div class="faq-answer">
+                        <p>
+                            The calculator currently covers vaginal sex, in the two directions the sources measured
+                            (penis-to-vagina and vagina-to-penis). Anal and oral transmission have different per-act
+                            rates; I haven't added sourced numbers for them yet.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Why don't some STIs (like trichomoniasis or hepatitis B) have a calculator?</summary>
+                    <div class="faq-answer">
+                        <p>
+                            For those, I could not find a reliable per-act transmission probability in the literature.
+                            Trichomoniasis is described only as "moderate to high," with no number. Hepatitis B per-act
+                            risk varies widely with the infected partner's viral load. When a per-act number isn't
+                            available, the page says so instead of inventing one.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Is this medical advice?</summary>
+                    <div class="faq-answer">
+                        <p>
+                            No. This is mathematical modeling from published research — useful for understanding orders
+                            of magnitude, not for diagnosis or treatment decisions. For anything about your own health,
+                            talk to a healthcare provider.
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -1091,6 +1173,7 @@ adjustForCondom(0.0008, 0.80);  // Returns: 0.00016 (0.016%)</code></pre>
                         <li><a href="#mission">Why This Exists</a></li>
                         <li><a href="#calculator">Risk Calculator</a></li>
                         <li><a href="#methodology">Methodology</a></li>
+                        <li><a href="#faq">FAQ</a></li>
                     </ul>
                 </div>
             </div>
@@ -1106,5 +1189,8 @@ adjustForCondom(0.0008, 0.80);  // Returns: 0.00016 (0.016%)</code></pre>
     </footer>
 
     <script src="app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 </body>
 </html>
