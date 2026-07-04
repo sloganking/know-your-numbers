@@ -486,6 +486,26 @@ a:hover {
         var(--bg-primary);
 }
 
+.calculator-scope-note {
+    max-width: 760px;
+    margin: 0 auto 2rem;
+    padding: 0.85rem 1.1rem;
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+}
+
+.calculator-scope-note strong {
+    color: var(--text-primary);
+}
+
+.calculator-scope-note a {
+    color: var(--accent-primary);
+}
+
 .calculator-grid {
     display: grid;
     gap: 2rem;

@@ -97,7 +97,7 @@ const STI_DATA = {
                 sourceId: 'hsv2_per_act_derived',
                 isDerived: true,
                 note: 'Derived: 3.6% over 8 months → ~0.053% per act (assumes 2x/week)',
-                dataQuality: 'direct'
+                dataQuality: 'derived'
             },
             ftm: {
                 value: 0.00053,  // Using same rate; F→M likely similar or lower
@@ -145,14 +145,14 @@ const STI_DATA = {
                 sourceId: 'hpv_hitch_2021',
                 isDerived: true,
                 note: 'Derived from 3.5 per 100 person-months with assumed frequency',
-                dataQuality: 'direct'
+                dataQuality: 'derived'
             },
             ftm: {
                 value: 0.0066,  // ~0.66% per act (assumes 2x/week)
                 sourceId: 'hpv_hitch_2021',
                 isDerived: true,
                 note: 'Derived from 5.6 per 100 person-months with assumed frequency',
-                dataQuality: 'direct'
+                dataQuality: 'derived'
             }
         },
         condomEffectiveness: {
@@ -326,6 +326,7 @@ const DIRECTION_LABELS = {
 
 const RATE_QUALITY_VALUES = new Set([
     'direct',
+    'derived',
     'undifferentiated',
     'inferred',
     'missing'
@@ -656,6 +657,10 @@ function getRateQualityNote(rateData, direction) {
     const directionLabel = getDirectionLabel(direction);
     const oppositeDirection = getOppositeDirection(direction);
     const oppositeLabel = oppositeDirection ? getDirectionLabel(oppositeDirection) : 'the opposite direction';
+
+    if (rateData.dataQuality === 'derived') {
+        return `This per-act rate was derived from a study that measured transmission over time, not per act — converted using an assumed sex frequency. Treat it as an order-of-magnitude estimate, not a precise figure.`;
+    }
 
     if (rateData.dataQuality === 'undifferentiated') {
         return `Source does not distinguish ${directionLabel} vs ${oppositeLabel}; the same rate is applied to both directions.`;

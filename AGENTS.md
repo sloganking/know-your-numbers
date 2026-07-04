@@ -51,6 +51,10 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
+## [2026-07-03] Calculator scope note + visible "derived" caveat badge
+- Added a visible scope note directly above the calculator (`.calculator-scope-note`): it models vaginal M↔F only; anal/oral rates aren't included — don't apply these numbers to those. Moves the disclaimer from the FAQ to where the mistake would happen.
+- Added a `derived` dataQuality value. Rates that were derived from over-time studies using an assumed sex frequency (HPV M→F & F→M, HSV-2 M→F) were reclassified `direct` → `derived`, so they now show the same visible ⚠ badge (hover for explanation) that undifferentiated/inferred rates already show. Previously that caveat was only visible in the source tooltip. `getRateQualityNote` gained a `derived` branch. `test-consistency.js` still passes.
+
 ## [2026-07-03] Launch-hardening: cited previously uncited prose numbers
 - Added 4 sources (`hsv1_prevalence_who`, `hpv_clearance_cdc`, `hepb_window_hbf`, `hepb_infectious_ncbi`) and linked an existing one (`hepc_sexual_negligible`) to prose that had stated figures as fact with no citation. Now 56 sources, all passing `test-sources.js`.
 - HSV-1 prevalence corrected 67% → ~64% (current WHO fact sheet; 67% was the 2012 estimate). HPV "90% clear in 2 years" cited to CDC. Hep B window period now cites the Hepatitis B Foundation (dropped the `citable-unverified` flag). Hep B "25–44%" (uncited "Multiple Sources", with a 25-44 vs 18-44 self-inconsistency) replaced by the citable "50–100× more infectious than HIV" (NCBI NBK368066); the per-act cell keeps its ⚠️ "not reliably quantified" note.
