@@ -1,8 +1,10 @@
 # Know Your Numbers — STI Risk Calculator
 
-**The numbers your doctor won't tell you.**
+**The STI transmission numbers, sourced and transparent.**
 
 An evidence-based, fully transparent STI transmission risk calculator. Every number is sourced, every calculation is shown, every quote is verifiable.
+
+> **Provided as-is.** A personal, open-source project. This is mathematical modeling from published research, not medical advice — verify with a provider. No guarantee of accuracy or ongoing maintenance. Errors and better sources welcome via issues or PRs. MIT licensed — fork it, improve it, make it the standard.
 
 🌐 **Live Site:** [https://sloganking.github.io/know-your-numbers/](https://sloganking.github.io/know-your-numbers/)
 
