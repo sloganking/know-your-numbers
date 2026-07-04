@@ -1197,7 +1197,7 @@ class RiskCalculator {
             return 'very high';
         };
 
-        let html = `Over <strong>${months} month${months > 1 ? 's' : ''}</strong> (~${encounters} encounters):<br>`;
+        let html = `Over <strong>${months} month${months > 1 ? 's' : ''}</strong> (~${encounters} encounters) with a partner who has ${stiData.name}:<br>`;
         html += `<span style="color:#ef4444;">No protection:</span> <strong>${unprotectedPercent}%</strong> risk (${getRiskLevel(riskUnprotected)})`;
 
         if (hasCondomData && riskCondom !== null) {

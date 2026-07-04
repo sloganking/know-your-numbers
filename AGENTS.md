@@ -51,6 +51,9 @@ This repo has automated verification but no session hook yet. **On starting subs
 
 Append-only, one line per substantive change, newest on top. Format: `## [YYYY-MM-DD] <what changed>`. Record **data/source/code changes only** — added/updated/removed sources, fixed derivations, dead-link repairs, methodology corrections. **No personal narrative, no author story** (that's what makes it safe for a public repo). If a longer methodology explanation is needed, it goes in `corrections.md`.
 
+## [2026-07-03] Made the "partner already has it" framing explicit in the calculator
+- A past user misread the calculator as general STI risk rather than conditional-on-an-infected-partner risk. Fixes: dropdown label "Select STI" → "The STI your partner has"; calculator intro now leads with "This estimates your chance of catching an STI from a partner who already has it"; the result explanation opener now reads "...with a partner who has {STI}:". Also increased spacing below the scope note.
+
 ## [2026-07-03] Calculator scope note + visible "derived" caveat badge
 - Added a visible scope note directly above the calculator (`.calculator-scope-note`): it models vaginal M↔F only; anal/oral rates aren't included — don't apply these numbers to those. Moves the disclaimer from the FAQ to where the mistake would happen.
 - Added a `derived` dataQuality value. Rates that were derived from over-time studies using an assumed sex frequency (HPV M→F & F→M, HSV-2 M→F) were reclassified `direct` → `derived`, so they now show the same visible ⚠ badge (hover for explanation) that undifferentiated/inferred rates already show. Previously that caveat was only visible in the source tooltip. `getRateQualityNote` gained a `derived` branch. `test-consistency.js` still passes.
